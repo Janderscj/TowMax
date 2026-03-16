@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "terminate",
+      "type": "command",
+      "command": "workbench.action.tasks.terminate"
+    }
+  ],
+
+  "tasks": [
+    {
+      "label": "Start Backend",
+      "type": "shell",
+      "command": "cd backend && node src/server.js",
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Frontend",
+      "type": "shell",
+      "command": "cd frontend && npm start",
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Both",
+      "dependsOn": ["Start Backend", "Start Frontend"],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Stop All",
+      "type": "shell",
+      "command": "${input:terminate}",
+      "problemMatcher": []
+    }
+  ]
+}
