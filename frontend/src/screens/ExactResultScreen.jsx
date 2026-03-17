@@ -2,6 +2,30 @@ export default function ExactResultScreen({ decoded, match, answers, onNewSearch
   const gcwr = match.gcwr ?? 14000;
   const payload = match.payload ?? 1940;
 
+  const handleSaveToGarage = async (vin) => {
+    try {
+      const res = await fetch('http://localhost:5000/api/garage/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ vin }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert('Vehicle saved to your garage!');
+        // Optional: navigate to garage
+        // navigate("/garage");
+      } else {
+        alert(data.error || 'Failed to save vehicle.');
+      }
+    } catch (err) {
+      console.error('Save to garage error:', err);
+      alert('Something went wrong saving the vehicle.');
+    }
+  };
+
   return (
     <div
       style={{
@@ -199,6 +223,25 @@ export default function ExactResultScreen({ decoded, match, answers, onNewSearch
           <strong>⚠️ Important:</strong> Always verify with your owner&apos;s manual and consider
           payload, tongue weight, and trailer specifications.
         </div>
+        <button
+          onClick={() => handleSaveToGarage(decoded.vin)}
+          className="save-button"
+          style={{
+            backgroundColor: '#1e90ff',
+            color: 'white',
+            padding: '12px 18px',
+            borderRadius: '8px',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '16px',
+            marginTop: '20px',
+            marginBottom: '20px',
+            width: '100%',
+            fontWeight: '600',
+          }}
+        >
+          Save to My Garage
+        </button>
 
         <button
           onClick={onNewSearch}
