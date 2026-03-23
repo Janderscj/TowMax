@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, Home, LogOut } from 'lucide-react';
 import { supabase } from '../utils/supabase';
+import VinBreakdownScreen from './VinBreakdownScreen';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
@@ -9,6 +10,8 @@ export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome, on
   const [error, setError] = useState(null);
   const [decoded, setDecoded] = useState(null);
   const [matches, setMatches] = useState([]);
+  // Controls whether the full VIN breakdown sub-screen is shown
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   useEffect(() => {
     if (!vehicle?.vin) {
@@ -89,6 +92,20 @@ export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome, on
         value,
       }));
   }, [decoded]);
+
+  // Render the full VIN breakdown sub-screen when requested.
+  // Uses internal state so App.js navigation stays unchanged.
+  if (showBreakdown) {
+    return (
+      <VinBreakdownScreen
+        vehicle={vehicle}
+        rawVinData={decoded?.raw}
+        onBack={() => setShowBreakdown(false)}
+        onHome={onHome}
+        onSignOut={onSignOut}
+      />
+    );
+  }
 
   return (
     <div style={styles.container}>
@@ -182,6 +199,13 @@ export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome, on
               ))}
             </div>
           </div>
+
+          {/* Show breakdown button only when raw NHTSA data is available */}
+          {decoded?.raw && decoded.raw.length > 0 && (
+            <button onClick={() => setShowBreakdown(true)} style={styles.breakdownButton}>
+              View Full VIN Breakdown
+            </button>
+          )}
         </>
       )}
     </div>
@@ -314,5 +338,19 @@ const styles = {
     fontSize: '0.9rem',
     fontWeight: '600',
     textAlign: 'right',
+  },
+  breakdownButton: {
+    width: '100%',
+    marginTop: '8px',
+    padding: '14px',
+    background: 'rgba(255,140,0,0.12)',
+    border: '1px solid rgba(255,140,0,0.35)',
+    borderRadius: '12px',
+    color: '#ff8c00',
+    fontFamily: '"Space Mono", monospace',
+    fontSize: '0.9rem',
+    fontWeight: '700',
+    cursor: 'pointer',
+    letterSpacing: '0.03em',
   },
 };
