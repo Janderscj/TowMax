@@ -1,10 +1,23 @@
-import { AlertCircle, Search } from 'lucide-react';
+import { AlertCircle, Search, Home, LogOut } from 'lucide-react';
 
-export default function VinEntryScreen({ vin, setVin, onBack, onDecode }) {
+export default function VinEntryScreen({ vin, setVin, onBack, onDecode, onHome, onSignOut }) {
   const handleDecode = () => {
     if (vin.length === 17) {
       onDecode(vin);
     }
+  };
+
+  const iconBtnStyle = {
+    width: '34px',
+    height: '34px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.22)',
+    borderRadius: '8px',
+    color: '#fff',
+    cursor: 'pointer',
   };
 
   return (
@@ -55,22 +68,38 @@ export default function VinEntryScreen({ vin, setVin, onBack, onDecode }) {
           zIndex: 1,
         }}
       >
-        <button
-          onClick={onBack}
+        <div
           style={{
-            background: 'none',
-            border: 'none',
-            color: '#ff8c00',
-            fontSize: '14px',
-            padding: '8px 0',
-            cursor: 'pointer',
-            textAlign: 'left',
-            fontFamily: 'inherit',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             marginBottom: '24px',
           }}
         >
-          ← Back
-        </button>
+          <button
+            onClick={onBack}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#ff8c00',
+              fontSize: '14px',
+              padding: '8px 0',
+              cursor: 'pointer',
+              textAlign: 'left',
+              fontFamily: 'inherit',
+            }}
+          >
+            ← Back
+          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
+              <Home size={16} />
+            </button>
+            <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
+              <LogOut size={16} />
+            </button>
+          </div>
+        </div>
 
         <h2
           style={{

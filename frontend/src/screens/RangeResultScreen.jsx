@@ -1,11 +1,26 @@
+import { Home, LogOut } from 'lucide-react';
+
 export default function RangeResultScreen({
   decoded,
-  answers,
   minTow,
   maxTow,
   onRefine,
   onNewSearch,
+  onHome,
+  onSignOut,
 }) {
+  const iconBtnStyle = {
+    width: '34px',
+    height: '34px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.22)',
+    borderRadius: '8px',
+    color: '#fff',
+    cursor: 'pointer',
+  };
   return (
     <div
       style={{
@@ -28,6 +43,16 @@ export default function RangeResultScreen({
           zIndex: 1,
         }}
       >
+        <div
+          style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '8px' }}
+        >
+          <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
+            <Home size={16} />
+          </button>
+          <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
+            <LogOut size={16} />
+          </button>
+        </div>
         <div
           style={{
             textAlign: 'center',

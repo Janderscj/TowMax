@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Plus, Trash2, Car } from 'lucide-react';
+import { Plus, Trash2, Car, Home, LogOut } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 
-function GarageScreen({ onVinSelect, onAddVehicle, onVehicleClick }) {
+function GarageScreen({ onVinSelect, onAddVehicle, onVehicleClick, onHome, onSignOut }) {
   const { user, profile, isFree, isPremium, isDealer } = useAuth();
   const [garage, setGarage] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -104,6 +104,14 @@ function GarageScreen({ onVinSelect, onAddVehicle, onVehicleClick }) {
     <div style={styles.container}>
       <div style={styles.header}>
         <h1 style={styles.title}>My Garage</h1>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button onClick={onHome} style={styles.navIconButton} aria-label="Home">
+            <Home size={16} />
+          </button>
+          <button onClick={onSignOut} style={styles.navIconButton} aria-label="Sign out">
+            <LogOut size={16} />
+          </button>
+        </div>
       </div>
 
       <div style={styles.roleInfo}>
@@ -187,6 +195,18 @@ const styles = {
   title: {
     fontSize: '2rem',
     fontWeight: 'bold',
+  },
+  navIconButton: {
+    width: '34px',
+    height: '34px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.22)',
+    borderRadius: '8px',
+    color: '#fff',
+    cursor: 'pointer',
   },
   roleInfo: {
     marginBottom: '20px',

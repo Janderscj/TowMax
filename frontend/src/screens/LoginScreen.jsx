@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
-function LoginScreen({ onLoginSuccess }) {
+function LoginScreen() {
   const { signInWithGoogle, loading } = useAuth();
 
   const handleGoogleLogin = async () => {

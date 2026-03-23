@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { Home, LogOut } from 'lucide-react';
 import { useAuth } from './contexts/AuthContext';
 import WelcomeScreen from './screens/WelcomeScreen';
 import VinEntryScreen from './screens/VinEntryScreen';
@@ -296,10 +295,6 @@ function AppContent() {
   const minTow = matches.length > 0 ? Math.min(...matches.map((m) => m.maxTow || 0)) : null;
   const maxTow = matches.length > 0 ? Math.max(...matches.map((m) => m.maxTow || 0)) : null;
 
-  const handleGlobalHome = () => {
-    resetAll();
-  };
-
   const handleGlobalSignOut = async () => {
     try {
       await signOut();
@@ -311,14 +306,6 @@ function AppContent() {
 
   return (
     <div style={styles.appContainer}>
-      <div style={styles.globalControls}>
-        <button onClick={handleGlobalHome} style={styles.globalButton} aria-label="Go home">
-          <Home size={16} />
-        </button>
-        <button onClick={handleGlobalSignOut} style={styles.globalButton} aria-label="Sign out">
-          <LogOut size={16} />
-        </button>
-      </div>
       {screen === 'garage' && (
         <GarageScreen
           onVinSelect={(selectedVin) =>
@@ -326,11 +313,18 @@ function AppContent() {
           }
           onVehicleClick={goToGarageDetails}
           onAddVehicle={() => goToVinLookup('', { origin: 'garage', saveToGarage: true })}
+          onHome={resetAll}
+          onSignOut={handleGlobalSignOut}
         />
       )}
 
       {screen === 'garageDetails' && selectedGarageVehicle && (
-        <GarageVehicleDetailsScreen vehicle={selectedGarageVehicle} onBack={goToGarage} />
+        <GarageVehicleDetailsScreen
+          vehicle={selectedGarageVehicle}
+          onBack={goToGarage}
+          onHome={resetAll}
+          onSignOut={handleGlobalSignOut}
+        />
       )}
 
       {screen === 'welcome' && (
@@ -342,6 +336,8 @@ function AppContent() {
           }}
           onGarage={goToGarage}
           showGarage={!isDealer}
+          onHome={resetAll}
+          onSignOut={handleGlobalSignOut}
         />
       )}
 
@@ -354,6 +350,8 @@ function AppContent() {
             setScreen(lookupOrigin === 'garage' ? 'garage' : 'welcome');
           }}
           onDecode={decodeVin}
+          onHome={resetAll}
+          onSignOut={handleGlobalSignOut}
         />
       )}
 
@@ -367,19 +365,20 @@ function AppContent() {
           answers={answers}
           onAnswer={handleRefineAnswer}
           onBack={() => setScreen('range')}
+          onHome={resetAll}
+          onSignOut={handleGlobalSignOut}
         />
       )}
 
       {screen === 'range' && decoded && minTow != null && maxTow != null && (
         <RangeResultScreen
           decoded={decoded}
-          answers={answers}
           minTow={minTow}
           maxTow={maxTow}
-          missingInfo={initialMissing}
-          hasQuestions={initialMissing.length > 0}
           onRefine={() => setScreen('questions')}
           onNewSearch={lookupOrigin === 'garage' ? goToGarage : resetAll}
+          onHome={resetAll}
+          onSignOut={handleGlobalSignOut}
         />
       )}
 
@@ -396,6 +395,8 @@ function AppContent() {
           showUpgradePrompt={showUpgradePrompt}
           onDismissUpgradePrompt={() => setShowUpgradePrompt(false)}
           onNewSearch={lookupOrigin === 'garage' ? goToGarage : resetAll}
+          onHome={resetAll}
+          onSignOut={handleGlobalSignOut}
         />
       )}
     </div>
@@ -455,26 +456,6 @@ const styles = {
     backgroundColor: 'transparent',
     color: '#e0e0e0',
     fontWeight: 600,
-    cursor: 'pointer',
-  },
-  globalControls: {
-    position: 'fixed',
-    top: '14px',
-    right: '18px',
-    display: 'flex',
-    gap: '8px',
-    zIndex: 200,
-  },
-  globalButton: {
-    width: '34px',
-    height: '34px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.22)',
-    borderRadius: '8px',
-    color: '#fff',
     cursor: 'pointer',
   },
 };

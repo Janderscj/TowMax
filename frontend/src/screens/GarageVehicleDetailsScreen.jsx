@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Home, LogOut } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
-export default function GarageVehicleDetailsScreen({ vehicle, onBack }) {
+export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome, onSignOut }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [decoded, setDecoded] = useState(null);
@@ -97,6 +97,14 @@ export default function GarageVehicleDetailsScreen({ vehicle, onBack }) {
           <ArrowLeft size={16} />
           Back
         </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button onClick={onHome} style={styles.iconButton} aria-label="Home">
+            <Home size={16} />
+          </button>
+          <button onClick={onSignOut} style={styles.iconButton} aria-label="Sign out">
+            <LogOut size={16} />
+          </button>
+        </div>
       </div>
 
       <h1 style={styles.title}>Vehicle Details</h1>
@@ -205,6 +213,18 @@ const styles = {
     padding: '10px 12px',
     cursor: 'pointer',
     fontFamily: 'inherit',
+  },
+  iconButton: {
+    width: '34px',
+    height: '34px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.22)',
+    borderRadius: '8px',
+    color: '#fff',
+    cursor: 'pointer',
   },
   title: {
     fontSize: '1.8rem',

@@ -1,12 +1,26 @@
+import { Home, LogOut } from 'lucide-react';
 import MissingInfoQuestions from '../components/questions/MissingInfoQuestions';
 
-export default function QuestionsScreen({ decoded, missing, options, answers, onAnswer }) {
+export default function QuestionsScreen({ decoded, missing, options, answers, onAnswer, onHome, onSignOut }) {
   if (!missing || missing.length === 0) return null;
 
   const totalQuestions = missing.length;
   const answeredCount = Object.keys(answers).length;
   const currentField = missing[0]; // Always show the next unanswered field
   const progress = (answeredCount / totalQuestions) * 100;
+
+  const iconBtnStyle = {
+    width: '34px',
+    height: '34px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.22)',
+    borderRadius: '8px',
+    color: '#fff',
+    cursor: 'pointer',
+  };
 
   return (
     <div
@@ -30,7 +44,16 @@ export default function QuestionsScreen({ decoded, missing, options, answers, on
           zIndex: 1,
         }}
       >
-        {/* Progress Bar */}
+        {/* Nav buttons */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '8px' }}>
+          <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
+            <Home size={16} />
+          </button>
+          <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
+            <LogOut size={16} />
+          </button>
+        </div>
+        {/* Progress Bar */}}
         <div
           style={{
             height: '4px',

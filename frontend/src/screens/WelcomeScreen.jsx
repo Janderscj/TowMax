@@ -1,6 +1,25 @@
-import { ArrowRight, Car } from 'lucide-react';
+import { ArrowRight, Car, Home, LogOut } from 'lucide-react';
 
-export default function WelcomeScreen({ error, onGetStarted, onGarage, showGarage }) {
+export default function WelcomeScreen({
+  error,
+  onGetStarted,
+  onGarage,
+  showGarage,
+  onHome,
+  onSignOut,
+}) {
+  const iconBtnStyle = {
+    width: '34px',
+    height: '34px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.22)',
+    borderRadius: '8px',
+    color: '#fff',
+    cursor: 'pointer',
+  };
   return (
     <div
       style={{
@@ -37,6 +56,22 @@ export default function WelcomeScreen({ error, onGetStarted, onGarage, showGarag
       >
         <span>9:41</span>
         <span>●●●●●</span>
+      </div>
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '8px',
+          padding: '10px 20px',
+        }}
+      >
+        <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
+          <Home size={16} />
+        </button>
+        <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
+          <LogOut size={16} />
+        </button>
       </div>
 
       <div
