@@ -2,7 +2,8 @@ import React, { createContext, useContext, useEffect, useRef, useState } from 'r
 import { supabase } from '../utils/supabase';
 
 const AuthContext = createContext(null);
-
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+console.log('AuthProvider mounted');
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');
@@ -14,38 +15,88 @@ export const AuthProvider = ({ children }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [profileLoading, setProfileLoading] = useState(false);
+  const [profileError, setProfileError] = useState(null);
+  const loadedProfileUserIdRef = useRef(null);
+  const profileRequestInFlightRef = useRef(false);
 
-  // ⭐ useRef guard — does NOT trigger re-renders, does NOT loop
-  const profileRequestedRef = useRef(false);
+  const resetProfileState = () => {
+    loadedProfileUserIdRef.current = null;
+    profileRequestInFlightRef.current = false;
+    setProfile(null);
+    setProfileError(null);
+  };
 
-  // -----------------------------
   // Fetch Profile (with timeout)
   // -----------------------------
   const fetchProfile = async (userId) => {
+    if (profileRequestInFlightRef.current) {
+      return false;
+    }
+
+    profileRequestInFlightRef.current = true;
     setProfileLoading(true);
+    setProfileError(null);
 
     try {
       console.log('👤 Fetching profile for:', userId);
 
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
+      let timeoutId;
+      const profilePromise = supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
+      const timeoutPromise = new Promise((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error('Profile request timed out.')), 5000);
+      });
 
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
-
-      clearTimeout(timeout);
+      const { data, error } = await Promise.race([profilePromise, timeoutPromise]);
+      clearTimeout(timeoutId);
 
       if (error) {
-        console.error('❌ Profile fetch error:', error);
-        setProfile(null);
-        return;
+        throw error;
       }
 
-      setProfile(data);
-      console.log('👤 Profile loaded:', data);
+      if (data) {
+        loadedProfileUserIdRef.current = userId;
+        setProfile(data);
+        console.log('👤 Profile loaded:', data);
+        return true;
+      }
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      if (!token) {
+        throw new Error('No profile record was found for this account.');
+      }
+
+      const controller = new AbortController();
+      const fetchTimeoutId = setTimeout(() => controller.abort(), 5000);
+      const response = await fetch(`${API_URL}/api/user/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        signal: controller.signal,
+      });
+      clearTimeout(fetchTimeoutId);
+
+      const payload = await response.json();
+
+      if (!response.ok) {
+        throw new Error(payload.error || 'Unable to load account details.');
+      }
+
+      loadedProfileUserIdRef.current = userId;
+      setProfile(payload);
+      console.log('👤 Profile recovered from API:', payload);
+      return true;
     } catch (err) {
       console.error('❌ Profile fetch exception:', err);
+      loadedProfileUserIdRef.current = null;
       setProfile(null);
+      setProfileError(err.message || 'Unable to load account details.');
+      return false;
     } finally {
+      profileRequestInFlightRef.current = false;
       setProfileLoading(false);
     }
   };
@@ -75,9 +126,12 @@ export const AuthProvider = ({ children }) => {
       const currentUser = session?.user ?? null;
       setUser(currentUser);
 
-      if (currentUser && !profileRequestedRef.current) {
-        profileRequestedRef.current = true; // ⭐ guard set immediately
-        await fetchProfile(currentUser.id);
+      if (currentUser) {
+        if (loadedProfileUserIdRef.current !== currentUser.id) {
+          await fetchProfile(currentUser.id);
+        }
+      } else {
+        resetProfileState();
       }
 
       setLoading(false);
@@ -97,14 +151,11 @@ export const AuthProvider = ({ children }) => {
       setUser(currentUser);
 
       if (currentUser) {
-        if (!profileRequestedRef.current) {
-          profileRequestedRef.current = true; // ⭐ guard prevents repeats
+        if (loadedProfileUserIdRef.current !== currentUser.id) {
           await fetchProfile(currentUser.id);
         }
       } else {
-        // User signed out
-        profileRequestedRef.current = false;
-        setProfile(null);
+        resetProfileState();
       }
     });
 
@@ -135,8 +186,7 @@ export const AuthProvider = ({ children }) => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
 
-    profileRequestedRef.current = false;
-    setProfile(null);
+    resetProfileState();
   };
 
   // -----------------------------
@@ -153,6 +203,7 @@ export const AuthProvider = ({ children }) => {
         profile,
         loading,
         profileLoading,
+        profileError,
         signInWithGoogle,
         signOut,
         isFree,

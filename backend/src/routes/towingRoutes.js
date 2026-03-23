@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const supabase = require('../utils/supabaseClient');
 
 const decodeVin = require('../utils/vinDecoder');
 const matchTowing = require('../utils/matchTowing');
@@ -20,8 +21,6 @@ const authenticateUser = async (req, res, next) => {
 
   const token = authHeader.substring(7);
   try {
-    const { createClient } = require('@supabase/supabase-js');
-    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
     const {
       data: { user },
       error,

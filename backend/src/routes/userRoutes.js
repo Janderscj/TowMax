@@ -1,31 +1,11 @@
 const express = require('express');
-const { createClient } = require('@supabase/supabase-js');
 const router = express.Router();
-
-// Supabase client (using service role for server-side operations)
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-
-// Middleware to verify JWT token
-const authenticateUser = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
-
-  const token = authHeader.substring(7);
-  try {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser(token);
-    if (error || !user) {
-      return res.status(401).json({ error: 'Invalid token' });
-    }
-    req.user = user;
-    next();
-  } catch (err) {
-    res.status(401).json({ error: 'Token verification failed' });
-  }
+const supabase = require('../utils/supabaseClient');
+const authenticateUser = require('../middleware/authenticateUser');
+const defaultProfile = {
+  role: 'free',
+  garage_limit: 1,
+  can_replace_free_vehicle: false,
 };
 
 // GET /api/user/profile
@@ -35,7 +15,7 @@ router.get('/profile', authenticateUser, async (req, res) => {
       .from('profiles')
       .select('*')
       .eq('id', req.user.id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error fetching profile:', error);
@@ -43,7 +23,18 @@ router.get('/profile', authenticateUser, async (req, res) => {
     }
 
     if (!profile) {
-      return res.status(404).json({ error: 'Profile not found' });
+      const { data: createdProfile, error: createError } = await supabase
+        .from('profiles')
+        .insert({ id: req.user.id, ...defaultProfile })
+        .select('*')
+        .single();
+
+      if (createError) {
+        console.error('Error creating missing profile:', createError);
+        return res.status(500).json({ error: 'Failed to create profile' });
+      }
+
+      return res.json(createdProfile);
     }
 
     res.json(profile);
@@ -69,7 +60,7 @@ router.post('/role/update', authenticateUser, async (req, res) => {
       garageLimit = 1;
       canReplaceFreeVehicle = false;
     } else if (role === 'premium') {
-      garageLimit = 5;
+      garageLimit = null;
       canReplaceFreeVehicle = true;
     } else if (role === 'dealer') {
       garageLimit = null;

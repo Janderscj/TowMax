@@ -1,32 +1,12 @@
 const express = require('express');
-const { createClient } = require('@supabase/supabase-js');
 const router = express.Router();
+const supabase = require('../utils/supabaseClient');
+const authenticateUser = require('../middleware/authenticateUser');
+const decodeVin = require('../utils/vinDecoder');
 
-// Supabase client
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-
-// Middleware to verify JWT token
-const authenticateUser = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
-
-  const token = authHeader.substring(7);
-  try {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser(token);
-    if (error || !user) {
-      return res.status(401).json({ error: 'Invalid token' });
-    }
-    req.user = user;
-    next();
-  } catch (err) {
-    res.status(401).json({ error: 'Token verification failed' });
-  }
-};
+function isValidVin(vin) {
+  return /^[A-HJ-NPR-Z0-9]{17}$/i.test(vin);
+}
 
 // GET /api/garage
 router.get('/', authenticateUser, async (req, res) => {
@@ -62,27 +42,21 @@ router.get('/', authenticateUser, async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-router.post('/add', async (req, res) => {
+
+router.post('/add', authenticateUser, async (req, res) => {
   try {
-    const { vin } = req.body;
+    const vin = req.body.vin?.toUpperCase();
 
     if (!vin) {
       return res.status(400).json({ error: 'VIN is required' });
     }
 
-    // Get user from Supabase auth cookie
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser(req.headers.authorization?.replace('Bearer ', ''));
-
-    if (userError || !user) {
-      return res.status(401).json({ error: 'Not authenticated' });
+    if (!isValidVin(vin)) {
+      return res.status(400).json({ error: 'Invalid VIN format' });
     }
 
-    const userId = user.id;
+    const userId = req.user.id;
 
-    // Fetch profile
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('role, garage_limit')
@@ -111,27 +85,22 @@ router.post('/add', async (req, res) => {
       return res.status(400).json({ error: 'VIN already exists in garage' });
     }
 
-    // Decode VIN
-    const decodeRes = await fetch(`http://localhost:5000/api/towing/decode`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ vin }),
-    });
+    const decoded = await decodeVin(vin);
 
-    const decodeData = await decodeRes.json();
-
-    if (!decodeRes.ok) {
-      return res.status(400).json({
-        error: decodeData.error || 'VIN decode failed',
-      });
+    if (!decoded || !decoded.year || !decoded.make || !decoded.model) {
+      return res.status(400).json({ error: 'VIN decode failed' });
     }
 
-    const { decoded } = decodeData;
+    const { count: vehicleCount, error: countError } = await supabase
+      .from('garage')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', userId);
 
-    // Check garage limit
-    const { data: existing } = await supabase.from('garage').select('*').eq('user_id', userId);
+    if (countError) {
+      return res.status(500).json({ error: 'Failed to check garage limit' });
+    }
 
-    if (existing.length >= profile.garage_limit) {
+    if (profile.garage_limit != null && vehicleCount >= profile.garage_limit) {
       return res.status(403).json({
         error: `Garage limit reached (${profile.garage_limit} vehicles).`,
       });
@@ -198,16 +167,16 @@ router.post('/remove', authenticateUser, async (req, res) => {
 
     // For free users, check if this is their only vehicle
     if (profile.role === 'free') {
-      const { data: garage, error: garageError } = await supabase
+      const { count: garageCount, error: garageError } = await supabase
         .from('garage')
-        .select('id')
+        .select('id', { count: 'exact', head: true })
         .eq('user_id', req.user.id);
 
       if (garageError) {
         return res.status(500).json({ error: 'Failed to check garage' });
       }
 
-      if (garage.length <= 1) {
+      if ((garageCount || 0) <= 1) {
         return res.status(403).json({ error: 'Free users cannot remove their only vehicle' });
       }
     }

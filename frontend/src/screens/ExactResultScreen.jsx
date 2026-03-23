@@ -1,30 +1,18 @@
-export default function ExactResultScreen({ decoded, match, answers, onNewSearch }) {
+export default function ExactResultScreen({
+  decoded,
+  vin,
+  match,
+  answers,
+  showAddVehicle,
+  onAddVehicle,
+  addVehicleLoading,
+  addVehicleError,
+  showUpgradePrompt,
+  onDismissUpgradePrompt,
+  onNewSearch,
+}) {
   const gcwr = match.gcwr ?? 14000;
   const payload = match.payload ?? 1940;
-
-  const handleSaveToGarage = async (vin) => {
-    try {
-      const res = await fetch('http://localhost:5000/api/garage/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ vin }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert('Vehicle saved to your garage!');
-        // Optional: navigate to garage
-        // navigate("/garage");
-      } else {
-        alert(data.error || 'Failed to save vehicle.');
-      }
-    } catch (err) {
-      console.error('Save to garage error:', err);
-      alert('Something went wrong saving the vehicle.');
-    }
-  };
 
   return (
     <div
@@ -223,25 +211,97 @@ export default function ExactResultScreen({ decoded, match, answers, onNewSearch
           <strong>⚠️ Important:</strong> Always verify with your owner&apos;s manual and consider
           payload, tongue weight, and trailer specifications.
         </div>
-        <button
-          onClick={() => handleSaveToGarage(decoded.vin)}
-          className="save-button"
-          style={{
-            backgroundColor: '#1e90ff',
-            color: 'white',
-            padding: '12px 18px',
-            borderRadius: '8px',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '16px',
-            marginTop: '20px',
-            marginBottom: '20px',
-            width: '100%',
-            fontWeight: '600',
-          }}
-        >
-          Save to My Garage
-        </button>
+
+        {showAddVehicle && (
+          <>
+            <button
+              onClick={onAddVehicle}
+              disabled={addVehicleLoading}
+              style={{
+                backgroundColor: '#1e90ff',
+                color: 'white',
+                padding: '12px 18px',
+                borderRadius: '8px',
+                border: 'none',
+                cursor: addVehicleLoading ? 'wait' : 'pointer',
+                fontSize: '16px',
+                marginTop: '20px',
+                marginBottom: '12px',
+                width: '100%',
+                fontWeight: '600',
+                opacity: addVehicleLoading ? 0.7 : 1,
+              }}
+            >
+              {addVehicleLoading ? 'Adding Vehicle...' : 'Add Vehicle'}
+            </button>
+
+            {addVehicleError && (
+              <div
+                style={{
+                  background: 'rgba(244,67,54,0.12)',
+                  border: '1px solid rgba(244,67,54,0.25)',
+                  borderRadius: '12px',
+                  padding: '14px',
+                  marginBottom: '16px',
+                  color: '#ef9a9a',
+                  fontSize: '13px',
+                  lineHeight: '1.5',
+                }}
+              >
+                {addVehicleError}
+              </div>
+            )}
+
+            {showUpgradePrompt && (
+              <div
+                style={{
+                  background: 'rgba(255,140,0,0.1)',
+                  border: '1px solid rgba(255,140,0,0.24)',
+                  borderRadius: '14px',
+                  padding: '18px',
+                  marginBottom: '20px',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: '700',
+                    color: '#ffd180',
+                    marginBottom: '8px',
+                  }}
+                >
+                  Garage Full
+                </div>
+                <div
+                  style={{
+                    fontSize: '13px',
+                    color: '#ffcc80',
+                    lineHeight: '1.6',
+                    marginBottom: '14px',
+                  }}
+                >
+                  Upgrade to Premium to unlock unlimited saved vehicles, then try adding this VIN
+                  again.
+                </div>
+                <button
+                  onClick={onDismissUpgradePrompt}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    borderRadius: '10px',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                  }}
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+          </>
+        )}
 
         <button
           onClick={onNewSearch}

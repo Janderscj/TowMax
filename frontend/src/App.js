@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { useAuth } from './contexts/AuthContext';
 import WelcomeScreen from './screens/WelcomeScreen';
 import VinEntryScreen from './screens/VinEntryScreen';
 import LoadingScreen from './screens/LoadingScreen';
@@ -8,13 +8,23 @@ import RangeResultScreen from './screens/RangeResultScreen';
 import ExactResultScreen from './screens/ExactResultScreen';
 import LoginScreen from './screens/LoginScreen';
 import GarageScreen from './screens/GarageScreen';
+import GarageVehicleDetailsScreen from './screens/GarageVehicleDetailsScreen';
 import { supabase } from './utils/supabase';
 
 // API URL from env or fallback to localhost
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 function AppContent() {
-  const { user, profile, loading: authLoading, isFree, isPremium, isDealer } = useAuth();
+  const {
+    user,
+    profile,
+    loading: authLoading,
+    profileLoading,
+    profileError,
+    signOut,
+    refetchProfile,
+    isDealer,
+  } = useAuth();
   const [screen, setScreen] = useState('welcome');
   const [vin, setVin] = useState('');
   const [result, setResult] = useState(null);
@@ -23,44 +33,134 @@ function AppContent() {
   const [initialOptions, setInitialOptions] = useState(null);
   const [answers, setAnswers] = useState({});
   const [error, setError] = useState(null);
+  const [lookupOrigin, setLookupOrigin] = useState('welcome');
+  const [garageSaveMode, setGarageSaveMode] = useState(false);
+  const [garageSaveLoading, setGarageSaveLoading] = useState(false);
+  const [garageSaveError, setGarageSaveError] = useState(null);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [selectedGarageVehicle, setSelectedGarageVehicle] = useState(null);
 
   // Cache for VIN responses to prevent redundant API calls
   const vinCacheRef = useRef(new Map());
 
   const decoded = result?.decoded ?? null;
 
-  // Reset all state
-  const resetAll = () => {
-    setScreen('welcome');
+  const clearLookupState = () => {
     setVin('');
     setResult(null);
     setMatches([]);
     setInitialMissing([]);
     setInitialOptions(null);
     setAnswers({});
+    setGarageSaveLoading(false);
+    setGarageSaveError(null);
+    setShowUpgradePrompt(false);
+  };
+
+  // Reset all state
+  const resetAll = () => {
+    setLookupOrigin('welcome');
+    setGarageSaveMode(false);
+    setScreen('welcome');
+    clearLookupState();
     setError(null);
   };
 
-  // If auth is loading, show loading screen
-  if (authLoading) {
+  if (authLoading || (user && profileLoading)) {
     return <LoadingScreen />;
   }
 
-  // If not authenticated, show login
   if (!user) {
     return <LoginScreen />;
   }
 
-  // If authenticated but no profile yet, show loading
   if (!profile) {
-    return <LoadingScreen />;
+    return (
+      <div style={styles.appContainer}>
+        <div style={styles.profileErrorContainer}>
+          <h2 style={styles.profileErrorTitle}>We couldn't load your account</h2>
+          <p style={styles.profileErrorText}>
+            {profileError || 'Your session was restored, but your profile data is unavailable.'}
+          </p>
+          <button style={styles.primaryButton} onClick={() => refetchProfile()}>
+            Retry
+          </button>
+          <button style={styles.secondaryButton} onClick={signOut}>
+            Sign out
+          </button>
+        </div>
+      </div>
+    );
   }
 
   // Authenticated user flow
-  const goToGarage = () => setScreen('garage');
-  const goToVinLookup = (preVin = '') => {
+  const goToGarage = () => {
+    clearLookupState();
+    setSelectedGarageVehicle(null);
+    setLookupOrigin('garage');
+    setGarageSaveMode(false);
+    setError(null);
+    setScreen('garage');
+  };
+
+  const goToGarageDetails = (vehicle) => {
+    setSelectedGarageVehicle(vehicle);
+    setScreen('garageDetails');
+  };
+
+  const goToVinLookup = (preVin = '', options = {}) => {
+    const origin = options.origin || 'welcome';
     setVin(preVin);
+    setLookupOrigin(origin);
+    setGarageSaveMode(Boolean(options.saveToGarage));
+    setGarageSaveError(null);
+    setShowUpgradePrompt(false);
+    setError(null);
     setScreen('vin');
+  };
+
+  const saveVehicleToGarage = async () => {
+    if (!vin) {
+      setGarageSaveError('VIN is missing for this vehicle.');
+      return;
+    }
+
+    try {
+      setGarageSaveLoading(true);
+      setGarageSaveError(null);
+      setShowUpgradePrompt(false);
+
+      const token = user ? (await supabase.auth.getSession()).data.session?.access_token : null;
+      if (!token) {
+        throw new Error('You must be signed in to save a vehicle.');
+      }
+
+      const response = await fetch(`${API_URL}/api/garage/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ vin }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 403 && /garage limit reached/i.test(data.error || '')) {
+          setShowUpgradePrompt(true);
+        }
+        setGarageSaveError(data.error || 'Failed to add vehicle to garage.');
+        return;
+      }
+
+      goToGarage();
+    } catch (err) {
+      console.error('Error saving vehicle to garage:', err);
+      setGarageSaveError('Unable to save this vehicle right now. Please try again.');
+    } finally {
+      setGarageSaveLoading(false);
+    }
   };
 
   // Decode VIN function with auth
@@ -96,13 +196,13 @@ function AppContent() {
       // Better error handling
       if (!response.ok) {
         setError(data.error || `Server error (${response.status})`);
-        setScreen('welcome');
+        setScreen(lookupOrigin === 'garage' ? 'vin' : 'welcome');
         return;
       }
 
       if (data.error) {
         setError(data.error);
-        setScreen('welcome');
+        setScreen(lookupOrigin === 'garage' ? 'vin' : 'welcome');
         return;
       }
 
@@ -110,7 +210,7 @@ function AppContent() {
     } catch (err) {
       console.error('Error decoding VIN:', err);
       setError('Unable to connect to server. Please try again.');
-      setScreen('welcome');
+      setScreen(lookupOrigin === 'garage' ? 'vin' : 'welcome');
     }
   };
 
@@ -197,7 +297,24 @@ function AppContent() {
 
   return (
     <div style={styles.appContainer}>
-      {screen === 'garage' && <GarageScreen onVinSelect={goToVinLookup} />}
+      {screen === 'garage' && (
+        <GarageScreen
+          onHome={() => setScreen('welcome')}
+          onVinSelect={(selectedVin) =>
+            goToVinLookup(selectedVin, { origin: 'garage', saveToGarage: false })
+          }
+          onVehicleClick={goToGarageDetails}
+          onAddVehicle={() => goToVinLookup('', { origin: 'garage', saveToGarage: true })}
+        />
+      )}
+
+      {screen === 'garageDetails' && selectedGarageVehicle && (
+        <GarageVehicleDetailsScreen
+          vehicle={selectedGarageVehicle}
+          onBack={goToGarage}
+          onHome={() => setScreen('welcome')}
+        />
+      )}
 
       {screen === 'welcome' && (
         <WelcomeScreen
@@ -217,7 +334,7 @@ function AppContent() {
           setVin={setVin}
           onBack={() => {
             setError(null);
-            setScreen('welcome');
+            setScreen(lookupOrigin === 'garage' ? 'garage' : 'welcome');
           }}
           onDecode={decodeVin}
         />
@@ -245,16 +362,23 @@ function AppContent() {
           missingInfo={initialMissing}
           hasQuestions={initialMissing.length > 0}
           onRefine={() => setScreen('questions')}
-          onNewSearch={resetAll}
+          onNewSearch={lookupOrigin === 'garage' ? goToGarage : resetAll}
         />
       )}
 
       {screen === 'exact' && decoded && matches.length === 1 && (
         <ExactResultScreen
           decoded={decoded}
+          vin={vin}
           match={matches[0]}
           answers={answers}
-          onNewSearch={resetAll}
+          showAddVehicle={garageSaveMode}
+          onAddVehicle={saveVehicleToGarage}
+          addVehicleLoading={garageSaveLoading}
+          addVehicleError={garageSaveError}
+          showUpgradePrompt={showUpgradePrompt}
+          onDismissUpgradePrompt={() => setShowUpgradePrompt(false)}
+          onNewSearch={lookupOrigin === 'garage' ? goToGarage : resetAll}
         />
       )}
     </div>
@@ -262,11 +386,7 @@ function AppContent() {
 }
 
 function App() {
-  return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
-  );
+  return <AppContent />;
 }
 
 const styles = {
@@ -276,6 +396,49 @@ const styles = {
     margin: '0 auto',
     minHeight: '100vh',
     background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
+  },
+  profileErrorContainer: {
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '16px',
+    padding: '24px',
+    color: '#e0e0e0',
+    textAlign: 'center',
+  },
+  profileErrorTitle: {
+    margin: 0,
+    fontSize: '24px',
+    fontWeight: 600,
+  },
+  profileErrorText: {
+    margin: 0,
+    color: '#a0a0a0',
+    lineHeight: 1.5,
+  },
+  primaryButton: {
+    width: '100%',
+    maxWidth: '240px',
+    padding: '12px 16px',
+    border: 'none',
+    borderRadius: '10px',
+    backgroundColor: '#ff8c00',
+    color: '#111',
+    fontWeight: 600,
+    cursor: 'pointer',
+  },
+  secondaryButton: {
+    width: '100%',
+    maxWidth: '240px',
+    padding: '12px 16px',
+    border: '1px solid #444',
+    borderRadius: '10px',
+    backgroundColor: 'transparent',
+    color: '#e0e0e0',
+    fontWeight: 600,
+    cursor: 'pointer',
   },
 };
 

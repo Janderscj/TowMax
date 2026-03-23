@@ -2,15 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const compression = require('compression');
-const { createClient } = require('@supabase/supabase-js');
 const towingRoutes = require('./routes/towingRoutes');
 const userRoutes = require('./routes/userRoutes');
 const garageRoutes = require('./routes/garageRoutes');
-//1GC1KWE84GF248548
 const app = express();
 app.set('trust proxy', 1); // Trust first proxy (if behind a proxy like Heroku or Vercel)
-// Supabase client
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 const corsOptions = {
   origin:
@@ -41,15 +37,7 @@ app.get('/health', (req, res) => {
 app.use('/api/towing', towingRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/garage', garageRoutes);
-// DEBUG: Check profiles table
-app.get('/debug-profiles', async (req, res) => {
-  try {
-    const { data, error } = await supabase.from('profiles').select('*');
-    res.json({ data, error });
-  } catch (err) {
-    res.status(500).json({ error: 'Debug route failed', details: err.message });
-  }
-});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });

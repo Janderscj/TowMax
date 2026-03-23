@@ -1,85 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, Plus, Trash2, Car } from 'lucide-react';
+import { LogOut, Plus, Trash2, Car, Home } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 
-function GarageScreen({ onVinSelect }) {
+function GarageScreen({ onVinSelect, onAddVehicle, onHome, onVehicleClick }) {
   const { user, profile, signOut, isFree, isPremium, isDealer } = useAuth();
   const [garage, setGarage] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [newVehicle, setNewVehicle] = useState({
-    vin: '',
-    year: '',
-    make: '',
-    model: '',
-    trim: '',
-  });
 
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
-    if (user && !isDealer) {
-      fetchGarage();
-    }
-  }, [user, isDealer]);
-
-  const fetchGarage = async () => {
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!session) throw new Error('No session');
-
-      const response = await fetch(`${API_URL}/api/garage`, {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch garage');
-      }
-
-      const data = await response.json();
-      setGarage(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
+    if (!user || isDealer) {
       setLoading(false);
+      return;
     }
-  };
 
-  const addVehicle = async () => {
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!session) throw new Error('No session');
+    const loadGarage = async () => {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!session) throw new Error('No session');
 
-      const response = await fetch(`${API_URL}/api/garage/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(newVehicle),
-      });
+        const response = await fetch(`${API_URL}/api/garage`, {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to add vehicle');
+        if (!response.ok) {
+          throw new Error('Failed to fetch garage');
+        }
+
+        const data = await response.json();
+        setGarage(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const addedVehicle = await response.json();
-      setGarage([addedVehicle, ...garage]);
-      setNewVehicle({ vin: '', year: '', make: '', model: '', trim: '' });
-      setShowAddForm(false);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+    loadGarage();
+  }, [API_URL, user, isDealer]);
 
   const removeVehicle = async (vehicleId) => {
     try {
@@ -138,32 +103,56 @@ function GarageScreen({ onVinSelect }) {
     );
   }
 
-  const maxVehicles = isFree ? 1 : isPremium ? 5 : 0;
-  const canAddMore = garage.length < maxVehicles;
+  const garageLimit = profile?.garage_limit;
+  const garageLimitLabel =
+    garageLimit == null ? 'Unlimited vehicles' : `${garage.length} / ${garageLimit} vehicles`;
+  const garageFull = garageLimit != null && garage.length >= garageLimit;
 
   return (
     <div style={styles.container}>
       <div style={styles.header}>
         <h1 style={styles.title}>My Garage</h1>
-        <button onClick={handleSignOut} style={styles.signOutButton}>
-          <LogOut size={20} />
-        </button>
+        <div style={styles.headerActions}>
+          <button onClick={onHome} style={styles.headerButton}>
+            <Home size={18} />
+          </button>
+          <button onClick={handleSignOut} style={styles.headerButton}>
+            <LogOut size={18} />
+          </button>
+        </div>
       </div>
 
       <div style={styles.roleInfo}>
         <p style={styles.roleText}>
           {isFree ? 'Free Account' : isPremium ? 'Premium Account' : 'Unknown Role'}
         </p>
-        <p style={styles.limitText}>
-          {garage.length} / {maxVehicles} vehicles
-        </p>
+        <p style={styles.limitText}>{garageLimitLabel}</p>
       </div>
 
       {error && <div style={styles.error}>{error}</div>}
+      {garageFull && (
+        <div style={styles.notice}>
+          Your garage is full. Find an exact match first, then upgrade to Premium to save unlimited
+          vehicles.
+        </div>
+      )}
 
       <div style={styles.vehiclesList}>
         {garage.map((vehicle) => (
-          <div key={vehicle.id} style={styles.vehicleCard}>
+          <div
+            key={vehicle.id}
+            style={styles.vehicleCard}
+            onClick={() => onVehicleClick(vehicle)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onVehicleClick(vehicle);
+              }
+            }}
+            aria-label={`View details for ${vehicle.year} ${vehicle.make} ${vehicle.model}`}
+          >
             <div style={styles.vehicleInfo}>
               <Car size={24} style={styles.carIcon} />
               <div>
@@ -175,11 +164,11 @@ function GarageScreen({ onVinSelect }) {
               </div>
             </div>
             <div style={styles.vehicleActions}>
-              <button onClick={() => onVinSelect(vehicle.vin)} style={styles.selectButton}>
-                Select
-              </button>
               <button
-                onClick={() => removeVehicle(vehicle.id)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  removeVehicle(vehicle.id);
+                }}
                 style={styles.removeButton}
                 disabled={isFree && garage.length <= 1}
               >
@@ -189,66 +178,11 @@ function GarageScreen({ onVinSelect }) {
           </div>
         ))}
 
-        {canAddMore && (
-          <button onClick={() => setShowAddForm(!showAddForm)} style={styles.addButton}>
-            <Plus size={20} />
-            Add Vehicle
-          </button>
-        )}
+        <button onClick={onAddVehicle} style={styles.addButton}>
+          <Plus size={20} />
+          Add Vehicle
+        </button>
       </div>
-
-      {showAddForm && (
-        <div style={styles.addForm}>
-          <h3>Add New Vehicle</h3>
-          <input
-            type="text"
-            placeholder="VIN"
-            value={newVehicle.vin}
-            onChange={(e) => setNewVehicle({ ...newVehicle, vin: e.target.value.toUpperCase() })}
-            style={styles.input}
-          />
-          <input
-            type="number"
-            placeholder="Year"
-            value={newVehicle.year}
-            onChange={(e) => setNewVehicle({ ...newVehicle, year: e.target.value })}
-            style={styles.input}
-          />
-          <input
-            type="text"
-            placeholder="Make"
-            value={newVehicle.make}
-            onChange={(e) => setNewVehicle({ ...newVehicle, make: e.target.value })}
-            style={styles.input}
-          />
-          <input
-            type="text"
-            placeholder="Model"
-            value={newVehicle.model}
-            onChange={(e) => setNewVehicle({ ...newVehicle, model: e.target.value })}
-            style={styles.input}
-          />
-          <input
-            type="text"
-            placeholder="Trim (optional)"
-            value={newVehicle.trim}
-            onChange={(e) => setNewVehicle({ ...newVehicle, trim: e.target.value })}
-            style={styles.input}
-          />
-          <div style={styles.formActions}>
-            <button onClick={addVehicle} style={styles.saveButton}>
-              Save
-            </button>
-            <button onClick={() => setShowAddForm(false)} style={styles.cancelButton}>
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
-      <button onClick={() => onVinSelect()} style={styles.vinLookupButton}>
-        VIN Lookup
-      </button>
     </div>
   );
 }
@@ -266,16 +200,24 @@ const styles = {
     alignItems: 'center',
     marginBottom: '20px',
   },
+  headerActions: {
+    display: 'flex',
+    gap: '8px',
+  },
   title: {
     fontSize: '2rem',
     fontWeight: 'bold',
   },
-  signOutButton: {
-    background: 'none',
-    border: 'none',
+  headerButton: {
+    background: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.2)',
+    borderRadius: '8px',
     color: 'white',
     cursor: 'pointer',
     padding: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   roleInfo: {
     marginBottom: '20px',
@@ -294,6 +236,16 @@ const styles = {
     textAlign: 'center',
     marginBottom: '20px',
   },
+  notice: {
+    background: 'rgba(255, 140, 0, 0.12)',
+    border: '1px solid rgba(255, 140, 0, 0.25)',
+    color: '#ffb74d',
+    borderRadius: '10px',
+    padding: '12px 14px',
+    marginBottom: '20px',
+    lineHeight: 1.5,
+    fontSize: '0.95rem',
+  },
   vehiclesList: {
     display: 'flex',
     flexDirection: 'column',
@@ -306,6 +258,8 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    cursor: 'pointer',
+    border: '1px solid rgba(255,255,255,0.08)',
   },
   vehicleInfo: {
     display: 'flex',
@@ -328,14 +282,6 @@ const styles = {
     display: 'flex',
     gap: '10px',
   },
-  selectButton: {
-    background: '#4ecdc4',
-    color: 'white',
-    border: 'none',
-    padding: '8px 16px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
   removeButton: {
     background: '#ff6b6b',
     color: 'white',
@@ -356,55 +302,6 @@ const styles = {
     justifyContent: 'center',
     gap: '10px',
     fontSize: '1rem',
-  },
-  addForm: {
-    background: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: '8px',
-    padding: '20px',
-    marginTop: '20px',
-  },
-  input: {
-    width: '100%',
-    padding: '10px',
-    marginBottom: '10px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    background: 'white',
-    color: 'black',
-  },
-  formActions: {
-    display: 'flex',
-    gap: '10px',
-    marginTop: '10px',
-  },
-  saveButton: {
-    background: '#4ecdc4',
-    color: 'white',
-    border: 'none',
-    padding: '10px 20px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    flex: 1,
-  },
-  cancelButton: {
-    background: '#666',
-    color: 'white',
-    border: 'none',
-    padding: '10px 20px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    flex: 1,
-  },
-  vinLookupButton: {
-    background: '#ff6b6b',
-    color: 'white',
-    border: 'none',
-    padding: '15px',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    width: '100%',
-    marginTop: '20px',
-    fontSize: '1.1rem',
   },
   loading: {
     textAlign: 'center',
