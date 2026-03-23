@@ -7,6 +7,8 @@ import App from './App';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <AuthProvider>
-    <App />
+    <div className="app-shell">
+      <App />
+    </div>
   </AuthProvider>
 );
