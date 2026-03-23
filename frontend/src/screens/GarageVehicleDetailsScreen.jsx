@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Home } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
-export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome }) {
+export default function GarageVehicleDetailsScreen({ vehicle, onBack }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [decoded, setDecoded] = useState(null);
@@ -96,10 +96,6 @@ export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome }) 
         <button onClick={onBack} style={styles.navButton}>
           <ArrowLeft size={16} />
           Back
-        </button>
-        <button onClick={onHome} style={styles.navButton}>
-          <Home size={16} />
-          Home
         </button>
       </div>
 

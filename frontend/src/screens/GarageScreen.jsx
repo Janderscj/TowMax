@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, Plus, Trash2, Car, Home } from 'lucide-react';
+import { Plus, Trash2, Car } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 
-function GarageScreen({ onVinSelect, onAddVehicle, onHome, onVehicleClick }) {
-  const { user, profile, signOut, isFree, isPremium, isDealer } = useAuth();
+function GarageScreen({ onVinSelect, onAddVehicle, onVehicleClick }) {
+  const { user, profile, isFree, isPremium, isDealer } = useAuth();
   const [garage, setGarage] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -73,14 +73,6 @@ function GarageScreen({ onVinSelect, onAddVehicle, onHome, onVehicleClick }) {
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (err) {
-      console.error('Sign out error:', err);
-    }
-  };
-
   if (loading) {
     return (
       <div style={styles.container}>
@@ -112,14 +104,6 @@ function GarageScreen({ onVinSelect, onAddVehicle, onHome, onVehicleClick }) {
     <div style={styles.container}>
       <div style={styles.header}>
         <h1 style={styles.title}>My Garage</h1>
-        <div style={styles.headerActions}>
-          <button onClick={onHome} style={styles.headerButton}>
-            <Home size={18} />
-          </button>
-          <button onClick={handleSignOut} style={styles.headerButton}>
-            <LogOut size={18} />
-          </button>
-        </div>
       </div>
 
       <div style={styles.roleInfo}>
@@ -200,24 +184,9 @@ const styles = {
     alignItems: 'center',
     marginBottom: '20px',
   },
-  headerActions: {
-    display: 'flex',
-    gap: '8px',
-  },
   title: {
     fontSize: '2rem',
     fontWeight: 'bold',
-  },
-  headerButton: {
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.2)',
-    borderRadius: '8px',
-    color: 'white',
-    cursor: 'pointer',
-    padding: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   roleInfo: {
     marginBottom: '20px',

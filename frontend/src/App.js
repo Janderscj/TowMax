@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { Home, LogOut } from 'lucide-react';
 import { useAuth } from './contexts/AuthContext';
 import WelcomeScreen from './screens/WelcomeScreen';
 import VinEntryScreen from './screens/VinEntryScreen';
@@ -295,11 +296,31 @@ function AppContent() {
   const minTow = matches.length > 0 ? Math.min(...matches.map((m) => m.maxTow || 0)) : null;
   const maxTow = matches.length > 0 ? Math.max(...matches.map((m) => m.maxTow || 0)) : null;
 
+  const handleGlobalHome = () => {
+    resetAll();
+  };
+
+  const handleGlobalSignOut = async () => {
+    try {
+      await signOut();
+      resetAll();
+    } catch (err) {
+      console.error('Global sign out error:', err);
+    }
+  };
+
   return (
     <div style={styles.appContainer}>
+      <div style={styles.globalControls}>
+        <button onClick={handleGlobalHome} style={styles.globalButton} aria-label="Go home">
+          <Home size={16} />
+        </button>
+        <button onClick={handleGlobalSignOut} style={styles.globalButton} aria-label="Sign out">
+          <LogOut size={16} />
+        </button>
+      </div>
       {screen === 'garage' && (
         <GarageScreen
-          onHome={() => setScreen('welcome')}
           onVinSelect={(selectedVin) =>
             goToVinLookup(selectedVin, { origin: 'garage', saveToGarage: false })
           }
@@ -309,11 +330,7 @@ function AppContent() {
       )}
 
       {screen === 'garageDetails' && selectedGarageVehicle && (
-        <GarageVehicleDetailsScreen
-          vehicle={selectedGarageVehicle}
-          onBack={goToGarage}
-          onHome={() => setScreen('welcome')}
-        />
+        <GarageVehicleDetailsScreen vehicle={selectedGarageVehicle} onBack={goToGarage} />
       )}
 
       {screen === 'welcome' && (
@@ -438,6 +455,26 @@ const styles = {
     backgroundColor: 'transparent',
     color: '#e0e0e0',
     fontWeight: 600,
+    cursor: 'pointer',
+  },
+  globalControls: {
+    position: 'fixed',
+    top: '14px',
+    right: '18px',
+    display: 'flex',
+    gap: '8px',
+    zIndex: 200,
+  },
+  globalButton: {
+    width: '34px',
+    height: '34px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.22)',
+    borderRadius: '8px',
+    color: '#fff',
     cursor: 'pointer',
   },
 };
