@@ -1,4 +1,5 @@
-import { Home, LogOut } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CheckCircle2, Home, LogOut } from 'lucide-react';
 
 export default function ExactResultScreen({
   decoded,
@@ -9,6 +10,7 @@ export default function ExactResultScreen({
   canAddVehicle,
   garageLimitReached,
   onAddVehicle,
+  onViewGarage,
   addVehicleLoading,
   addVehicleError,
   showUpgradePrompt,
@@ -17,8 +19,29 @@ export default function ExactResultScreen({
   onHome,
   onSignOut,
 }) {
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  useEffect(() => {
+    // Reset local success UI when a new exact-result vehicle is shown.
+    setSaveSuccess(false);
+  }, [vin, match?.maxTow]);
+
   const gcwr = match.gcwr ?? 14000;
   const payload = match.payload ?? 1940;
+  const shouldDisableAdd = addVehicleLoading || !canAddVehicle;
+
+  const handleGarageButtonClick = async () => {
+    if (saveSuccess) {
+      onViewGarage();
+      return;
+    }
+
+    const wasSaved = await onAddVehicle();
+    if (wasSaved) {
+      setSaveSuccess(true);
+    }
+  };
+
   const iconBtnStyle = {
     width: '34px',
     height: '34px',
@@ -241,31 +264,64 @@ export default function ExactResultScreen({
 
         {showAddVehicle && (
           <>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                marginBottom: '10px',
+                opacity: saveSuccess ? 1 : 0,
+                transform: saveSuccess ? 'scale(1)' : 'scale(0.92)',
+                transition: 'opacity 220ms ease, transform 220ms ease',
+                color: '#81c784',
+                fontSize: '14px',
+                fontWeight: 700,
+                pointerEvents: 'none',
+              }}
+              aria-live="polite"
+            >
+              <CheckCircle2 size={18} />
+              Saved!
+            </div>
+
             <button
-              onClick={onAddVehicle}
-              disabled={addVehicleLoading || !canAddVehicle}
+              onClick={handleGarageButtonClick}
+              disabled={saveSuccess ? false : shouldDisableAdd}
               style={{
                 width: '100%',
                 padding: '18px',
-                background:
-                  addVehicleLoading || !canAddVehicle
+                background: saveSuccess
+                  ? 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)'
+                  : shouldDisableAdd
                     ? 'rgba(255,255,255,0.08)'
                     : 'linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%)',
                 border: 'none',
                 borderRadius: '16px',
-                color: addVehicleLoading || !canAddVehicle ? '#aaa' : '#000',
+                color: shouldDisableAdd && !saveSuccess ? '#aaa' : '#000',
                 fontSize: '16px',
                 marginBottom: '12px',
                 fontWeight: '700',
-                cursor: addVehicleLoading ? 'wait' : canAddVehicle ? 'pointer' : 'not-allowed',
+                cursor: addVehicleLoading
+                  ? 'wait'
+                  : saveSuccess
+                    ? 'pointer'
+                    : canAddVehicle
+                      ? 'pointer'
+                      : 'not-allowed',
                 fontFamily: 'inherit',
-                opacity: addVehicleLoading || !canAddVehicle ? 0.75 : 1,
+                opacity: shouldDisableAdd && !saveSuccess ? 0.75 : 1,
+                transition: 'background 220ms ease, transform 180ms ease, opacity 180ms ease',
               }}
             >
-              {addVehicleLoading ? 'Adding Vehicle...' : 'Add Vehicle to Garage'}
+              {saveSuccess
+                ? 'View in My Garage'
+                : addVehicleLoading
+                  ? 'Adding Vehicle...'
+                  : 'Add Vehicle to Garage'}
             </button>
 
-            {garageLimitReached && (
+            {garageLimitReached && !saveSuccess && (
               <div
                 style={{
                   background: 'rgba(255, 140, 0, 0.12)',
@@ -283,7 +339,7 @@ export default function ExactResultScreen({
               </div>
             )}
 
-            {addVehicleError && (
+            {addVehicleError && !saveSuccess && (
               <div
                 style={{
                   background: 'rgba(244,67,54,0.12)',
@@ -300,7 +356,7 @@ export default function ExactResultScreen({
               </div>
             )}
 
-            {showUpgradePrompt && (
+            {showUpgradePrompt && !saveSuccess && (
               <div
                 style={{
                   background: 'rgba(255,140,0,0.1)',

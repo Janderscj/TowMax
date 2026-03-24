@@ -162,10 +162,10 @@ function AppContent() {
     setScreen('vin');
   };
 
-  const saveVehicleToGarage = async () => {
+  const performGarageSave = async ({ navigateOnSuccess }) => {
     if (!vin) {
       setGarageSaveError('VIN is missing for this vehicle.');
-      return;
+      return false;
     }
 
     try {
@@ -197,17 +197,29 @@ function AppContent() {
           }
         }
         setGarageSaveError(data.error || 'Failed to add vehicle to garage.');
-        return;
+        return false;
       }
 
-      goToGarage();
+      // Keep garage count fresh so limit checks remain consistent.
+      setGarageCount((count) => count + 1);
+
+      if (navigateOnSuccess) {
+        goToGarage();
+      }
+
+      return true;
     } catch (err) {
       console.error('Error saving vehicle to garage:', err);
       setGarageSaveError('Unable to save this vehicle right now. Please try again.');
+      return false;
     } finally {
       setGarageSaveLoading(false);
     }
   };
+
+  // Exact-result flow: save first, then let the screen transition to
+  // "View in My Garage" without immediate navigation.
+  const saveVehicleToGarageFromExact = async () => performGarageSave({ navigateOnSuccess: false });
 
   // Decode VIN function with auth
   const decodeVin = async (vinInput) => {
@@ -497,7 +509,8 @@ function AppContent() {
           showAddVehicle={!isDealer}
           canAddVehicle={canAddVehicleToGarage}
           garageLimitReached={garageLimitReached}
-          onAddVehicle={saveVehicleToGarage}
+          onAddVehicle={saveVehicleToGarageFromExact}
+          onViewGarage={goToGarage}
           addVehicleLoading={garageSaveLoading}
           addVehicleError={garageSaveError}
           showUpgradePrompt={showUpgradePrompt}
