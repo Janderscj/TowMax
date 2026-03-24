@@ -1,8 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { ArrowRight } from 'lucide-react';
 
-function QuestionTowPackage({ onAnswer, options, currentValue, disabled = false }) {
+function normalize(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase();
+}
+
+function isOptionInMatches(matches, field, optionValue) {
+  if (!Array.isArray(matches) || matches.length === 0) return true;
+
+  const normalizedOption = normalize(optionValue);
+  return matches.some((match) => {
+    const candidate = normalize(match?.[field]);
+    if (!candidate) return false;
+    return (
+      candidate === normalizedOption ||
+      candidate.includes(normalizedOption) ||
+      normalizedOption.includes(candidate)
+    );
+  });
+}
+
+function QuestionTowPackage({ onAnswer, options, matches, currentValue, disabled = false }) {
   const [selected, setSelected] = useState(currentValue || null);
+
+  // Local narrowing layer: only render options that still exist in remaining matches.
+  const visibleTowPackages = useMemo(() => {
+    const towPackages = options?.towPackage ?? [];
+    return towPackages.filter((pkg) => isOptionInMatches(matches, 'towPackage', pkg));
+  }, [options, matches]);
 
   useEffect(() => {
     if (currentValue) {
@@ -11,8 +38,6 @@ function QuestionTowPackage({ onAnswer, options, currentValue, disabled = false 
   }, [currentValue]);
 
   if (!options) return null;
-
-  const towPackages = options?.towPackage ?? [];
 
   const handleSelect = (value) => {
     setSelected(value);
@@ -47,7 +72,7 @@ function QuestionTowPackage({ onAnswer, options, currentValue, disabled = false 
           gap: '12px',
         }}
       >
-        {towPackages.map((pkg) => (
+        {visibleTowPackages.map((pkg) => (
           <button
             key={pkg}
             onClick={() => handleSelect(pkg)}

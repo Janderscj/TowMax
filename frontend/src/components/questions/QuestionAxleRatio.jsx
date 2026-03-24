@@ -3,9 +3,31 @@ import { ArrowRight, HelpCircle } from 'lucide-react';
 import HelpModalAxleRatio from './HelpModalAxleRatio';
 import { guessAxleRatio } from '../../utils/guessAxleRatio';
 
+function normalize(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase();
+}
+
+function isOptionInMatches(matches, field, optionValue) {
+  if (!Array.isArray(matches) || matches.length === 0) return true;
+
+  const normalizedOption = normalize(optionValue);
+  return matches.some((match) => {
+    const candidate = normalize(match?.[field]);
+    if (!candidate) return false;
+    return (
+      candidate === normalizedOption ||
+      candidate.includes(normalizedOption) ||
+      normalizedOption.includes(candidate)
+    );
+  });
+}
+
 function QuestionAxleRatio({
   onAnswer,
   options,
+  matches,
   currentValue,
   decoded,
   currentAnswers,
@@ -13,7 +35,11 @@ function QuestionAxleRatio({
 }) {
   const [selected, setSelected] = useState(currentValue || null);
   const [showHelpModal, setShowHelpModal] = useState(false);
-  const ratios = options?.axleRatio ?? [];
+  // Local narrowing layer: only render options that still exist in remaining matches.
+  const visibleRatios = useMemo(() => {
+    const ratios = options?.axleRatio ?? [];
+    return ratios.filter((ratio) => isOptionInMatches(matches, 'axleRatio', ratio));
+  }, [options, matches]);
 
   useEffect(() => {
     if (currentValue) {
@@ -121,7 +147,7 @@ function QuestionAxleRatio({
             gap: '12px',
           }}
         >
-          {ratios.map((ratio) => (
+          {visibleRatios.map((ratio) => (
             <button
               key={ratio}
               onClick={() => handleSelect(ratio)}

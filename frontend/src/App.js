@@ -46,6 +46,8 @@ function AppContent() {
 
   // Cache for VIN responses to prevent redundant API calls
   const vinCacheRef = useRef(new Map());
+  // Synchronous lock to prevent same-tick double clicks before state updates flush.
+  const refineInFlightRef = useRef(false);
 
   const decoded = result?.decoded ?? null;
 
@@ -60,6 +62,7 @@ function AppContent() {
     setGarageSaveError(null);
     setShowUpgradePrompt(false);
     setIsRefining(false);
+    refineInFlightRef.current = false;
   };
 
   // Reset all state
@@ -250,9 +253,16 @@ function AppContent() {
     // Prevent overlapping concurrent refine calls (race condition guard).
     // The UI should already be disabled via isRefining, but this is the
     // final safety net in case a click slips through.
-    if (isRefining) return;
+    if (isRefining || refineInFlightRef.current) return;
+
+    refineInFlightRef.current = true;
 
     const updated = { ...answers, [field]: value };
+    // Guard for "refine flow complete" before this request is sent.
+    // If this becomes true, the user has already answered all currently missing fields.
+    const unansweredBeforeCall = initialMissing.filter((missingField) => !updated[missingField]);
+    const hasCompletedAllCurrentRefineQuestions = unansweredBeforeCall.length === 0;
+
     setAnswers(updated);
     setIsRefining(true);
 
@@ -284,16 +294,28 @@ function AppContent() {
       const towingMatches = data.towingMatches || [];
       const newMissing = data.missingInfo || [];
 
-      // Fallback path: refine returned zero exact matches, but we still have
-      // known-valid configurations from the previous pass.  Rather than dead-
-      // ending the user on the welcome screen, preserve the existing matches
-      // and navigate to the range-fallback screen so they still see useful data.
-      if (towingMatches.length === 0 && matches.length > 0) {
-        setInitialMissing(newMissing);
-        setInitialOptions(data.options);
-        // NOTE: intentionally NOT calling setMatches([]) here so that minTow/maxTow
-        // remain valid and the fallback screen can display the prior range.
-        setScreen('rangeFallback');
+      if (towingMatches.length === 0) {
+        // Only allow fallback when:
+        // A) refine returned zero matches
+        // B) previous valid matches still exist
+        // C) all missing refine questions were already answered BEFORE this call
+        if (matches.length > 0 && hasCompletedAllCurrentRefineQuestions) {
+          setInitialMissing(newMissing);
+          setInitialOptions(data.options);
+          // Intentionally preserve previous matches so min/max remain available.
+          setScreen('rangeFallback');
+          return;
+        }
+
+        // Mid-flow zero result: keep current narrowed dataset in state and
+        // stay in questions so the user cannot get pushed into fallback too early.
+        if (matches.length > 0) {
+          setScreen('questions');
+          return;
+        }
+
+        setError('No matching configurations found. Please try again.');
+        setScreen('welcome');
         return;
       }
 
@@ -318,6 +340,7 @@ function AppContent() {
       setScreen('welcome');
     } finally {
       // Always re-enable the UI, even on error
+      refineInFlightRef.current = false;
       setIsRefining(false);
     }
   };
@@ -393,6 +416,7 @@ function AppContent() {
           decoded={decoded}
           missing={initialMissing}
           options={initialOptions}
+          matches={matches}
           answers={answers}
           onAnswer={handleRefineAnswer}
           onBack={() => setScreen('range')}

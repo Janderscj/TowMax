@@ -1,7 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { ArrowRight } from 'lucide-react';
 
-function QuestionBedLength({ onAnswer, options, currentValue, disabled = false }) {
+function normalize(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase();
+}
+
+function isOptionInMatches(matches, field, optionValue) {
+  if (!Array.isArray(matches) || matches.length === 0) return true;
+
+  const normalizedOption = normalize(optionValue);
+  return matches.some((match) => {
+    const candidate = normalize(match?.[field]);
+    if (!candidate) return false;
+    return (
+      candidate === normalizedOption ||
+      candidate.includes(normalizedOption) ||
+      normalizedOption.includes(candidate)
+    );
+  });
+}
+
+function QuestionBedLength({ onAnswer, options, matches, currentValue, disabled = false }) {
   const [selected, setSelected] = useState(currentValue || null);
 
   useEffect(() => {
@@ -12,6 +33,11 @@ function QuestionBedLength({ onAnswer, options, currentValue, disabled = false }
 
   if (!options) return null;
   const beds = options?.bed ?? [];
+  // Local narrowing layer: only render options that still exist in remaining matches.
+  const visibleBeds = useMemo(
+    () => beds.filter((bed) => isOptionInMatches(matches, 'bed', bed)),
+    [beds, matches]
+  );
 
   const handleSelect = (value) => {
     setSelected(value);
@@ -46,7 +72,7 @@ function QuestionBedLength({ onAnswer, options, currentValue, disabled = false }
           gap: '12px',
         }}
       >
-        {beds.map((bed) => (
+        {visibleBeds.map((bed) => (
           <button
             key={bed}
             onClick={() => handleSelect(bed)}
