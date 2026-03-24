@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import WelcomeScreen from './screens/WelcomeScreen';
 import VinEntryScreen from './screens/VinEntryScreen';
@@ -35,11 +35,12 @@ function AppContent() {
   const [answers, setAnswers] = useState({});
   const [error, setError] = useState(null);
   const [lookupOrigin, setLookupOrigin] = useState('welcome');
-  const [garageSaveMode, setGarageSaveMode] = useState(false);
   const [garageSaveLoading, setGarageSaveLoading] = useState(false);
   const [garageSaveError, setGarageSaveError] = useState(null);
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [selectedGarageVehicle, setSelectedGarageVehicle] = useState(null);
+  const [garageCount, setGarageCount] = useState(0);
+  const [garageCountLoading, setGarageCountLoading] = useState(false);
   // True while a /refine API call is in-flight; prevents concurrent requests
   // and drives the isLoading flag that disables question buttons in the UI.
   const [isRefining, setIsRefining] = useState(false);
@@ -50,6 +51,41 @@ function AppContent() {
   const refineInFlightRef = useRef(false);
 
   const decoded = result?.decoded ?? null;
+  const garageLimit = profile?.garage_limit;
+  const garageLimitReached =
+    !isDealer && garageLimit != null && Number.isFinite(garageCount) && garageCount >= garageLimit;
+  const canAddVehicleToGarage = !isDealer && !garageLimitReached && !garageCountLoading;
+
+  useEffect(() => {
+    const loadGarageCount = async () => {
+      if (!user || isDealer || screen !== 'exact' || garageLimit == null) return;
+
+      try {
+        setGarageCountLoading(true);
+        const token = (await supabase.auth.getSession()).data.session?.access_token;
+        if (!token) return;
+
+        // Uses the same garage listing endpoint as My Garage to enforce the
+        // exact same role + garage_limit behavior for save eligibility.
+        const response = await fetch(`${API_URL}/api/garage`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) return;
+
+        const garage = await response.json();
+        if (Array.isArray(garage)) {
+          setGarageCount(garage.length);
+        }
+      } catch (err) {
+        console.error('Failed to load garage count:', err);
+      } finally {
+        setGarageCountLoading(false);
+      }
+    };
+
+    loadGarageCount();
+  }, [user, isDealer, screen, garageLimit]);
 
   const clearLookupState = () => {
     setVin('');
@@ -62,13 +98,14 @@ function AppContent() {
     setGarageSaveError(null);
     setShowUpgradePrompt(false);
     setIsRefining(false);
+    setGarageCount(0);
+    setGarageCountLoading(false);
     refineInFlightRef.current = false;
   };
 
   // Reset all state
   const resetAll = () => {
     setLookupOrigin('welcome');
-    setGarageSaveMode(false);
     setScreen('welcome');
     clearLookupState();
     setError(null);
@@ -106,7 +143,6 @@ function AppContent() {
     clearLookupState();
     setSelectedGarageVehicle(null);
     setLookupOrigin('garage');
-    setGarageSaveMode(false);
     setError(null);
     setScreen('garage');
   };
@@ -120,7 +156,6 @@ function AppContent() {
     const origin = options.origin || 'welcome';
     setVin(preVin);
     setLookupOrigin(origin);
-    setGarageSaveMode(Boolean(options.saveToGarage));
     setGarageSaveError(null);
     setShowUpgradePrompt(false);
     setError(null);
@@ -157,6 +192,9 @@ function AppContent() {
       if (!response.ok) {
         if (response.status === 403 && /garage limit reached/i.test(data.error || '')) {
           setShowUpgradePrompt(true);
+          if (garageLimit != null) {
+            setGarageCount(garageLimit);
+          }
         }
         setGarageSaveError(data.error || 'Failed to add vehicle to garage.');
         return;
@@ -456,7 +494,9 @@ function AppContent() {
           vin={vin}
           match={matches[0]}
           answers={answers}
-          showAddVehicle={garageSaveMode}
+          showAddVehicle={!isDealer}
+          canAddVehicle={canAddVehicleToGarage}
+          garageLimitReached={garageLimitReached}
           onAddVehicle={saveVehicleToGarage}
           addVehicleLoading={garageSaveLoading}
           addVehicleError={garageSaveError}

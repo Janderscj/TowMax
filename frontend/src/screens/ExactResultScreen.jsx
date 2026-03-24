@@ -6,6 +6,8 @@ export default function ExactResultScreen({
   match,
   answers,
   showAddVehicle,
+  canAddVehicle,
+  garageLimitReached,
   onAddVehicle,
   addVehicleLoading,
   addVehicleError,
@@ -241,24 +243,45 @@ export default function ExactResultScreen({
           <>
             <button
               onClick={onAddVehicle}
-              disabled={addVehicleLoading}
+              disabled={addVehicleLoading || !canAddVehicle}
               style={{
-                backgroundColor: '#1e90ff',
-                color: 'white',
-                padding: '12px 18px',
-                borderRadius: '8px',
-                border: 'none',
-                cursor: addVehicleLoading ? 'wait' : 'pointer',
-                fontSize: '16px',
-                marginTop: '20px',
-                marginBottom: '12px',
                 width: '100%',
-                fontWeight: '600',
-                opacity: addVehicleLoading ? 0.7 : 1,
+                padding: '18px',
+                background:
+                  addVehicleLoading || !canAddVehicle
+                    ? 'rgba(255,255,255,0.08)'
+                    : 'linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%)',
+                border: 'none',
+                borderRadius: '16px',
+                color: addVehicleLoading || !canAddVehicle ? '#aaa' : '#000',
+                fontSize: '16px',
+                marginBottom: '12px',
+                fontWeight: '700',
+                cursor: addVehicleLoading ? 'wait' : canAddVehicle ? 'pointer' : 'not-allowed',
+                fontFamily: 'inherit',
+                opacity: addVehicleLoading || !canAddVehicle ? 0.75 : 1,
               }}
             >
-              {addVehicleLoading ? 'Adding Vehicle...' : 'Add Vehicle'}
+              {addVehicleLoading ? 'Adding Vehicle...' : 'Add Vehicle to Garage'}
             </button>
+
+            {garageLimitReached && (
+              <div
+                style={{
+                  background: 'rgba(255, 140, 0, 0.12)',
+                  border: '1px solid rgba(255, 140, 0, 0.25)',
+                  color: '#ffb74d',
+                  borderRadius: '10px',
+                  padding: '12px 14px',
+                  marginBottom: '16px',
+                  lineHeight: 1.5,
+                  fontSize: '13px',
+                }}
+              >
+                Your garage is full. Find an exact match first, then upgrade to Premium to save
+                unlimited vehicles.
+              </div>
+            )}
 
             {addVehicleError && (
               <div
