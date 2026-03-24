@@ -1,7 +1,7 @@
 import { Home, LogOut } from 'lucide-react';
 import MissingInfoQuestions from '../components/questions/MissingInfoQuestions';
 
-export default function QuestionsScreen({ decoded, missing, options, answers, onAnswer, onHome, onSignOut }) {
+export default function QuestionsScreen({ decoded, missing, options, answers, onAnswer, onHome, onSignOut, isRefining }) {
   if (!missing || missing.length === 0) return null;
 
   const totalQuestions = missing.length;
@@ -156,8 +156,10 @@ export default function QuestionsScreen({ decoded, missing, options, answers, on
         <MissingInfoQuestions
           missing={missing}
           options={options}
+          decoded={decoded}
           currentAnswers={answers}
           onAnswer={onAnswer}
+          isLoading={isRefining}
         />
       </div>
     </div>

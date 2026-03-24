@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 
-function QuestionTowPackage({ onAnswer, options, currentValue }) {
+function QuestionTowPackage({ onAnswer, options, currentValue, disabled = false }) {
   const [selected, setSelected] = useState(currentValue || null);
 
   useEffect(() => {
@@ -20,7 +20,15 @@ function QuestionTowPackage({ onAnswer, options, currentValue }) {
   };
 
   return (
-    <div>
+    // Wrapper dims and blocks all clicks while a refine call is in-flight,
+    // preventing impossible combinations from being selected.
+    <div
+      style={{
+        opacity: disabled ? 0.5 : 1,
+        pointerEvents: disabled ? 'none' : 'auto',
+        transition: 'opacity 0.2s',
+      }}
+    >
       <h3
         style={{
           fontSize: '20px',

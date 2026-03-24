@@ -5,6 +5,7 @@ import QuestionTowPackage from './QuestionTowPackage';
 export default function MissingInfoQuestions({
   missing = [],
   options,
+  decoded,
   currentAnswers = {},
   onAnswer,
   isLoading = false,
@@ -44,8 +45,11 @@ export default function MissingInfoQuestions({
           {missing.includes('axleRatio') && (
             <QuestionAxleRatio
               options={options}
+              decoded={decoded}
+              currentAnswers={currentAnswers}
               currentValue={currentAnswers.axleRatio}
               onAnswer={onAnswer}
+              disabled={isLoading}
             />
           )}
 
@@ -55,6 +59,7 @@ export default function MissingInfoQuestions({
                 options={options}
                 currentValue={currentAnswers.bed}
                 onAnswer={onAnswer}
+                disabled={isLoading}
               />
             </div>
           )}
@@ -69,6 +74,7 @@ export default function MissingInfoQuestions({
                 options={options}
                 currentValue={currentAnswers.towPackage}
                 onAnswer={onAnswer}
+                disabled={isLoading}
               />
             </div>
           )}

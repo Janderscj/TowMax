@@ -5,6 +5,7 @@ import VinEntryScreen from './screens/VinEntryScreen';
 import LoadingScreen from './screens/LoadingScreen';
 import QuestionsScreen from './screens/QuestionsScreen';
 import RangeResultScreen from './screens/RangeResultScreen';
+import RangeFallbackScreen from './screens/RangeFallbackScreen';
 import ExactResultScreen from './screens/ExactResultScreen';
 import LoginScreen from './screens/LoginScreen';
 import GarageScreen from './screens/GarageScreen';
@@ -39,6 +40,9 @@ function AppContent() {
   const [garageSaveError, setGarageSaveError] = useState(null);
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [selectedGarageVehicle, setSelectedGarageVehicle] = useState(null);
+  // True while a /refine API call is in-flight; prevents concurrent requests
+  // and drives the isLoading flag that disables question buttons in the UI.
+  const [isRefining, setIsRefining] = useState(false);
 
   // Cache for VIN responses to prevent redundant API calls
   const vinCacheRef = useRef(new Map());
@@ -55,6 +59,7 @@ function AppContent() {
     setGarageSaveLoading(false);
     setGarageSaveError(null);
     setShowUpgradePrompt(false);
+    setIsRefining(false);
   };
 
   // Reset all state
@@ -237,10 +242,19 @@ function AppContent() {
     }
   };
 
-  // Handle refinement answers with auth
+  // Handle refinement answers with auth.
+  // Real-time narrowing: called after EVERY single answer, not just the final one.
+  // The backend returns options filtered to only configurations that still match
+  // all answers so far — so the UI automatically narrows to valid choices.
   const handleRefineAnswer = async (field, value) => {
+    // Prevent overlapping concurrent refine calls (race condition guard).
+    // The UI should already be disabled via isRefining, but this is the
+    // final safety net in case a click slips through.
+    if (isRefining) return;
+
     const updated = { ...answers, [field]: value };
     setAnswers(updated);
+    setIsRefining(true);
 
     try {
       const token = user ? (await supabase.auth.getSession()).data.session?.access_token : null;
@@ -270,6 +284,19 @@ function AppContent() {
       const towingMatches = data.towingMatches || [];
       const newMissing = data.missingInfo || [];
 
+      // Fallback path: refine returned zero exact matches, but we still have
+      // known-valid configurations from the previous pass.  Rather than dead-
+      // ending the user on the welcome screen, preserve the existing matches
+      // and navigate to the range-fallback screen so they still see useful data.
+      if (towingMatches.length === 0 && matches.length > 0) {
+        setInitialMissing(newMissing);
+        setInitialOptions(data.options);
+        // NOTE: intentionally NOT calling setMatches([]) here so that minTow/maxTow
+        // remain valid and the fallback screen can display the prior range.
+        setScreen('rangeFallback');
+        return;
+      }
+
       setMatches(towingMatches);
       setInitialMissing(newMissing);
       setInitialOptions(data.options);
@@ -281,6 +308,7 @@ function AppContent() {
         // Stay on questions screen until they get exact match or give up
         setScreen('questions');
       } else {
+        // True dead-end: no prior matches and no new ones (shouldn't normally occur)
         setError('No matching configurations found. Please try again.');
         setScreen('welcome');
       }
@@ -288,6 +316,9 @@ function AppContent() {
       console.error('Refine error:', err);
       setError('Server error while refining results. Please try again.');
       setScreen('welcome');
+    } finally {
+      // Always re-enable the UI, even on error
+      setIsRefining(false);
     }
   };
 
@@ -365,6 +396,19 @@ function AppContent() {
           answers={answers}
           onAnswer={handleRefineAnswer}
           onBack={() => setScreen('range')}
+          onHome={resetAll}
+          onSignOut={handleGlobalSignOut}
+          isRefining={isRefining}
+        />
+      )}
+
+      {screen === 'rangeFallback' && decoded && minTow != null && maxTow != null && (
+        <RangeFallbackScreen
+          decoded={decoded}
+          minTow={minTow}
+          maxTow={maxTow}
+          onRecheck={() => setScreen('questions')}
+          onNewSearch={lookupOrigin === 'garage' ? goToGarage : resetAll}
           onHome={resetAll}
           onSignOut={handleGlobalSignOut}
         />
