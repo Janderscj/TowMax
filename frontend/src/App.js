@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+﻿import { Routes, Route, Navigate, useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
+import { useLookup } from './contexts/LookupContext';
 import WelcomeScreen from './screens/WelcomeScreen';
 import VinEntryScreen from './screens/VinEntryScreen';
 import LoadingScreen from './screens/LoadingScreen';
@@ -10,63 +11,199 @@ import ExactResultScreen from './screens/ExactResultScreen';
 import LoginScreen from './screens/LoginScreen';
 import GarageScreen from './screens/GarageScreen';
 import GarageVehicleDetailsScreen from './screens/GarageVehicleDetailsScreen';
+import UpgradeScreen from './screens/UpgradeScreen';
 import { supabase } from './utils/supabase';
+import { useEffect } from 'react';
 
 // API URL from env or fallback to localhost
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
-function AppContent() {
+function ProtectedRoute({ children }) {
+  const { user, loading: authLoading, profileLoading } = useAuth();
+
+  if (authLoading || (user && profileLoading)) {
+    return <LoadingScreen />;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
+function GarageDetailsWrapper() {
+  const { id } = useParams();
   const {
-    user,
-    profile,
-    loading: authLoading,
-    profileLoading,
-    profileError,
+    selectedGarageVehicle,
+    clearLookupState,
+    setSelectedGarageVehicle,
+    setLookupOrigin,
+    setError,
     signOut,
-    refetchProfile,
-    isDealer,
-  } = useAuth();
-  const [screen, setScreen] = useState('welcome');
-  const [vin, setVin] = useState('');
-  const [result, setResult] = useState(null);
-  const [matches, setMatches] = useState([]);
-  const [initialMissing, setInitialMissing] = useState([]);
-  const [initialOptions, setInitialOptions] = useState(null);
-  const [answers, setAnswers] = useState({});
-  const [error, setError] = useState(null);
-  const [lookupOrigin, setLookupOrigin] = useState('welcome');
-  const [garageSaveLoading, setGarageSaveLoading] = useState(false);
-  const [garageSaveError, setGarageSaveError] = useState(null);
-  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
-  const [selectedGarageVehicle, setSelectedGarageVehicle] = useState(null);
-  const [garageCount, setGarageCount] = useState(0);
-  const [garageCountLoading, setGarageCountLoading] = useState(false);
-  // True while a /refine API call is in-flight; prevents concurrent requests
-  // and drives the isLoading flag that disables question buttons in the UI.
-  const [isRefining, setIsRefining] = useState(false);
+    resetAll,
+  } = useLookup();
+  const navigate = useNavigate();
 
-  // Cache for VIN responses to prevent redundant API calls
-  const vinCacheRef = useRef(new Map());
-  // Synchronous lock to prevent same-tick double clicks before state updates flush.
-  const refineInFlightRef = useRef(false);
+  const goToGarage = () => {
+    clearLookupState();
+    setSelectedGarageVehicle(null);
+    setLookupOrigin('garage');
+    setError(null);
+    navigate('/garage');
+  };
 
-  const decoded = result?.decoded ?? null;
-  const garageLimit = profile?.garage_limit;
-  const garageLimitReached =
-    !isDealer && garageLimit != null && Number.isFinite(garageCount) && garageCount >= garageLimit;
-  const canAddVehicleToGarage = !isDealer && !garageLimitReached && !garageCountLoading;
+  const handleGlobalSignOut = async () => {
+    try {
+      await signOut();
+      resetAll();
+      navigate('/');
+    } catch (err) {
+      console.error('Global sign out error:', err);
+    }
+  };
+
+  if (!selectedGarageVehicle) {
+    return <Navigate to="/garage" replace />;
+  }
+
+  return (
+    <GarageVehicleDetailsScreen
+      vehicle={selectedGarageVehicle}
+      onBack={goToGarage}
+      onHome={() => navigate('/')}
+      onSignOut={handleGlobalSignOut}
+    />
+  );
+}
+
+function QuestionsWrapper() {
+  const {
+    decoded,
+    initialMissing,
+    initialOptions,
+    matches,
+    answers,
+    handleRefineAnswer,
+    error,
+    setError,
+    lookupOrigin,
+    clearLookupState,
+    setSelectedGarageVehicle,
+    setLookupOrigin,
+    resetAll,
+    signOut,
+  } = useLookup();
+  const navigate = useNavigate();
+
+  const goToGarage = () => {
+    clearLookupState();
+    setSelectedGarageVehicle(null);
+    setLookupOrigin('garage');
+    setError(null);
+    navigate('/garage');
+  };
+
+  const handleGlobalSignOut = async () => {
+    try {
+      await signOut();
+      resetAll();
+      navigate('/');
+    } catch (err) {
+      console.error('Global sign out error:', err);
+    }
+  };
+
+  const handleAnswer = async (field, value) => {
+    const result = await handleRefineAnswer(field, value);
+    if (result === 'exact') {
+      navigate('/results/exact');
+    } else if (result === 'range-fallback') {
+      navigate('/range-fallback');
+    } else if (result === 'error') {
+      navigate('/');
+    }
+    // For "questions", stay on current page
+  };
+
+  if (!decoded) {
+    return <Navigate to="/" replace />;
+  }
+
+  return (
+    <QuestionsScreen
+      decoded={decoded}
+      missing={initialMissing}
+      options={initialOptions}
+      matches={matches}
+      answers={answers}
+      onAnswer={handleAnswer}
+      onBack={() => navigate('/results/range')}
+      onHome={() => navigate('/')}
+      onSignOut={handleGlobalSignOut}
+      isRefining={false} // This will be handled internally
+    />
+  );
+}
+
+function AuthenticatedRoutes() {
+  const { user, profile, profileError, signOut, refetchProfile, isDealer } = useAuth();
+
+  const {
+    vin,
+    setVin,
+    result,
+    matches,
+    initialMissing,
+    initialOptions,
+    answers,
+    error,
+    setError,
+    lookupOrigin,
+    setLookupOrigin,
+    garageSaveLoading,
+    garageSaveError,
+    setGarageSaveError,
+    showUpgradePrompt,
+    setShowUpgradePrompt,
+    selectedGarageVehicle,
+    setSelectedGarageVehicle,
+    garageCount,
+    setGarageCount,
+    garageCountLoading,
+    setGarageCountLoading,
+    isRefining,
+    decoded,
+    garageLimit,
+    garageLimitReached,
+    canAddVehicleToGarage,
+    clearLookupState,
+    resetAll,
+    decodeVin,
+    handleRefineAnswer,
+    performGarageSave,
+  } = useLookup();
+
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // Get VIN from URL params if present
+  useEffect(() => {
+    const vinParam = searchParams.get('vin');
+    if (vinParam) {
+      setVin(vinParam);
+    }
+  }, [searchParams, setVin]);
 
   useEffect(() => {
     const loadGarageCount = async () => {
-      if (!user || isDealer || screen !== 'exact' || garageLimit == null) return;
+      if (!user || isDealer || !profile || garageLimit == null) return;
 
       try {
         setGarageCountLoading(true);
         const token = (await supabase.auth.getSession()).data.session?.access_token;
         if (!token) return;
 
-        // Uses the same garage listing endpoint as My Garage to enforce the
-        // exact same role + garage_limit behavior for save eligibility.
         const response = await fetch(`${API_URL}/api/garage`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -85,45 +222,67 @@ function AppContent() {
     };
 
     loadGarageCount();
-  }, [user, isDealer, screen, garageLimit]);
+  }, [user, isDealer, profile, garageLimit]);
 
-  const clearLookupState = () => {
-    setVin('');
-    setResult(null);
-    setMatches([]);
-    setInitialMissing([]);
-    setInitialOptions(null);
-    setAnswers({});
-    setGarageSaveLoading(false);
+  const handleGlobalSignOut = async () => {
+    try {
+      await signOut();
+      resetAll();
+      navigate('/');
+    } catch (err) {
+      console.error('Global sign out error:', err);
+    }
+  };
+
+  const goToGarage = () => {
+    clearLookupState();
+    setSelectedGarageVehicle(null);
+    setLookupOrigin('garage');
+    setError(null);
+    navigate('/garage');
+  };
+
+  const goToGarageDetails = (vehicle) => {
+    setSelectedGarageVehicle(vehicle);
+    navigate(`/garage/${vehicle.id}`);
+  };
+
+  const goToVinLookup = (preVin = '', options = {}) => {
+    const origin = options.origin || 'welcome';
+    setVin(preVin);
+    setLookupOrigin(origin);
     setGarageSaveError(null);
     setShowUpgradePrompt(false);
-    setIsRefining(false);
-    setGarageCount(0);
-    setGarageCountLoading(false);
-    refineInFlightRef.current = false;
-  };
-
-  // Reset all state
-  const resetAll = () => {
-    setLookupOrigin('welcome');
-    setScreen('welcome');
-    clearLookupState();
     setError(null);
+    navigate(`/vin${preVin ? `?vin=${preVin}` : ''}`);
   };
 
-  if (authLoading || (user && profileLoading)) {
-    return <LoadingScreen />;
-  }
+  const saveVehicleToGarageFromExact = async () => performGarageSave({ navigateOnSuccess: false });
 
-  if (!user) {
-    return <LoginScreen />;
-  }
+  // Handle navigation after VIN decode
+  const handleVinDecoded = () => {
+    if (matches.length === 1) {
+      navigate('/results/exact');
+    } else if (matches.length > 1) {
+      navigate('/results/range');
+    } else {
+      setError('No towing data found for this vehicle.');
+      navigate('/');
+    }
+  };
+
+  // Call handleVinDecoded when result changes
+  useEffect(() => {
+    if (result && !error) {
+      handleVinDecoded();
+    }
+  }, [result, error]);
 
   if (!profile) {
     return (
       <div style={styles.appContainer}>
         <div style={styles.profileErrorContainer}>
-          <h2 style={styles.profileErrorTitle}>We couldn't load your account</h2>
+          <h2 style={styles.profileErrorTitle}>We couldn\'t load your account</h2>
           <p style={styles.profileErrorText}>
             {profileError || 'Your session was restored, but your profile data is unavailable.'}
           </p>
@@ -138,388 +297,139 @@ function AppContent() {
     );
   }
 
-  // Authenticated user flow
-  const goToGarage = () => {
-    clearLookupState();
-    setSelectedGarageVehicle(null);
-    setLookupOrigin('garage');
-    setError(null);
-    setScreen('garage');
-  };
-
-  const goToGarageDetails = (vehicle) => {
-    setSelectedGarageVehicle(vehicle);
-    setScreen('garageDetails');
-  };
-
-  const goToVinLookup = (preVin = '', options = {}) => {
-    const origin = options.origin || 'welcome';
-    setVin(preVin);
-    setLookupOrigin(origin);
-    setGarageSaveError(null);
-    setShowUpgradePrompt(false);
-    setError(null);
-    setScreen('vin');
-  };
-
-  const performGarageSave = async ({ navigateOnSuccess }) => {
-    if (!vin) {
-      setGarageSaveError('VIN is missing for this vehicle.');
-      return false;
-    }
-
-    try {
-      setGarageSaveLoading(true);
-      setGarageSaveError(null);
-      setShowUpgradePrompt(false);
-
-      const token = user ? (await supabase.auth.getSession()).data.session?.access_token : null;
-      if (!token) {
-        throw new Error('You must be signed in to save a vehicle.');
-      }
-
-      const response = await fetch(`${API_URL}/api/garage/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ vin }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (response.status === 403 && /garage limit reached/i.test(data.error || '')) {
-          setShowUpgradePrompt(true);
-          if (garageLimit != null) {
-            setGarageCount(garageLimit);
-          }
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <WelcomeScreen
+            error={error}
+            onGetStarted={() => {
+              setError(null);
+              navigate('/vin');
+            }}
+            onGarage={goToGarage}
+            showGarage={!isDealer}
+            onHome={() => navigate('/')}
+            onSignOut={handleGlobalSignOut}
+          />
         }
-        setGarageSaveError(data.error || 'Failed to add vehicle to garage.');
-        return false;
-      }
-
-      // Keep garage count fresh so limit checks remain consistent.
-      setGarageCount((count) => count + 1);
-
-      if (navigateOnSuccess) {
-        goToGarage();
-      }
-
-      return true;
-    } catch (err) {
-      console.error('Error saving vehicle to garage:', err);
-      setGarageSaveError('Unable to save this vehicle right now. Please try again.');
-      return false;
-    } finally {
-      setGarageSaveLoading(false);
-    }
-  };
-
-  // Exact-result flow: save first, then let the screen transition to
-  // "View in My Garage" without immediate navigation.
-  const saveVehicleToGarageFromExact = async () => performGarageSave({ navigateOnSuccess: false });
-
-  // Decode VIN function with auth
-  const decodeVin = async (vinInput) => {
-    if (!vinInput) {
-      resetAll();
-      return;
-    }
-
-    try {
-      setError(null);
-      setVin(vinInput);
-
-      // Check cache first
-      if (vinCacheRef.current.has(vinInput)) {
-        console.log('Using cached VIN data');
-        const cachedData = vinCacheRef.current.get(vinInput);
-        processVinResponse(cachedData);
-        return;
-      }
-
-      setScreen('loading');
-
-      const token = user ? (await supabase.auth.getSession()).data.session?.access_token : null;
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-
-      const response = await fetch(`${API_URL}/api/towing/${vinInput}`, { headers });
-      const data = await response.json();
-
-      // Cache the response
-      vinCacheRef.current.set(vinInput, data);
-
-      // Better error handling
-      if (!response.ok) {
-        setError(data.error || `Server error (${response.status})`);
-        setScreen(lookupOrigin === 'garage' ? 'vin' : 'welcome');
-        return;
-      }
-
-      if (data.error) {
-        setError(data.error);
-        setScreen(lookupOrigin === 'garage' ? 'vin' : 'welcome');
-        return;
-      }
-
-      processVinResponse(data);
-    } catch (err) {
-      console.error('Error decoding VIN:', err);
-      setError('Unable to connect to server. Please try again.');
-      setScreen(lookupOrigin === 'garage' ? 'vin' : 'welcome');
-    }
-  };
-
-  // Helper function to process VIN response (avoids duplication)
-  const processVinResponse = (data) => {
-    setResult(data);
-
-    const towingMatches = data.towingMatches || [];
-    const missingInfo = data.missingInfo || [];
-    const opts = data.options ?? null;
-
-    setMatches(towingMatches);
-    setInitialMissing(missingInfo);
-    setInitialOptions(opts);
-
-    // Navigate based on results - SHOW RANGE FIRST
-    if (towingMatches.length === 1) {
-      setScreen('exact');
-    } else if (towingMatches.length > 1) {
-      setScreen('range'); // Always show range first for multiple matches
-    } else {
-      setError('No towing data found for this vehicle.');
-      setScreen('welcome');
-    }
-  };
-
-  // Handle refinement answers with auth.
-  // Real-time narrowing: called after EVERY single answer, not just the final one.
-  // The backend returns options filtered to only configurations that still match
-  // all answers so far — so the UI automatically narrows to valid choices.
-  const handleRefineAnswer = async (field, value) => {
-    // Prevent overlapping concurrent refine calls (race condition guard).
-    // The UI should already be disabled via isRefining, but this is the
-    // final safety net in case a click slips through.
-    if (isRefining || refineInFlightRef.current) return;
-
-    refineInFlightRef.current = true;
-
-    const updated = { ...answers, [field]: value };
-    // Guard for "refine flow complete" before this request is sent.
-    // If this becomes true, the user has already answered all currently missing fields.
-    const unansweredBeforeCall = initialMissing.filter((missingField) => !updated[missingField]);
-    const hasCompletedAllCurrentRefineQuestions = unansweredBeforeCall.length === 0;
-
-    setAnswers(updated);
-    setIsRefining(true);
-
-    try {
-      const token = user ? (await supabase.auth.getSession()).data.session?.access_token : null;
-      const headers = {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-      };
-
-      const response = await fetch(`${API_URL}/api/towing/refine`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ vin, answers: updated }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Server error (${response.status})`);
-      }
-
-      const data = await response.json();
-
-      if (data.error) {
-        setError(data.error);
-        setScreen('welcome');
-        return;
-      }
-
-      const towingMatches = data.towingMatches || [];
-      const newMissing = data.missingInfo || [];
-
-      if (towingMatches.length === 0) {
-        // Only allow fallback when:
-        // A) refine returned zero matches
-        // B) previous valid matches still exist
-        // C) all missing refine questions were already answered BEFORE this call
-        if (matches.length > 0 && hasCompletedAllCurrentRefineQuestions) {
-          setInitialMissing(newMissing);
-          setInitialOptions(data.options);
-          // Intentionally preserve previous matches so min/max remain available.
-          setScreen('rangeFallback');
-          return;
+      />
+      <Route
+        path="/vin"
+        element={
+          <VinEntryScreen
+            vin={vin}
+            setVin={setVin}
+            onBack={() => {
+              setError(null);
+              navigate(lookupOrigin === 'garage' ? '/garage' : '/');
+            }}
+            onDecode={decodeVin}
+            onHome={() => navigate('/')}
+            onSignOut={handleGlobalSignOut}
+          />
         }
-
-        // Mid-flow zero result: keep current narrowed dataset in state and
-        // stay in questions so the user cannot get pushed into fallback too early.
-        if (matches.length > 0) {
-          setScreen('questions');
-          return;
+      />
+      <Route
+        path="/results/range"
+        element={
+          decoded && matches.length > 1 ? (
+            <RangeResultScreen
+              decoded={decoded}
+              minTow={Math.min(...matches.map((m) => m.maxTow || 0))}
+              maxTow={Math.max(...matches.map((m) => m.maxTow || 0))}
+              onRefine={() => navigate('/questions')}
+              onNewSearch={lookupOrigin === 'garage' ? goToGarage : () => navigate('/')}
+              onHome={() => navigate('/')}
+              onSignOut={handleGlobalSignOut}
+            />
+          ) : (
+            <Navigate to="/" replace />
+          )
         }
+      />
+      <Route
+        path="/results/exact"
+        element={
+          decoded && matches.length === 1 ? (
+            <ExactResultScreen
+              decoded={decoded}
+              vin={vin}
+              match={matches[0]}
+              answers={answers}
+              showAddVehicle={!isDealer}
+              canAddVehicle={canAddVehicleToGarage}
+              garageLimitReached={garageLimitReached}
+              onAddVehicle={saveVehicleToGarageFromExact}
+              onViewGarage={goToGarage}
+              addVehicleLoading={garageSaveLoading}
+              addVehicleError={garageSaveError}
+              showUpgradePrompt={showUpgradePrompt}
+              onDismissUpgradePrompt={() => setShowUpgradePrompt(false)}
+              onNewSearch={lookupOrigin === 'garage' ? goToGarage : () => navigate('/')}
+              onHome={() => navigate('/')}
+              onSignOut={handleGlobalSignOut}
+            />
+          ) : (
+            <Navigate to="/" replace />
+          )
+        }
+      />
+      <Route path="/questions" element={<QuestionsWrapper />} />
+      <Route
+        path="/range-fallback"
+        element={
+          decoded && matches.length > 0 ? (
+            <RangeFallbackScreen
+              decoded={decoded}
+              minTow={Math.min(...matches.map((m) => m.maxTow || 0))}
+              maxTow={Math.max(...matches.map((m) => m.maxTow || 0))}
+              onRecheck={() => navigate('/questions')}
+              onNewSearch={lookupOrigin === 'garage' ? goToGarage : () => navigate('/')}
+              onHome={() => navigate('/')}
+              onSignOut={handleGlobalSignOut}
+            />
+          ) : (
+            <Navigate to="/" replace />
+          )
+        }
+      />
+      <Route
+        path="/garage"
+        element={
+          <GarageScreen
+            onVinSelect={(selectedVin) =>
+              goToVinLookup(selectedVin, { origin: 'garage', saveToGarage: false })
+            }
+            onVehicleClick={goToGarageDetails}
+            onAddVehicle={() => goToVinLookup('', { origin: 'garage', saveToGarage: true })}
+            onHome={() => navigate('/')}
+            onSignOut={handleGlobalSignOut}
+          />
+        }
+      />
+      <Route path="/garage/:id" element={<GarageDetailsWrapper />} />
+      <Route path="/upgrade" element={<UpgradeScreen />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
 
-        setError('No matching configurations found. Please try again.');
-        setScreen('welcome');
-        return;
-      }
-
-      setMatches(towingMatches);
-      setInitialMissing(newMissing);
-      setInitialOptions(data.options);
-
-      // Navigate based on refined results
-      if (towingMatches.length === 1) {
-        setScreen('exact');
-      } else if (towingMatches.length > 1) {
-        // Stay on questions screen until they get exact match or give up
-        setScreen('questions');
-      } else {
-        // True dead-end: no prior matches and no new ones (shouldn't normally occur)
-        setError('No matching configurations found. Please try again.');
-        setScreen('welcome');
-      }
-    } catch (err) {
-      console.error('Refine error:', err);
-      setError('Server error while refining results. Please try again.');
-      setScreen('welcome');
-    } finally {
-      // Always re-enable the UI, even on error
-      refineInFlightRef.current = false;
-      setIsRefining(false);
-    }
-  };
-
-  // Calculate min/max with safety checks
-  const minTow = matches.length > 0 ? Math.min(...matches.map((m) => m.maxTow || 0)) : null;
-  const maxTow = matches.length > 0 ? Math.max(...matches.map((m) => m.maxTow || 0)) : null;
-
-  const handleGlobalSignOut = async () => {
-    try {
-      await signOut();
-      resetAll();
-    } catch (err) {
-      console.error('Global sign out error:', err);
-    }
-  };
-
+function AppContent() {
   return (
     <div style={styles.appContainer}>
-      {screen === 'garage' && (
-        <GarageScreen
-          onVinSelect={(selectedVin) =>
-            goToVinLookup(selectedVin, { origin: 'garage', saveToGarage: false })
+      <Routes>
+        <Route path="/login" element={<LoginScreen />} />
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              <AuthenticatedRoutes />
+            </ProtectedRoute>
           }
-          onVehicleClick={goToGarageDetails}
-          onAddVehicle={() => goToVinLookup('', { origin: 'garage', saveToGarage: true })}
-          onHome={resetAll}
-          onSignOut={handleGlobalSignOut}
         />
-      )}
-
-      {screen === 'garageDetails' && selectedGarageVehicle && (
-        <GarageVehicleDetailsScreen
-          vehicle={selectedGarageVehicle}
-          onBack={goToGarage}
-          onHome={resetAll}
-          onSignOut={handleGlobalSignOut}
-        />
-      )}
-
-      {screen === 'welcome' && (
-        <WelcomeScreen
-          error={error}
-          onGetStarted={() => {
-            setError(null);
-            setScreen('vin');
-          }}
-          onGarage={goToGarage}
-          showGarage={!isDealer}
-          onHome={resetAll}
-          onSignOut={handleGlobalSignOut}
-        />
-      )}
-
-      {screen === 'vin' && (
-        <VinEntryScreen
-          vin={vin}
-          setVin={setVin}
-          onBack={() => {
-            setError(null);
-            setScreen(lookupOrigin === 'garage' ? 'garage' : 'welcome');
-          }}
-          onDecode={decodeVin}
-          onHome={resetAll}
-          onSignOut={handleGlobalSignOut}
-        />
-      )}
-
-      {screen === 'loading' && <LoadingScreen />}
-
-      {screen === 'questions' && decoded && (
-        <QuestionsScreen
-          decoded={decoded}
-          missing={initialMissing}
-          options={initialOptions}
-          matches={matches}
-          answers={answers}
-          onAnswer={handleRefineAnswer}
-          onBack={() => setScreen('range')}
-          onHome={resetAll}
-          onSignOut={handleGlobalSignOut}
-          isRefining={isRefining}
-        />
-      )}
-
-      {screen === 'rangeFallback' && decoded && minTow != null && maxTow != null && (
-        <RangeFallbackScreen
-          decoded={decoded}
-          minTow={minTow}
-          maxTow={maxTow}
-          onRecheck={() => setScreen('questions')}
-          onNewSearch={lookupOrigin === 'garage' ? goToGarage : resetAll}
-          onHome={resetAll}
-          onSignOut={handleGlobalSignOut}
-        />
-      )}
-
-      {screen === 'range' && decoded && minTow != null && maxTow != null && (
-        <RangeResultScreen
-          decoded={decoded}
-          minTow={minTow}
-          maxTow={maxTow}
-          onRefine={() => setScreen('questions')}
-          onNewSearch={lookupOrigin === 'garage' ? goToGarage : resetAll}
-          onHome={resetAll}
-          onSignOut={handleGlobalSignOut}
-        />
-      )}
-
-      {screen === 'exact' && decoded && matches.length === 1 && (
-        <ExactResultScreen
-          decoded={decoded}
-          vin={vin}
-          match={matches[0]}
-          answers={answers}
-          showAddVehicle={!isDealer}
-          canAddVehicle={canAddVehicleToGarage}
-          garageLimitReached={garageLimitReached}
-          onAddVehicle={saveVehicleToGarageFromExact}
-          onViewGarage={goToGarage}
-          addVehicleLoading={garageSaveLoading}
-          addVehicleError={garageSaveError}
-          showUpgradePrompt={showUpgradePrompt}
-          onDismissUpgradePrompt={() => setShowUpgradePrompt(false)}
-          onNewSearch={lookupOrigin === 'garage' ? goToGarage : resetAll}
-          onHome={resetAll}
-          onSignOut={handleGlobalSignOut}
-        />
-      )}
+      </Routes>
     </div>
   );
 }
