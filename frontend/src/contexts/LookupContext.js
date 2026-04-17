@@ -4,6 +4,9 @@ import { supabase } from '../utils/supabase';
 
 const LookupContext = createContext();
 
+// API URL from env or fallback to localhost (defined outside component to prevent recreation)
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 export const useLookup = () => {
   const context = useContext(LookupContext);
   if (!context) {
@@ -42,9 +45,6 @@ export const LookupProvider = ({ children }) => {
     !isDealer && garageLimit != null && Number.isFinite(garageCount) && garageCount >= garageLimit;
   const canAddVehicleToGarage = !isDealer && !garageLimitReached && !garageCountLoading;
 
-  // API URL from env or fallback to localhost
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-
   useEffect(() => {
     const loadGarageCount = async () => {
       if (!user || isDealer || garageLimit == null) return;
@@ -72,7 +72,7 @@ export const LookupProvider = ({ children }) => {
     };
 
     loadGarageCount();
-  }, [user, isDealer, garageLimit]);
+  }, [user, isDealer, garageLimit, API_URL]);
 
   const clearLookupState = () => {
     setVin('');

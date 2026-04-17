@@ -13,7 +13,7 @@ import GarageScreen from './screens/GarageScreen';
 import GarageVehicleDetailsScreen from './screens/GarageVehicleDetailsScreen';
 import UpgradeScreen from './screens/UpgradeScreen';
 import { supabase } from './utils/supabase';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 
 // API URL from env or fallback to localhost
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
@@ -259,8 +259,8 @@ function AuthenticatedRoutes() {
 
   const saveVehicleToGarageFromExact = async () => performGarageSave({ navigateOnSuccess: false });
 
-  // Handle navigation after VIN decode
-  const handleVinDecoded = () => {
+  // Handle navigation after VIN decode (memoized to prevent dependency issues)
+  const handleVinDecoded = useCallback(() => {
     if (matches.length === 1) {
       navigate('/results/exact');
     } else if (matches.length > 1) {
@@ -269,14 +269,14 @@ function AuthenticatedRoutes() {
       setError('No towing data found for this vehicle.');
       navigate('/');
     }
-  };
+  }, [matches, navigate, setError]);
 
   // Call handleVinDecoded when result changes
   useEffect(() => {
     if (result && !error) {
       handleVinDecoded();
     }
-  }, [result, error]);
+  }, [result, error, handleVinDecoded]);
 
   if (!profile) {
     return (
@@ -410,7 +410,15 @@ function AuthenticatedRoutes() {
         }
       />
       <Route path="/garage/:id" element={<GarageDetailsWrapper />} />
-      <Route path="/upgrade" element={<UpgradeScreen />} />
+      <Route
+        path="/upgrade"
+        element={
+          <UpgradeScreen
+            onHome={() => navigate('/')}
+            onSignOut={handleGlobalSignOut}
+          />
+        }
+      />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
