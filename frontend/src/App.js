@@ -412,12 +412,7 @@ function AuthenticatedRoutes() {
       <Route path="/garage/:id" element={<GarageDetailsWrapper />} />
       <Route
         path="/upgrade"
-        element={
-          <UpgradeScreen
-            onHome={() => navigate('/')}
-            onSignOut={handleGlobalSignOut}
-          />
-        }
+        element={<UpgradeScreen onHome={() => navigate('/')} onSignOut={handleGlobalSignOut} />}
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

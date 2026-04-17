@@ -123,7 +123,8 @@ export default function UpgradeScreen({ onHome, onSignOut }) {
       <div style={styles.content}>
         <h1 style={styles.title}>Upgrade to Premium</h1>
         <p style={styles.description}>
-          Unlock full VIN breakdowns, unlimited garage vehicles, priority support, and exclusive features.
+          Unlock full VIN breakdowns, unlimited garage vehicles, priority support, and exclusive
+          features.
         </p>
 
         <div style={styles.features}>
@@ -141,10 +142,7 @@ export default function UpgradeScreen({ onHome, onSignOut }) {
           </div>
         </div>
 
-        <button
-          onClick={() => alert('Stripe integration coming soon')}
-          style={styles.button}
-        >
+        <button onClick={() => alert('Stripe integration coming soon')} style={styles.button}>
           Continue to Checkout
         </button>
       </div>
