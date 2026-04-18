@@ -89,11 +89,10 @@ export default function ExactResultScreen({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '40px',
               margin: '0 auto 24px',
             }}
           >
-            ✓
+            <CheckCircle2 size={48} color="#fff" />
           </div>
 
           <h2

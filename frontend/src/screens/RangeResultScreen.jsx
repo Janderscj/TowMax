@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { Target } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
 
 export default function RangeResultScreen({
@@ -69,11 +70,10 @@ export default function RangeResultScreen({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '40px',
               margin: '0 auto 24px',
             }}
           >
-            🎯
+            <Target size={48} color="#000" />
           </div>
 
           <h2

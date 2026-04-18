@@ -1,4 +1,5 @@
-import { ArrowRight, Car, Home, LogOut } from 'lucide-react';
+import { ArrowRight, Car } from 'lucide-react';
+import AppHeader from '../components/AppHeader';
 
 export default function WelcomeScreen({
   error,
@@ -8,18 +9,6 @@ export default function WelcomeScreen({
   onHome,
   onSignOut,
 }) {
-  const iconBtnStyle = {
-    width: '34px',
-    height: '34px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.22)',
-    borderRadius: '8px',
-    color: '#fff',
-    cursor: 'pointer',
-  };
   return (
     <div
       style={{
@@ -46,29 +35,7 @@ export default function WelcomeScreen({
       />
       <div
         style={{
-          padding: '8px 20px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          fontSize: '12px',
-          color: '#999',
-          borderBottom: '1px solid rgba(255,255,255,0.05)',
-        }}
-      >
-        <span>TowMax</span>
-
-        <span style={{ display: 'flex', gap: '8px' }}>
-          <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
-            <Home size={16} />
-          </button>
-          <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
-            <LogOut size={16} />
-          </button>
-        </span>
-      </div>
-
-      <div
-        style={{
-          padding: '40px 24px',
+          padding: '24px',
           display: 'flex',
           flexDirection: 'column',
           minHeight: 'calc(100vh - 40px)',
@@ -76,6 +43,8 @@ export default function WelcomeScreen({
           zIndex: 1,
         }}
       >
+        <AppHeader title="TowMax" showBackButton={false} onHome={onHome} onSignOut={onSignOut} />
+
         <div style={{ flex: 1 }}>
           <div
             style={{
@@ -136,10 +105,9 @@ export default function WelcomeScreen({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '20px',
                 }}
               >
-                🚗
+                <Car size={24} color="#000" />
               </div>
               <div style={{ flex: 1 }}>
                 <div
