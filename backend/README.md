@@ -44,6 +44,30 @@ npm start
 
 The server will start on `http://localhost:5000` by default.
 
+### Running Tests
+
+This project includes comprehensive unit tests for critical logic paths:
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode (re-run on file changes)
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+```
+
+**Test Coverage:**
+
+- VIN normalization and decoding logic
+- Vehicle matching algorithm
+- Data filtering and validation
+- Edge cases and error conditions
+
+See [TESTING.md](./TESTING.md) for detailed test documentation.
+
 ## API Endpoints
 
 ### VIN Lookup (No Authentication Required)
