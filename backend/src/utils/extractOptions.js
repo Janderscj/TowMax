@@ -1,5 +1,5 @@
 function extractOptions(matches) {
-  // ✅ Filter out null/undefined values and sort alphabetically
+  // Filter out null/undefined values and sort alphabetically
   const unique = (arr) => [...new Set(arr.filter(Boolean))].sort();
 
   return {

@@ -78,7 +78,6 @@ function QuestionAxleRatio({
   };
 
   const handleNotSureSelection = () => {
-    // Requirement: selecting "I'm not sure" should still use smart-guess logic.
     if (guessResult.mode === 'exact' && guessResult.bestGuess) {
       handleSelect(guessResult.bestGuess);
       return;

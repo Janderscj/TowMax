@@ -8,7 +8,7 @@ function getBrandFromVin(vin) {
     '1FT': 'ford',
     '1F1': 'ford',
     '1FA': 'ford',
-    '1FM': 'ford', // ✅ Ford trucks/SUVs
+    '1FM': 'ford', //Ford trucks/SUVs
     '1FD': 'ford',
 
     // Chevrolet / GM
@@ -18,12 +18,12 @@ function getBrandFromVin(vin) {
     '2GC': 'chevrolet', // Canada
     '1GT': 'gmc',
     '3GT': 'gmc',
-    '2GT': 'gmc', // ✅ Canada GMC
+    '2GT': 'gmc', // Canada GMC
 
     // Ram / Dodge / Stellantis
     '1C6': 'ram',
     '3C6': 'ram',
-    '1D3': 'ram', // ✅ Older Dodge Ram
+    '1D3': 'ram', // Older Dodge Ram
     '1D7': 'ram',
 
     // Jeep
@@ -34,22 +34,22 @@ function getBrandFromVin(vin) {
     '5TF': 'toyota',
     '4T1': 'toyota', // US-built Toyota cars
     JTD: 'toyota', // Japan-built Toyota
-    '5TD': 'toyota', // ✅ Tundra/Tacoma
-    '3TM': 'toyota', // ✅ Mexico-built
+    '5TD': 'toyota', //  Tundra/Tacoma
+    '3TM': 'toyota', //  Mexico-built
 
     // Nissan
     '1N6': 'nissan',
     '5N1': 'nissan',
-    JN1: 'nissan', // ✅ Japan-built
-    '3N6': 'nissan', // ✅ Mexico-built
+    JN1: 'nissan', // Japan-built
+    '3N6': 'nissan', // Mexico-built
 
     // Honda
     '5FP': 'honda',
     '1HG': 'honda',
-    '2HG': 'honda', // ✅ Canada
-    JHM: 'honda', // ✅ Japan
+    '2HG': 'honda', // Canada
+    JHM: 'honda', // Japan
 
-    // ✅ Additional popular brands
+    // Additional popular brands
     // Tesla
     '5YJ': 'tesla',
     '7SA': 'tesla', // UK Tesla

@@ -20,7 +20,6 @@ export default function MissingInfoQuestions({
 
   return (
     <div style={styles.container}>
-      {/* Decorative background */}
       <div style={styles.background} />
 
       <div style={styles.content}>

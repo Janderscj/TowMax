@@ -1,7 +1,7 @@
-const fs = require('fs').promises; // ✅ Use promises API
+const fs = require('fs').promises; // Use promises API
 const path = require('path');
 
-// ✅ In-memory cache to avoid repeated file reads
+// In-memory cache to avoid repeated file reads
 const dataCache = new Map();
 
 async function loadBrandData(brand) {
@@ -9,25 +9,25 @@ async function loadBrandData(brand) {
     throw new Error('Brand is required to load dataset');
   }
 
-  // ✅ Return cached data if available
+  // Return cached data if available
   if (dataCache.has(brand)) {
-    console.log(`📦 Using cached data for: ${brand}`);
+    console.log(` Using cached data for: ${brand}`);
     return dataCache.get(brand);
   }
 
   const filePath = path.join(__dirname, `../../data/${brand}.json`);
 
   try {
-    // ✅ Check if file exists (async)
+    // Check if file exists (async)
     await fs.access(filePath);
 
-    // ✅ Read file asynchronously
+    // Read file asynchronously
     const raw = await fs.readFile(filePath, 'utf8');
     const data = JSON.parse(raw);
 
-    // ✅ Cache the data
+    // Cache the data
     dataCache.set(brand, data);
-    console.log(`📦 Loaded and cached data for: ${brand}`);
+    console.log(` Loaded and cached data for: ${brand}`);
 
     return data;
   } catch (err) {

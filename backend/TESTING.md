@@ -44,11 +44,11 @@ const matches = matchTowing(decoded, towingData);
 
 **Critical Paths Covered:**
 
-- ✅ VIN lookup returns correct towing capacity
-- ✅ Multiple matches handled correctly (different trims)
-- ✅ Filters progressively narrow results
-- ✅ Missing fields don't break matching
-- ✅ Case-insensitivity works across all fields
+- VIN lookup returns correct towing capacity
+- Multiple matches handled correctly (different trims)
+- Filters progressively narrow results
+- Missing fields don't break matching
+- Case-insensitivity works across all fields
 
 ### 2. **VIN Normalization Tests** (`tests/vinNormalization.test.js`)
 
@@ -104,12 +104,12 @@ const normalized = normalizeDecodedFields(rawInput);
 
 **Critical Paths Covered:**
 
-- ✅ Messy NHTSA output is cleaned properly
-- ✅ All engine variants recognized
-- ✅ Drive type standardized across vendors
-- ✅ Chevy/GMC special rules applied correctly
-- ✅ Invalid VINs rejected
-- ✅ Unknown fields preserved
+- Messy NHTSA output is cleaned properly
+- All engine variants recognized
+- Drive type standardized across vendors
+- Chevy/GMC special rules applied correctly
+- Invalid VINs rejected
+- Unknown fields preserved
 
 ---
 

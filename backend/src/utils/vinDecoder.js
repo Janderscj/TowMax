@@ -93,11 +93,11 @@ function normalizeDecodedFields(decoded) {
 // -----------------------------------------------------
 async function decodeVin(vin) {
   try {
-    console.log('🔧 VIN DECODE START:', vin);
+    console.log(' VIN DECODE START:', vin);
 
     const url = `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/${vin}?format=json`;
 
-    // ✅ Add timeout to prevent hanging
+    // Add timeout to prevent hanging
     const response = await axios.get(url, {
       timeout: 10000, // 10 second timeout
     });
@@ -105,13 +105,13 @@ async function decodeVin(vin) {
     const results = response.data.Results;
 
     if (!results || !Array.isArray(results)) {
-      console.error('🔧 Invalid NHTSA response format');
+      console.error(' Invalid NHTSA response format');
       return null;
     }
 
-    console.log('🔧 RAW NHTSA RESULTS COUNT:', results.length);
+    console.log(' RAW NHTSA RESULTS COUNT:', results.length);
 
-    // ✅ Extract fields safely using constants
+    // Extract fields safely using constants
     const get = (variable) => {
       const result = results.find((r) => r.Variable === variable);
       return result?.Value || null;
@@ -121,7 +121,7 @@ async function decodeVin(vin) {
     const yearRaw = get(NHTSA_FIELDS.YEAR);
     const year = yearRaw && yearRaw !== '0' ? parseInt(yearRaw, 10) : null;
 
-    // ✅ Validate year is reasonable
+    // Validate year is reasonable
     const currentYear = new Date().getFullYear();
     if (year && (year < 1980 || year > currentYear + 2)) {
       console.warn('🔧 Suspicious year detected:', year);
@@ -157,7 +157,6 @@ async function decodeVin(vin) {
 
     return decoded;
   } catch (error) {
-    // ✅ Better error logging
     if (error.code === 'ECONNABORTED') {
       console.error('VIN decode timeout - NHTSA API took too long');
     } else if (error.response) {

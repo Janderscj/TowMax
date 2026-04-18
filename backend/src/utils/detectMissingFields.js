@@ -12,7 +12,7 @@ function detectMissingFields(matches, answers = {}) {
       matches.map((m) => m[field]).filter((v) => v !== null && v !== undefined && v !== '')
     );
 
-    // If multiple values exist → user must choose
+    // If multiple values exist, user must choose
     if (values.size > 1) {
       missing.push(field);
     }

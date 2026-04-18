@@ -21,7 +21,6 @@ const chevroletRules = {
       },
     ];
 
-    // ✅ Add year-specific variations if needed
     if (year >= 2019) {
       return {
         supportsMaxTow: true,
@@ -75,13 +74,12 @@ const chevroletRules = {
     notes: 'HD trucks typically come standard with most towing equipment.',
   }),
 
-  // ✅ Add Silverado (base name without series)
   Silverado: (year) => {
     // Default to 1500 rules if series not specified
     return chevroletRules['Silverado 1500'](year);
   },
 
-  // ✅ Colorado support
+  // Colorado support
   Colorado: (year) => ({
     supportsMaxTow: false,
     options: [
@@ -101,7 +99,7 @@ const chevroletRules = {
     notes: 'Mid-size truck with lower towing capacity.',
   }),
 
-  // ✅ Tahoe/Suburban support
+  // Tahoe/Suburban support
   Tahoe: (year) => ({
     supportsMaxTow: false,
     options: [

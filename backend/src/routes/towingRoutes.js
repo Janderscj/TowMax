@@ -157,7 +157,12 @@ router.post('/refine', authenticateUser, async (req, res) => {
 
   // Validate answers object structure
   if (typeof answers !== 'object' || Array.isArray(answers)) {
-    return res.status(400).json({ error: 'Invalid answers format. Expected object with optional properties: axleRatio, towPackage, bedLength' });
+    return res
+      .status(400)
+      .json({
+        error:
+          'Invalid answers format. Expected object with optional properties: axleRatio, towPackage, bedLength',
+      });
   }
 
   if (!isValidVin(vin)) {
@@ -194,7 +199,7 @@ router.post('/refine', authenticateUser, async (req, res) => {
           return true;
         }
 
-        // ✅ Null safety
+        // Null safety
         if (!entry[field]) return false;
 
         const datasetValue = String(entry[field]).trim().toLowerCase();
