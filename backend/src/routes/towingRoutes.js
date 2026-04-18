@@ -10,11 +10,13 @@ const { getTowPackageOptions } = require('../utils/towPackageEngine');
 const loadBrandData = require('../utils/loadBrandData');
 const getBrandFromVin = require('../utils/getBrandFromVin');
 
-// Middleware to verify JWT token (optional for now, can be made required later)
+// Middleware to verify JWT token
+// NOTE: VIN lookup endpoint is intentionally accessible without authentication
+// This allows free users to test the tool before signing up
 const authenticateUser = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    // For now, allow unauthenticated requests
+    // Allow unauthenticated access for VIN lookups; garage endpoints check req.user separately
     req.user = null;
     return next();
   }
@@ -48,13 +50,16 @@ function isValidVin(vin) {
 // -----------------------------------------------------
 // GET /api/towing/:vin
 // -----------------------------------------------------
+// Public endpoint by design:
+// - VIN lookups are free (no auth) to reduce friction for new users.
+// - Saving vehicles to garage still requires authentication.
 router.get('/:vin', authenticateUser, async (req, res) => {
   const vin = req.params.vin?.toUpperCase();
   const requestId = Math.random().toString(36).substring(7);
 
   console.log(`[${requestId}] VIN decode request:`, vin);
 
-  // ✅ Validate VIN format
+  // Validate VIN format
   if (!isValidVin(vin)) {
     return res.status(400).json({
       error: 'Invalid VIN format',
@@ -70,7 +75,7 @@ router.get('/:vin', authenticateUser, async (req, res) => {
       return res.status(400).json({ error: 'Unable to decode VIN' });
     }
 
-    // ✅ Null safety - check required fields
+    // check required fields
     if (!decoded.year || !decoded.make || !decoded.model) {
       return res.status(400).json({
         error: 'Incomplete VIN data',
@@ -78,7 +83,6 @@ router.get('/:vin', authenticateUser, async (req, res) => {
       });
     }
 
-    // ✅ FIXED: Remove await - getBrandFromVin is synchronous
     const brand = getBrandFromVin(vin);
     if (!brand) {
       return res.status(400).json({
@@ -110,7 +114,6 @@ router.get('/:vin', authenticateUser, async (req, res) => {
 
     // Multiple matches → refine flow
     if (matches.length > 1) {
-      // ✅ FIXED: Remove empty object, let function use default
       const missing = detectMissingFields(matches);
       const options = extractOptions(matches);
 
@@ -147,9 +150,14 @@ router.post('/refine', authenticateUser, async (req, res) => {
 
   console.log(`[${requestId}] Refine request:`, { vin, answers });
 
-  // ✅ Validate inputs
+  // Validate inputs
   if (!vin || !answers) {
     return res.status(400).json({ error: 'Missing VIN or answers' });
+  }
+
+  // Validate answers object structure
+  if (typeof answers !== 'object' || Array.isArray(answers)) {
+    return res.status(400).json({ error: 'Invalid answers format. Expected object with optional properties: axleRatio, towPackage, bedLength' });
   }
 
   if (!isValidVin(vin)) {
@@ -159,7 +167,6 @@ router.post('/refine', authenticateUser, async (req, res) => {
   try {
     const decoded = await decodeVin(vin);
 
-    // ✅ FIXED: Remove await - getBrandFromVin is synchronous
     const brand = getBrandFromVin(vin);
     if (!brand) {
       return res.status(400).json({ error: 'Unknown brand from VIN' });
@@ -179,7 +186,7 @@ router.post('/refine', authenticateUser, async (req, res) => {
 
     console.log(`[${requestId}] Initial matches: ${matches.length}`);
 
-    // ✅ Apply refine filters
+    // Apply refine filters
     const narrowed = matches.filter((entry) => {
       return Object.entries(answers).every(([field, value]) => {
         // Skip filtering if user clicked "I'm not sure"

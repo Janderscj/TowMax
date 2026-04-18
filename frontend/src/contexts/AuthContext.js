@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { supabase } from '../utils/supabase';
+import { API_URL } from '../utils/apiConfig';
 
 const AuthContext = createContext(null);
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 console.log('AuthProvider mounted');
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
