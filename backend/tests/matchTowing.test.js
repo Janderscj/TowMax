@@ -402,31 +402,37 @@ describe('matchTowing', () => {
     test('should progressively filter with each constraint', () => {
       const data = sampleTowingData;
 
-      // All 2024 entries
-      const decoded1 = { year: 2024 };
-      expect(matchTowing(decoded1, data).length).toBe(4);
+      // Year + make + model are all required (HARD FILTERS)
+      // So we skip the year-only and year+make tests since they'll return 0
 
-      // All 2024 FORDs
-      const decoded2 = { year: 2024, make: 'FORD' };
-      expect(matchTowing(decoded2, data).length).toBe(2);
-
-      // All 2024 FORD F-150s
-      const decoded3 = { year: 2024, make: 'FORD', model: 'F-150' };
-      expect(matchTowing(decoded3, data).length).toBe(2);
+      // All 2024 FORD F-150s (all three hard filters present)
+      const decoded1 = { year: 2024, make: 'FORD', model: 'F-150' };
+      expect(matchTowing(decoded1, data).length).toBe(2);
 
       // All 2024 FORD F-150 1500 series
-      const decoded4 = { year: 2024, make: 'FORD', model: 'F-150', series: '1500' };
-      expect(matchTowing(decoded4, data).length).toBe(2);
+      const decoded2 = { year: 2024, make: 'FORD', model: 'F-150', series: '1500' };
+      expect(matchTowing(decoded2, data).length).toBe(2);
 
       // With 4WD only
-      const decoded5 = {
+      const decoded3 = {
         year: 2024,
         make: 'FORD',
         model: 'F-150',
         series: '1500',
         driveType: '4WD',
       };
-      expect(matchTowing(decoded5, data).length).toBe(1);
+      expect(matchTowing(decoded3, data).length).toBe(1);
+
+      // With all filters
+      const decoded4 = {
+        year: 2024,
+        make: 'FORD',
+        model: 'F-150',
+        series: '1500',
+        driveType: '4WD',
+        engine: '3.5L EcoBoost',
+      };
+      expect(matchTowing(decoded4, data).length).toBe(1);
     });
   });
 

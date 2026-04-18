@@ -4,8 +4,10 @@ function matchTowing(decoded, towingData) {
   towingData.forEach((entry) => {
     // HARD FILTERS — VIN guaranteed fields only
     if (entry.year !== decoded.year) return;
-    if (entry.make.toLowerCase() !== decoded.make.toLowerCase()) return;
-    if (entry.model.toLowerCase() !== decoded.model.toLowerCase()) return;
+    if (!decoded.make || !entry.make || entry.make.toLowerCase() !== decoded.make.toLowerCase())
+      return;
+    if (!decoded.model || !entry.model || entry.model.toLowerCase() !== decoded.model.toLowerCase())
+      return;
 
     // Series must match exactly (after normalization)
     if (

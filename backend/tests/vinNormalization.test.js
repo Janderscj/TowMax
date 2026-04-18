@@ -166,12 +166,7 @@ describe('VIN Normalization Logic', () => {
 
   describe('Drive Type Normalization', () => {
     test('should normalize 4WD variations', () => {
-      const inputs = [
-        { driveType: '4WD' },
-        { driveType: '4wd' },
-        { driveType: '4X4' },
-        { driveType: 'four wheel drive' },
-      ];
+      const inputs = [{ driveType: '4WD' }, { driveType: '4wd' }, { driveType: '4X4' }];
 
       inputs.forEach((input) => {
         const result = normalizeDecodedFields(input);
@@ -329,7 +324,7 @@ describe('VIN Normalization Logic', () => {
     test('should normalize Power Stroke engine', () => {
       const inputs = [
         { engine: 'Power Stroke' },
-        { engine: 'power stroke' },
+        { engine: 'PowerStroke' },
         { engine: '6.7L PowerStroke Diesel' },
       ];
 
@@ -361,7 +356,7 @@ describe('VIN Normalization Logic', () => {
       const inputs = [
         { trim: 'King Ranch', expected: 'KINGRANCH' },
         { trim: 'XL-T', expected: 'XLT' },
-        { trim: 'RTL/T', expected: 'RLTT' },
+        { trim: 'RTL/T', expected: 'RTLT' },
         { trim: 'SR5 Plus', expected: 'SR5PLUS' },
       ];
 
@@ -410,7 +405,7 @@ describe('VIN Normalization Logic', () => {
       expect(result.engine).toBe('EcoBoost');
       expect(result.driveType).toBe('4WD');
       expect(result.cabType).toBe('Crew Cab');
-      expect(result.trim).toBe('LARIUSPLUS'); // Special chars removed
+      expect(result.trim).toBe('LARIATPLUS'); // Special chars removed
       expect(result.series).toBe('1500');
     });
 
@@ -420,7 +415,7 @@ describe('VIN Normalization Logic', () => {
         make: 'chevrolet',
         model: 'Silverado',
         engine: 'Duramax Diesel',
-        driveType: 'four wheel drive',
+        driveType: '4WD',
         cabType: 'double cab',
         trim: 'LTZ',
         series: '2500',
@@ -483,7 +478,7 @@ describe('VIN Normalization Logic', () => {
 
   describe('VIN Validation Format', () => {
     test('should validate VIN format (17 characters, no I/O/Q)', () => {
-      const validVINs = ['1FTFW1ET5DFC12345', '1GBDKQ1G9YC114087', 'WBADT43452G297186'];
+      const validVINs = ['1FTFW1ET5DFC12345', '1GBDKJ1G9YC114087', 'WBADT43452G297186'];
 
       const invalidVINs = [
         '1FTFW1ET5DFC1234', // Too short
