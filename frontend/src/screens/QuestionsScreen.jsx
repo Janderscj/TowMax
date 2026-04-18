@@ -1,4 +1,4 @@
-import { Home, LogOut } from 'lucide-react';
+import AppHeader from '../components/AppHeader';
 import MissingInfoQuestions from '../components/questions/MissingInfoQuestions';
 
 export default function QuestionsScreen({
@@ -8,6 +8,7 @@ export default function QuestionsScreen({
   matches,
   answers,
   onAnswer,
+  onBack,
   onHome,
   onSignOut,
   isRefining,
@@ -16,21 +17,7 @@ export default function QuestionsScreen({
 
   const totalQuestions = missing.length;
   const answeredCount = Object.keys(answers).length;
-  const currentField = missing[0]; // Always show the next unanswered field
   const progress = (answeredCount / totalQuestions) * 100;
-
-  const iconBtnStyle = {
-    width: '34px',
-    height: '34px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.22)',
-    borderRadius: '8px',
-    color: '#fff',
-    cursor: 'pointer',
-  };
 
   return (
     <div
@@ -54,16 +41,14 @@ export default function QuestionsScreen({
           zIndex: 1,
         }}
       >
-        {/* Nav buttons */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '8px' }}>
-          <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
-            <Home size={16} />
-          </button>
-          <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
-            <LogOut size={16} />
-          </button>
-        </div>
-        {/* Progress Bar */}}
+        <AppHeader
+          title="Refine Your Results"
+          showBackButton={true}
+          onBack={onBack}
+          onHome={onHome}
+          onSignOut={onSignOut}
+        />
+        {/* Progress Bar */}
         <div
           style={{
             height: '4px',

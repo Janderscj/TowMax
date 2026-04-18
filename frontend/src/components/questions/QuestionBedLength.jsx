@@ -31,13 +31,14 @@ function QuestionBedLength({ onAnswer, options, matches, currentValue, disabled 
     }
   }, [currentValue]);
 
-  if (!options) return null;
-  const beds = options?.bed ?? [];
   // Local narrowing layer: only render options that still exist in remaining matches.
-  const visibleBeds = useMemo(
-    () => beds.filter((bed) => isOptionInMatches(matches, 'bed', bed)),
-    [beds, matches]
-  );
+  // Moved before early return to fix React Hooks rule violation
+  const visibleBeds = useMemo(() => {
+    if (!options?.bed) return [];
+    return options.bed.filter((bed) => isOptionInMatches(matches, 'bed', bed));
+  }, [options, matches]);
+
+  if (!options) return null;
 
   const handleSelect = (value) => {
     setSelected(value);

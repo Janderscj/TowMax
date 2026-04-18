@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { CheckCircle2, Home, LogOut } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
+import AppHeader from '../components/AppHeader';
 
 export default function ExactResultScreen({
   decoded,
@@ -16,6 +17,7 @@ export default function ExactResultScreen({
   showUpgradePrompt,
   onDismissUpgradePrompt,
   onNewSearch,
+  onBack,
   onHome,
   onSignOut,
 }) {
@@ -42,18 +44,6 @@ export default function ExactResultScreen({
     }
   };
 
-  const iconBtnStyle = {
-    width: '34px',
-    height: '34px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.22)',
-    borderRadius: '8px',
-    color: '#fff',
-    cursor: 'pointer',
-  };
   return (
     <div
       style={{
@@ -76,16 +66,13 @@ export default function ExactResultScreen({
           zIndex: 1,
         }}
       >
-        <div
-          style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '8px' }}
-        >
-          <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
-            <Home size={16} />
-          </button>
-          <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
-            <LogOut size={16} />
-          </button>
-        </div>
+        <AppHeader
+          title="Vehicle Details"
+          showBackButton={true}
+          onBack={onBack}
+          onHome={onHome}
+          onSignOut={onSignOut}
+        />
         <div
           style={{
             textAlign: 'center',

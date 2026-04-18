@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Home, LogOut } from 'lucide-react';
 import { supabase } from '../utils/supabase';
+import { API_URL } from '../utils/apiConfig';
 import VinBreakdownScreen from './VinBreakdownScreen';
-
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+import AppHeader from '../components/AppHeader';
 
 export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome, onSignOut }) {
   const [loading, setLoading] = useState(true);
@@ -49,7 +48,7 @@ export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome, on
     };
 
     loadDetails();
-  }, [vehicle]);
+  }, [vehicle, API_URL]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const towingSummary = useMemo(() => {
     if (!matches.length) {
@@ -109,22 +108,13 @@ export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome, on
 
   return (
     <div style={styles.container}>
-      <div style={styles.headerRow}>
-        <button onClick={onBack} style={styles.navButton}>
-          <ArrowLeft size={16} />
-          Back
-        </button>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button onClick={onHome} style={styles.iconButton} aria-label="Home">
-            <Home size={16} />
-          </button>
-          <button onClick={onSignOut} style={styles.iconButton} aria-label="Sign out">
-            <LogOut size={16} />
-          </button>
-        </div>
-      </div>
-
-      <h1 style={styles.title}>Vehicle Details</h1>
+      <AppHeader
+        title="Vehicle Details"
+        showBackButton={true}
+        onBack={onBack}
+        onHome={onHome}
+        onSignOut={onSignOut}
+      />
 
       <div style={styles.vehicleCard}>
         <p style={styles.vehicleName}>
@@ -219,40 +209,6 @@ const styles = {
     color: '#fff',
     padding: '20px',
     fontFamily: '"Space Mono", monospace',
-  },
-  headerRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: '10px',
-    marginBottom: '16px',
-  },
-  navButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    border: '1px solid rgba(255,255,255,0.2)',
-    background: 'rgba(255,255,255,0.05)',
-    color: '#fff',
-    borderRadius: '10px',
-    padding: '10px 12px',
-    cursor: 'pointer',
-    fontFamily: 'inherit',
-  },
-  iconButton: {
-    width: '34px',
-    height: '34px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.22)',
-    borderRadius: '8px',
-    color: '#fff',
-    cursor: 'pointer',
-  },
-  title: {
-    fontSize: '1.8rem',
-    margin: '0 0 16px',
   },
   vehicleCard: {
     background: 'rgba(255,255,255,0.08)',

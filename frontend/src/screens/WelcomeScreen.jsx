@@ -54,24 +54,16 @@ export default function WelcomeScreen({
           borderBottom: '1px solid rgba(255,255,255,0.05)',
         }}
       >
-        <span>9:41</span>
-        <span>●●●●●</span>
-      </div>
+        <span>TowMax</span>
 
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '8px',
-          padding: '10px 20px',
-        }}
-      >
-        <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
-          <Home size={16} />
-        </button>
-        <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
-          <LogOut size={16} />
-        </button>
+        <span style={{ display: 'flex', gap: '8px' }}>
+          <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
+            <Home size={16} />
+          </button>
+          <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
+            <LogOut size={16} />
+          </button>
+        </span>
       </div>
 
       <div

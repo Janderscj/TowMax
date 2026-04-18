@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Plus, Trash2, Car, Home, LogOut } from 'lucide-react';
+import { Plus, Trash2, Car } from 'lucide-react';
 import { supabase } from '../utils/supabase';
+import { API_URL } from '../utils/apiConfig';
+import AppHeader from '../components/AppHeader';
+import { globalStyles } from '../styles/globalStyles';
 
-function GarageScreen({ onVinSelect, onAddVehicle, onVehicleClick, onHome, onSignOut }) {
+function GarageScreen({ onVinSelect, onAddVehicle, onVehicleClick, onHome, onSignOut, onBack }) {
   const { user, profile, isFree, isPremium, isDealer } = useAuth();
   const [garage, setGarage] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
     if (!user || isDealer) {
@@ -44,7 +45,7 @@ function GarageScreen({ onVinSelect, onAddVehicle, onVehicleClick, onHome, onSig
     };
 
     loadGarage();
-  }, [API_URL, user, isDealer]);
+  }, [API_URL, user, isDealer]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const removeVehicle = async (vehicleId) => {
     try {
@@ -102,17 +103,13 @@ function GarageScreen({ onVinSelect, onAddVehicle, onVehicleClick, onHome, onSig
 
   return (
     <div style={styles.container}>
-      <div style={styles.header}>
-        <h1 style={styles.title}>My Garage</h1>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button onClick={onHome} style={styles.navIconButton} aria-label="Home">
-            <Home size={16} />
-          </button>
-          <button onClick={onSignOut} style={styles.navIconButton} aria-label="Sign out">
-            <LogOut size={16} />
-          </button>
-        </div>
-      </div>
+      <AppHeader
+        title="My Garage"
+        showBackButton={true}
+        onBack={onBack}
+        onHome={onHome}
+        onSignOut={onSignOut}
+      />
 
       <div style={styles.roleInfo}>
         <p style={styles.roleText}>
@@ -185,28 +182,6 @@ const styles = {
     minHeight: '100vh',
     background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
     color: 'white',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '20px',
-  },
-  title: {
-    fontSize: '2rem',
-    fontWeight: 'bold',
-  },
-  navIconButton: {
-    width: '34px',
-    height: '34px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.22)',
-    borderRadius: '8px',
-    color: '#fff',
-    cursor: 'pointer',
   },
   roleInfo: {
     marginBottom: '20px',

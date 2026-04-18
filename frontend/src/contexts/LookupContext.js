@@ -1,11 +1,9 @@
 import { createContext, useContext, useState, useRef, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { supabase } from '../utils/supabase';
+import { API_URL } from '../utils/apiConfig';
 
 const LookupContext = createContext();
-
-// API URL from env or fallback to localhost (defined outside component to prevent recreation)
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 export const useLookup = () => {
   const context = useContext(LookupContext);
@@ -72,7 +70,7 @@ export const LookupProvider = ({ children }) => {
     };
 
     loadGarageCount();
-  }, [user, isDealer, garageLimit, API_URL]);
+  }, [user, isDealer, garageLimit]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const clearLookupState = () => {
     setVin('');
@@ -321,6 +319,7 @@ export const LookupProvider = ({ children }) => {
     setLookupOrigin,
     garageSaveLoading,
     garageSaveError,
+    setGarageSaveError,
     showUpgradePrompt,
     setShowUpgradePrompt,
     selectedGarageVehicle,

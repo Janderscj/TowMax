@@ -1,4 +1,6 @@
-import { Home, LogOut, RotateCcw, Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { RotateCcw, Search } from 'lucide-react';
+import AppHeader from '../components/AppHeader';
 
 /**
  * RangeFallbackScreen
@@ -21,6 +23,7 @@ export default function RangeFallbackScreen({
   onHome,
   onSignOut,
 }) {
+  const navigate = useNavigate();
   const iconBtnStyle = {
     width: '34px',
     height: '34px',
@@ -56,17 +59,13 @@ export default function RangeFallbackScreen({
           zIndex: 1,
         }}
       >
-        {/* ─── Nav icons row ─── */}
-        <div
-          style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '8px' }}
-        >
-          <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
-            <Home size={16} />
-          </button>
-          <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
-            <LogOut size={16} />
-          </button>
-        </div>
+        <AppHeader
+          title="Refine Results"
+          showBackButton={true}
+          onBack={onRecheck || (() => navigate('/results/range'))}
+          onHome={onHome}
+          onSignOut={onSignOut}
+        />
 
         {/* ─── Hero section ─── */}
         <div

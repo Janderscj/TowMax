@@ -1,4 +1,5 @@
-import { Home, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import AppHeader from '../components/AppHeader';
 
 export default function RangeResultScreen({
   decoded,
@@ -6,9 +7,11 @@ export default function RangeResultScreen({
   maxTow,
   onRefine,
   onNewSearch,
+  onBack,
   onHome,
   onSignOut,
 }) {
+  const navigate = useNavigate();
   const iconBtnStyle = {
     width: '34px',
     height: '34px',
@@ -43,16 +46,13 @@ export default function RangeResultScreen({
           zIndex: 1,
         }}
       >
-        <div
-          style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '8px' }}
-        >
-          <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
-            <Home size={16} />
-          </button>
-          <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
-            <LogOut size={16} />
-          </button>
-        </div>
+        <AppHeader
+          title="Towing Range Found"
+          showBackButton={true}
+          onBack={onBack || (() => navigate('/vin'))}
+          onHome={onHome}
+          onSignOut={onSignOut}
+        />
         <div
           style={{
             textAlign: 'center',

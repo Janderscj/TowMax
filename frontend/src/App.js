@@ -1,4 +1,4 @@
-﻿import { Routes, Route, Navigate, useNavigate, useSearchParams, useParams } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import { useLookup } from './contexts/LookupContext';
 import WelcomeScreen from './screens/WelcomeScreen';
@@ -13,10 +13,8 @@ import GarageScreen from './screens/GarageScreen';
 import GarageVehicleDetailsScreen from './screens/GarageVehicleDetailsScreen';
 import UpgradeScreen from './screens/UpgradeScreen';
 import { supabase } from './utils/supabase';
+import { API_URL } from './utils/apiConfig';
 import { useEffect, useCallback } from 'react';
-
-// API URL from env or fallback to localhost
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 function ProtectedRoute({ children }) {
   const { user, loading: authLoading, profileLoading } = useAuth();
@@ -33,7 +31,6 @@ function ProtectedRoute({ children }) {
 }
 
 function GarageDetailsWrapper() {
-  const { id } = useParams();
   const {
     selectedGarageVehicle,
     clearLookupState,
@@ -85,24 +82,10 @@ function QuestionsWrapper() {
     matches,
     answers,
     handleRefineAnswer,
-    error,
-    setError,
-    lookupOrigin,
-    clearLookupState,
-    setSelectedGarageVehicle,
-    setLookupOrigin,
     resetAll,
     signOut,
   } = useLookup();
   const navigate = useNavigate();
-
-  const goToGarage = () => {
-    clearLookupState();
-    setSelectedGarageVehicle(null);
-    setLookupOrigin('garage');
-    setError(null);
-    navigate('/garage');
-  };
 
   const handleGlobalSignOut = async () => {
     try {
@@ -154,8 +137,6 @@ function AuthenticatedRoutes() {
     setVin,
     result,
     matches,
-    initialMissing,
-    initialOptions,
     answers,
     error,
     setError,
@@ -166,13 +147,9 @@ function AuthenticatedRoutes() {
     setGarageSaveError,
     showUpgradePrompt,
     setShowUpgradePrompt,
-    selectedGarageVehicle,
     setSelectedGarageVehicle,
-    garageCount,
     setGarageCount,
-    garageCountLoading,
     setGarageCountLoading,
-    isRefining,
     decoded,
     garageLimit,
     garageLimitReached,
@@ -180,7 +157,6 @@ function AuthenticatedRoutes() {
     clearLookupState,
     resetAll,
     decodeVin,
-    handleRefineAnswer,
     performGarageSave,
   } = useLookup();
 
@@ -197,7 +173,7 @@ function AuthenticatedRoutes() {
 
   useEffect(() => {
     const loadGarageCount = async () => {
-      if (!user || isDealer || !profile || garageLimit == null) return;
+      if (!user || isDealer || !profile) return;
 
       try {
         setGarageCountLoading(true);
@@ -222,7 +198,7 @@ function AuthenticatedRoutes() {
     };
 
     loadGarageCount();
-  }, [user, isDealer, profile, garageLimit]);
+  }, [user, isDealer, profile, garageLimit]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleGlobalSignOut = async () => {
     try {
@@ -341,6 +317,7 @@ function AuthenticatedRoutes() {
               maxTow={Math.max(...matches.map((m) => m.maxTow || 0))}
               onRefine={() => navigate('/questions')}
               onNewSearch={lookupOrigin === 'garage' ? goToGarage : () => navigate('/')}
+              onBack={() => navigate('/vin')}
               onHome={() => navigate('/')}
               onSignOut={handleGlobalSignOut}
             />
@@ -404,6 +381,7 @@ function AuthenticatedRoutes() {
             }
             onVehicleClick={goToGarageDetails}
             onAddVehicle={() => goToVinLookup('', { origin: 'garage', saveToGarage: true })}
+            onBack={() => navigate('/')}
             onHome={() => navigate('/')}
             onSignOut={handleGlobalSignOut}
           />

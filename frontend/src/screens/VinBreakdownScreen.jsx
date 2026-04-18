@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ArrowLeft, Home, LogOut } from 'lucide-react';
+import AppHeader from '../components/AppHeader';
 import PremiumGate from '../components/PremiumGate';
 /**
  * VinBreakdownScreen
@@ -18,19 +18,6 @@ import PremiumGate from '../components/PremiumGate';
  * TODO: enforce premium access here when gating is ready
  */
 export default function VinBreakdownScreen({ vehicle, rawVinData, onBack, onHome, onSignOut }) {
-  const iconBtnStyle = {
-    width: '34px',
-    height: '34px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.22)',
-    borderRadius: '8px',
-    color: '#fff',
-    cursor: 'pointer',
-  };
-
   const breakdownFields = useMemo(() => {
     if (!rawVinData || !Array.isArray(rawVinData)) return [];
 
@@ -55,25 +42,15 @@ export default function VinBreakdownScreen({ vehicle, rawVinData, onBack, onHome
   }, [rawVinData]);
 
   return (
-    <PremiumGate>
+    <PremiumGate onBack={onBack}>
       <div style={styles.container}>
-        {/* Header row: back button + home/logout icons */}
-        <div style={styles.headerRow}>
-          <button onClick={onBack} style={styles.navButton}>
-            <ArrowLeft size={16} />
-            Back
-          </button>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button onClick={onHome} style={iconBtnStyle} aria-label="Home">
-              <Home size={16} />
-            </button>
-            <button onClick={onSignOut} style={iconBtnStyle} aria-label="Sign out">
-              <LogOut size={16} />
-            </button>
-          </div>
-        </div>
-
-        <h1 style={styles.title}>Full VIN Breakdown</h1>
+        <AppHeader
+          title="Full VIN Breakdown"
+          showBackButton={true}
+          onBack={onBack}
+          onHome={onHome}
+          onSignOut={onSignOut}
+        />
 
         {/* Vehicle identity card */}
         <div style={styles.vehicleCard}>

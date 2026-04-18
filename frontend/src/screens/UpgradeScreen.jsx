@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Home, LogOut } from 'lucide-react';
+import AppHeader from '../components/AppHeader';
 
 export default function UpgradeScreen({ onHome, onSignOut }) {
   const navigate = useNavigate();
@@ -14,38 +14,7 @@ export default function UpgradeScreen({ onHome, onSignOut }) {
       flexDirection: 'column',
       position: 'relative',
       overflow: 'hidden',
-    },
-    headerRow: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '16px 24px',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-    },
-    navButton: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-      padding: '10px 14px',
-      background: 'rgba(255, 255, 255, 0.08)',
-      border: '1px solid rgba(255, 255, 255, 0.22)',
-      borderRadius: '6px',
-      color: '#e0e0e0',
-      cursor: 'pointer',
-      fontSize: '14px',
-      fontWeight: 500,
-    },
-    iconButton: {
-      width: '34px',
-      height: '34px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'rgba(255, 255, 255, 0.08)',
-      border: '1px solid rgba(255, 255, 255, 0.22)',
-      borderRadius: '8px',
-      color: '#e0e0e0',
-      cursor: 'pointer',
+      padding: '20px',
     },
     content: {
       flex: 1,
@@ -55,9 +24,10 @@ export default function UpgradeScreen({ onHome, onSignOut }) {
       justifyContent: 'center',
       padding: '40px 24px',
       textAlign: 'center',
+      marginTop: '24px',
     },
     title: {
-      fontSize: '32px',
+      fontSize: '28px',
       fontWeight: 'bold',
       marginBottom: '16px',
     },
@@ -105,20 +75,13 @@ export default function UpgradeScreen({ onHome, onSignOut }) {
 
   return (
     <div style={styles.container}>
-      <div style={styles.headerRow}>
-        <button onClick={() => navigate(-1)} style={styles.navButton}>
-          <ArrowLeft size={16} />
-          Back
-        </button>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button onClick={onHome} style={styles.iconButton} aria-label="Home">
-            <Home size={16} />
-          </button>
-          <button onClick={onSignOut} style={styles.iconButton} aria-label="Sign Out">
-            <LogOut size={16} />
-          </button>
-        </div>
-      </div>
+      <AppHeader
+        title="Upgrade to Premium"
+        showBackButton={true}
+        onBack={() => navigate(-1)}
+        onHome={onHome}
+        onSignOut={onSignOut}
+      />
 
       <div style={styles.content}>
         <h1 style={styles.title}>Upgrade to Premium</h1>
