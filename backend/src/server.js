@@ -5,6 +5,7 @@ const compression = require('compression');
 const towingRoutes = require('./routes/towingRoutes');
 const userRoutes = require('./routes/userRoutes');
 const garageRoutes = require('./routes/garageRoutes');
+const { validateAllData } = require('../scripts/validateData.js');
 const app = express();
 app.set('trust proxy', 1); // Trust first proxy (if behind a proxy like Heroku or Vercel)
 
@@ -54,8 +55,16 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
+// Validate data before starting server
+const allValid = validateAllData();
+
+if (!allValid) {
+  console.error('\n Data validation failed. Fix errors before starting the server.');
+  process.exit(1);
+}
+
 app.listen(PORT, () => {
-  console.log('SERVER BOOTED');
+  console.log('\n SERVER BOOTED');
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });

@@ -1,6 +1,6 @@
-import { z } from 'zod';
+const { z } = require('zod');
 
-export const VehicleConfigSchema = z.object({
+const VehicleConfigSchema = z.object({
   year: z.number(),
   make: z.string(),
   model: z.string(),
@@ -18,4 +18,6 @@ export const VehicleConfigSchema = z.object({
   requires: z.array(z.string()).optional(),
   notes: z.string().optional(),
 });
-export const VehicleDatasetSchema = z.array(VehicleConfigSchema);
+const VehicleDatasetSchema = z.array(VehicleConfigSchema);
+
+module.exports = { VehicleConfigSchema, VehicleDatasetSchema };

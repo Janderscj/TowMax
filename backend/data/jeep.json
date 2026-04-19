@@ -10,7 +10,7 @@
     "cabType": "Crew Cab",
     "bed": "5.0 ft",
     "axleRatio": "3.73",
-    "towPackage": true,
+    "towPackage": "Standard",
     "gcwr": 11500,
     "payload": 1160,
     "maxTow": 6500
@@ -26,7 +26,7 @@
     "cabType": "Crew Cab",
     "bed": "5.0 ft",
     "axleRatio": "3.73",
-    "towPackage": true,
+    "towPackage": "Standard",
     "gcwr": 11500,
     "payload": 1160,
     "maxTow": 6500
@@ -42,7 +42,7 @@
     "cabType": "Crew Cab",
     "bed": "5.0 ft",
     "axleRatio": "3.73",
-    "towPackage": true,
+    "towPackage": "Standard",
     "gcwr": 11500,
     "payload": 1160,
     "maxTow": 6500
@@ -58,7 +58,7 @@
     "cabType": "Crew Cab",
     "bed": "5.0 ft",
     "axleRatio": "3.73",
-    "towPackage": true,
+    "towPackage": "Standard",
     "gcwr": 12000,
     "payload": 1240,
     "maxTow": 7550
@@ -74,7 +74,7 @@
     "cabType": "Crew Cab",
     "bed": "5.0 ft",
     "axleRatio": "3.73",
-    "towPackage": true,
+    "towPackage": "Standard",
     "gcwr": 11500,
     "payload": 1160,
     "maxTow": 6500
@@ -90,7 +90,7 @@
     "cabType": "Crew Cab",
     "bed": "5.0 ft",
     "axleRatio": "3.73",
-    "towPackage": true,
+    "towPackage": "Standard",
     "gcwr": 11500,
     "payload": 1160,
     "maxTow": 6500
@@ -106,7 +106,7 @@
     "cabType": "Crew Cab",
     "bed": "5.0 ft",
     "axleRatio": "3.73",
-    "towPackage": true,
+    "towPackage": "Standard",
     "gcwr": 12000,
     "payload": 1240,
     "maxTow": 7550
@@ -122,7 +122,7 @@
     "cabType": "Crew Cab",
     "bed": "5.0 ft",
     "axleRatio": "3.73",
-    "towPackage": true,
+    "towPackage": "Standard",
     "gcwr": 11500,
     "payload": 1160,
     "maxTow": 6500
@@ -138,7 +138,7 @@
     "cabType": "Crew Cab",
     "bed": "5.0 ft",
     "axleRatio": "3.73",
-    "towPackage": true,
+    "towPackage": "Standard",
     "gcwr": 11500,
     "payload": 1160,
     "maxTow": 6500
@@ -154,7 +154,7 @@
     "cabType": "Crew Cab",
     "bed": "5.0 ft",
     "axleRatio": "3.73",
-    "towPackage": true,
+    "towPackage": "Standard",
     "gcwr": 11500,
     "payload": 1160,
     "maxTow": 6500
@@ -170,7 +170,7 @@
     "cabType": "Crew Cab",
     "bed": "5.0 ft",
     "axleRatio": "3.73",
-    "towPackage": true,
+    "towPackage": "Standard",
     "gcwr": 11500,
     "payload": 1160,
     "maxTow": 6500

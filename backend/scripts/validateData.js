@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import { VehicleDatasetSchema } from '../schemas/vehicleSchema.js';
+const fs = require('fs');
+const path = require('path');
+const { VehicleDatasetSchema } = require('../schemas/vehicleSchema.js');
 
-const dataDir = path.join(process.cwd(), 'backend/data');
+const dataDir = path.join(__dirname, '../data');
 
 function validateFile(filePath) {
   const raw = fs.readFileSync(filePath, 'utf8');
@@ -21,17 +21,35 @@ function validateFile(filePath) {
 }
 
 function walk(dir) {
+  let allValid = true;
   const entries = fs.readdirSync(dir);
 
   for (const entry of entries) {
     const fullPath = path.join(dir, entry);
 
     if (fs.statSync(fullPath).isDirectory()) {
-      walk(fullPath);
+      if (!walk(fullPath)) allValid = false;
     } else if (entry.endsWith('.json')) {
-      validateFile(fullPath);
+      if (!validateFile(fullPath)) allValid = false;
     }
+  }
+
+  return allValid;
+}
+
+function validateAllData() {
+  try {
+    return walk(dataDir);
+  } catch (err) {
+    console.error('Data validation error:', err.message);
+    return false;
   }
 }
 
-walk(dataDir);
+module.exports = { validateAllData };
+
+// Allow direct CLI execution: node scripts/validateData.js
+if (require.main === module) {
+  const valid = validateAllData();
+  process.exit(valid ? 0 : 1);
+}

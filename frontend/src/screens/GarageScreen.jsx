@@ -4,7 +4,6 @@ import { Plus, Trash2, Car } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { API_URL } from '../utils/apiConfig';
 import AppHeader from '../components/AppHeader';
-import { globalStyles } from '../styles/globalStyles';
 
 function GarageScreen({
   onVinSelect,
