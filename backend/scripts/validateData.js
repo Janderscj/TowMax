@@ -1,6 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const { VehicleDatasetSchema } = require('../schemas/vehicleSchema.js');
+import fs from 'fs';
+import path from 'path';
+import { VehicleDatasetSchema } from '../schemas/vehicleSchema.js';
+import { fileURLToPath } from 'url';
+
+// Define __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const dataDir = path.join(__dirname, '../data');
 
@@ -46,10 +51,10 @@ function validateAllData() {
   }
 }
 
-module.exports = { validateAllData };
+export { validateAllData };
 
 // Allow direct CLI execution: node scripts/validateData.js
-if (require.main === module) {
+if (process.argv[1] === __filename) {
   const valid = validateAllData();
   process.exit(valid ? 0 : 1);
 }

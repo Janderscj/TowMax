@@ -1,4 +1,4 @@
-const supabase = require('../utils/supabaseClient');
+import supabase from '../utils/supabaseClient.js';
 
 async function authenticateUser(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -25,4 +25,4 @@ async function authenticateUser(req, res, next) {
   }
 }
 
-module.exports = authenticateUser;
+export default authenticateUser;

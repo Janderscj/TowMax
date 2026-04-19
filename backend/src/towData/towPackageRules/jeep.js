@@ -20,4 +20,4 @@ const jeepRules = {
   }),
 };
 
-module.exports = jeepRules;
+export default jeepRules;

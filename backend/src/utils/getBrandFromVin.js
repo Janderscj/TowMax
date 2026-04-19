@@ -98,4 +98,4 @@ function getBrandFromVin(vin) {
   return map[wmi] || null;
 }
 
-module.exports = getBrandFromVin;
+export default getBrandFromVin;

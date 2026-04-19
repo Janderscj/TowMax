@@ -1,14 +1,14 @@
-const express = require('express');
-const router = express.Router();
-const supabase = require('../utils/supabaseClient');
+import express from 'express';
+import supabase from '../utils/supabaseClient.js';
+import decodeVin from '../utils/vinDecoder.js';
+import matchTowing from '../utils/matchTowing.js';
+import detectMissingFields from '../utils/detectMissingFields.js';
+import extractOptions from '../utils/extractOptions.js';
+import { getTowPackageOptions } from '../utils/towPackageEngine.js';
+import loadBrandData from '../utils/loadBrandData.js';
+import getBrandFromVin from '../utils/getBrandFromVin.js';
 
-const decodeVin = require('../utils/vinDecoder');
-const matchTowing = require('../utils/matchTowing');
-const detectMissingFields = require('../utils/detectMissingFields');
-const extractOptions = require('../utils/extractOptions');
-const { getTowPackageOptions } = require('../utils/towPackageEngine');
-const loadBrandData = require('../utils/loadBrandData');
-const getBrandFromVin = require('../utils/getBrandFromVin');
+const router = express.Router();
 
 // Middleware to verify JWT token
 // NOTE: VIN lookup endpoint is intentionally accessible without authentication
@@ -157,12 +157,10 @@ router.post('/refine', authenticateUser, async (req, res) => {
 
   // Validate answers object structure
   if (typeof answers !== 'object' || Array.isArray(answers)) {
-    return res
-      .status(400)
-      .json({
-        error:
-          'Invalid answers format. Expected object with optional properties: axleRatio, towPackage, bedLength',
-      });
+    return res.status(400).json({
+      error:
+        'Invalid answers format. Expected object with optional properties: axleRatio, towPackage, bedLength',
+    });
   }
 
   if (!isValidVin(vin)) {
@@ -237,4 +235,4 @@ router.post('/refine', authenticateUser, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

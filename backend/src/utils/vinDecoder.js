@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 // ✅ NHTSA field constants (avoid magic strings)
 const NHTSA_FIELDS = {
@@ -168,4 +168,4 @@ async function decodeVin(vin) {
   }
 }
 
-module.exports = decodeVin;
+export default decodeVin;

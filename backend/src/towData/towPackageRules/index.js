@@ -1,11 +1,11 @@
-const chevrolet = require('./chevrolet.js');
-const ford = require('./ford.js');
-const ram = require('./ram.js');
-const toyota = require('./toyota.js');
-const gmc = require('./gmc.js');
-const nissan = require('./nissan.js');
-const honda = require('./honda.js');
-const jeep = require('./jeep.js');
+import chevrolet from './chevrolet.js';
+import ford from './ford.js';
+import ram from './ram.js';
+import toyota from './toyota.js';
+import gmc from './gmc.js';
+import nissan from './nissan.js';
+import honda from './honda.js';
+import jeep from './jeep.js';
 
 const towPackageRules = {
   Chevrolet: chevrolet,
@@ -18,4 +18,4 @@ const towPackageRules = {
   Jeep: jeep,
 };
 
-module.exports = towPackageRules;
+export default towPackageRules;

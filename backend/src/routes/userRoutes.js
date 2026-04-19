@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import supabase from '../utils/supabaseClient.js';
+import authenticateUser from '../middleware/authenticateUser.js';
+
 const router = express.Router();
-const supabase = require('../utils/supabaseClient');
-const authenticateUser = require('../middleware/authenticateUser');
 const defaultProfile = {
   role: 'free',
   garage_limit: 1,
@@ -91,4 +92,4 @@ router.post('/role/update', authenticateUser, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,6 +1,6 @@
 // backend/src/utils/towPackageEngine.js
 
-const towPackageRules = require('../towData/towPackageRules/index.js');
+import towPackageRules from '../towData/towPackageRules/index.js';
 
 function getTowPackageOptions({ brand, model, year }) {
   // Normalize brand to title-case to match towPackageRules keys
@@ -14,4 +14,4 @@ function getTowPackageOptions({ brand, model, year }) {
   return modelRule(year);
 }
 
-module.exports = { getTowPackageOptions };
+export { getTowPackageOptions };

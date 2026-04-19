@@ -38,4 +38,4 @@ const nissanRules = {
   }),
 };
 
-module.exports = nissanRules;
+export default nissanRules;

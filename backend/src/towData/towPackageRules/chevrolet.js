@@ -137,4 +137,4 @@ const chevroletRules = {
   }),
 };
 
-module.exports = chevroletRules;
+export default chevroletRules;

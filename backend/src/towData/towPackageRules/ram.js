@@ -56,4 +56,4 @@ const ramRules = {
   }),
 };
 
-module.exports = ramRules;
+export default ramRules;

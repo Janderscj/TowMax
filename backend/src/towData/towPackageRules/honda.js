@@ -20,4 +20,4 @@ const hondaRules = {
   }),
 };
 
-module.exports = hondaRules;
+export default hondaRules;

@@ -38,4 +38,4 @@ const toyotaRules = {
   }),
 };
 
-module.exports = toyotaRules;
+export default toyotaRules;

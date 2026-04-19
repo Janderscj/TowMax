@@ -80,4 +80,4 @@ const gmcRules = {
   }),
 };
 
-module.exports = gmcRules;
+export default gmcRules;

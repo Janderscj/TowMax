@@ -1,4 +1,4 @@
-const { z } = require('zod');
+import { z } from 'zod';
 
 const VehicleConfigSchema = z.object({
   year: z.number(),
@@ -13,11 +13,11 @@ const VehicleConfigSchema = z.object({
   wheelbase: z.string().optional(),
   gcwr: z.number().nullable().optional(),
   maxTow: z.number().nullable().optional(),
-  towPackage: z.string(), // enforce string, fixes Honda issue
+  towPackage: z.string(),
   towType: z.string().optional(),
   requires: z.array(z.string()).optional(),
   notes: z.string().optional(),
 });
 const VehicleDatasetSchema = z.array(VehicleConfigSchema);
 
-module.exports = { VehicleConfigSchema, VehicleDatasetSchema };
+export { VehicleConfigSchema, VehicleDatasetSchema };

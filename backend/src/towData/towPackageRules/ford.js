@@ -80,4 +80,4 @@ const fordRules = {
   }),
 };
 
-module.exports = fordRules;
+export default fordRules;

@@ -52,4 +52,4 @@ function matchTowing(decoded, towingData) {
   return matches;
 }
 
-module.exports = matchTowing;
+export default matchTowing;

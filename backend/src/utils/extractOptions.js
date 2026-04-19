@@ -13,4 +13,4 @@ function extractOptions(matches) {
   };
 }
 
-module.exports = extractOptions;
+export default extractOptions;

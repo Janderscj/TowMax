@@ -1,5 +1,10 @@
-const fs = require('fs').promises; // Use promises API
-const path = require('path');
+import { promises as fs } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Define __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // In-memory cache to avoid repeated file reads
 const dataCache = new Map();
@@ -39,4 +44,4 @@ async function loadBrandData(brand) {
   }
 }
 
-module.exports = loadBrandData;
+export default loadBrandData;

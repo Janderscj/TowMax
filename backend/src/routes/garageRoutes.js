@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import supabase from '../utils/supabaseClient.js';
+import authenticateUser from '../middleware/authenticateUser.js';
+import decodeVin from '../utils/vinDecoder.js';
+
 const router = express.Router();
-const supabase = require('../utils/supabaseClient');
-const authenticateUser = require('../middleware/authenticateUser');
-const decodeVin = require('../utils/vinDecoder');
 
 function isValidVin(vin) {
   return /^[A-HJ-NPR-Z0-9]{17}$/i.test(vin);
@@ -199,4 +200,4 @@ router.post('/remove', authenticateUser, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,11 +1,12 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const compression = require('compression');
-const towingRoutes = require('./routes/towingRoutes');
-const userRoutes = require('./routes/userRoutes');
-const garageRoutes = require('./routes/garageRoutes');
-const { validateAllData } = require('../scripts/validateData.js');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import compression from 'compression';
+import towingRoutes from './routes/towingRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import garageRoutes from './routes/garageRoutes.js';
+import { validateAllData } from '../scripts/validateData.js';
+
 const app = express();
 app.set('trust proxy', 1); // Trust first proxy (if behind a proxy like Heroku or Vercel)
 

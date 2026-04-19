@@ -21,4 +21,4 @@ function detectMissingFields(matches, answers = {}) {
   return missing;
 }
 
-module.exports = detectMissingFields;
+export default detectMissingFields;
