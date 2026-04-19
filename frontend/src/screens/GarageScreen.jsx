@@ -6,7 +6,16 @@ import { API_URL } from '../utils/apiConfig';
 import AppHeader from '../components/AppHeader';
 import { globalStyles } from '../styles/globalStyles';
 
-function GarageScreen({ onVinSelect, onAddVehicle, onVehicleClick, onHome, onSignOut, onBack }) {
+function GarageScreen({
+  onVinSelect,
+  onAddVehicle,
+  onVehicleClick,
+  onHome,
+  onSignOut,
+  onBack,
+  isGuest = false,
+  onLogin,
+}) {
   const { user, profile, isFree, isPremium, isDealer } = useAuth();
   const [garage, setGarage] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -109,6 +118,8 @@ function GarageScreen({ onVinSelect, onAddVehicle, onVehicleClick, onHome, onSig
         onBack={onBack}
         onHome={onHome}
         onSignOut={onSignOut}
+        isGuest={isGuest}
+        onLogin={onLogin}
       />
 
       <div style={styles.roleInfo}>

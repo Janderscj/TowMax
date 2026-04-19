@@ -12,6 +12,8 @@ export default function QuestionsScreen({
   onHome,
   onSignOut,
   isRefining,
+  isGuest = false,
+  onLogin,
 }) {
   if (!missing || missing.length === 0) return null;
 
@@ -47,6 +49,8 @@ export default function QuestionsScreen({
           onBack={onBack}
           onHome={onHome}
           onSignOut={onSignOut}
+          isGuest={isGuest}
+          onLogin={onLogin}
         />
         {/* Progress Bar */}
         <div

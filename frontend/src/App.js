@@ -30,6 +30,28 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+// Protected routes that deny guest access (require authenticated user)
+function GuestDeniedRoute({ children, guestMessage }) {
+  const { user, loading: authLoading, profileLoading, isGuest } = useAuth();
+
+  if (authLoading || (user && profileLoading)) {
+    return <LoadingScreen />;
+  }
+
+  if (!user || isGuest) {
+    // Store the message in sessionStorage so LoginScreen can display it
+    if (isGuest) {
+      sessionStorage.setItem(
+        'guestDenialMessage',
+        guestMessage || 'Please sign in to access this feature.'
+      );
+    }
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
 function GarageDetailsWrapper() {
   const {
     selectedGarageVehicle,
@@ -40,6 +62,7 @@ function GarageDetailsWrapper() {
     signOut,
     resetAll,
   } = useLookup();
+  const { isGuest } = useAuth();
   const navigate = useNavigate();
 
   const goToGarage = () => {
@@ -70,6 +93,8 @@ function GarageDetailsWrapper() {
       onBack={goToGarage}
       onHome={() => navigate('/')}
       onSignOut={handleGlobalSignOut}
+      isGuest={isGuest}
+      onLogin={() => navigate('/login')}
     />
   );
 }
@@ -85,6 +110,7 @@ function QuestionsWrapper() {
     resetAll,
     signOut,
   } = useLookup();
+  const { isGuest } = useAuth();
   const navigate = useNavigate();
 
   const handleGlobalSignOut = async () => {
@@ -125,12 +151,14 @@ function QuestionsWrapper() {
       onHome={() => navigate('/')}
       onSignOut={handleGlobalSignOut}
       isRefining={false} // This will be handled internally
+      isGuest={isGuest}
+      onLogin={() => navigate('/login')}
     />
   );
 }
 
 function AuthenticatedRoutes() {
-  const { user, profile, profileError, signOut, refetchProfile, isDealer } = useAuth();
+  const { user, profile, profileError, signOut, refetchProfile, isDealer, isGuest } = useAuth();
 
   const {
     vin,
@@ -254,7 +282,7 @@ function AuthenticatedRoutes() {
     }
   }, [result, error, handleVinDecoded]);
 
-  if (!profile) {
+  if (!profile && !isGuest) {
     return (
       <div style={styles.appContainer}>
         <div style={styles.profileErrorContainer}>
@@ -285,9 +313,11 @@ function AuthenticatedRoutes() {
               navigate('/vin');
             }}
             onGarage={goToGarage}
-            showGarage={!isDealer}
+            showGarage={!isDealer && !isGuest}
             onHome={() => navigate('/')}
             onSignOut={handleGlobalSignOut}
+            isGuest={isGuest}
+            onLogin={() => navigate('/login')}
           />
         }
       />
@@ -304,6 +334,8 @@ function AuthenticatedRoutes() {
             onDecode={decodeVin}
             onHome={() => navigate('/')}
             onSignOut={handleGlobalSignOut}
+            isGuest={isGuest}
+            onLogin={() => navigate('/login')}
           />
         }
       />
@@ -320,6 +352,8 @@ function AuthenticatedRoutes() {
               onBack={() => navigate('/vin')}
               onHome={() => navigate('/')}
               onSignOut={handleGlobalSignOut}
+              isGuest={isGuest}
+              onLogin={() => navigate('/login')}
             />
           ) : (
             <Navigate to="/" replace />
@@ -347,6 +381,8 @@ function AuthenticatedRoutes() {
               onNewSearch={lookupOrigin === 'garage' ? goToGarage : () => navigate('/')}
               onHome={() => navigate('/')}
               onSignOut={handleGlobalSignOut}
+              isGuest={isGuest}
+              onLogin={() => navigate('/login')}
             />
           ) : (
             <Navigate to="/" replace />
@@ -366,6 +402,8 @@ function AuthenticatedRoutes() {
               onNewSearch={lookupOrigin === 'garage' ? goToGarage : () => navigate('/')}
               onHome={() => navigate('/')}
               onSignOut={handleGlobalSignOut}
+              isGuest={isGuest}
+              onLogin={() => navigate('/login')}
             />
           ) : (
             <Navigate to="/" replace />
@@ -375,22 +413,42 @@ function AuthenticatedRoutes() {
       <Route
         path="/garage"
         element={
-          <GarageScreen
-            onVinSelect={(selectedVin) =>
-              goToVinLookup(selectedVin, { origin: 'garage', saveToGarage: false })
-            }
-            onVehicleClick={goToGarageDetails}
-            onAddVehicle={() => goToVinLookup('', { origin: 'garage', saveToGarage: true })}
-            onBack={() => navigate('/')}
-            onHome={() => navigate('/')}
-            onSignOut={handleGlobalSignOut}
-          />
+          <GuestDeniedRoute guestMessage="Please sign in to save vehicles to your garage.">
+            <GarageScreen
+              onVinSelect={(selectedVin) =>
+                goToVinLookup(selectedVin, { origin: 'garage', saveToGarage: false })
+              }
+              onVehicleClick={goToGarageDetails}
+              onAddVehicle={() => goToVinLookup('', { origin: 'garage', saveToGarage: true })}
+              onBack={() => navigate('/')}
+              onHome={() => navigate('/')}
+              onSignOut={handleGlobalSignOut}
+              isGuest={isGuest}
+              onLogin={() => navigate('/login')}
+            />
+          </GuestDeniedRoute>
         }
       />
-      <Route path="/garage/:id" element={<GarageDetailsWrapper />} />
+      <Route
+        path="/garage/:id"
+        element={
+          <GuestDeniedRoute guestMessage="Please sign in to view saved vehicles.">
+            <GarageDetailsWrapper />
+          </GuestDeniedRoute>
+        }
+      />
       <Route
         path="/upgrade"
-        element={<UpgradeScreen onHome={() => navigate('/')} onSignOut={handleGlobalSignOut} />}
+        element={
+          <GuestDeniedRoute guestMessage="Please sign in to upgrade to Premium.">
+            <UpgradeScreen
+              onHome={() => navigate('/')}
+              onSignOut={handleGlobalSignOut}
+              isGuest={isGuest}
+              onLogin={() => navigate('/login')}
+            />
+          </GuestDeniedRoute>
+        }
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

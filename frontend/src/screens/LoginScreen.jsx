@@ -1,14 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 function LoginScreen() {
-  const { signInWithGoogle, loading } = useAuth();
+  const { signInWithGoogle, signInAsGuest, loading } = useAuth();
+  const navigate = useNavigate();
+  const [guestDenialMessage, setGuestDenialMessage] = useState(null);
+
+  useEffect(() => {
+    // Check if there's a guest denial message from a protected route
+    const message = sessionStorage.getItem('guestDenialMessage');
+    if (message) {
+      setGuestDenialMessage(message);
+      sessionStorage.removeItem('guestDenialMessage');
+    }
+  }, []);
 
   const handleGoogleLogin = async () => {
     try {
       await signInWithGoogle();
     } catch (error) {
       console.error('Login error:', error);
+    }
+  };
+
+  const handleGuestLogin = () => {
+    try {
+      signInAsGuest();
+      navigate('/');
+    } catch (error) {
+      console.error('Guest login error:', error);
     }
   };
 
@@ -33,8 +54,14 @@ function LoginScreen() {
           </svg>
         </div>
 
-        <h1 style={styles.title}>Welcome to TowMate</h1>
+        <h1 style={styles.title}>Welcome to Max Tow</h1>
         <p style={styles.subtitle}>Sign in to look up your vehicle's towing capacity</p>
+
+        {guestDenialMessage && (
+          <div style={styles.warningBox}>
+            <p style={styles.warningText}>{guestDenialMessage}</p>
+          </div>
+        )}
 
         <div style={styles.divider}>
           <div style={styles.dividerLine} />
@@ -62,6 +89,10 @@ function LoginScreen() {
             />
           </svg>
           {loading ? 'Signing in…' : 'Continue with Google'}
+        </button>
+
+        <button onClick={handleGuestLogin} disabled={loading} style={styles.guestButton}>
+          Continue as Guest
         </button>
 
         <p style={styles.disclaimer}>
@@ -111,6 +142,19 @@ const styles = {
     margin: '0 0 2rem',
     lineHeight: '1.5',
   },
+  warningBox: {
+    background: 'rgba(255, 193, 7, 0.1)',
+    border: '1px solid rgba(255, 193, 7, 0.3)',
+    borderRadius: '8px',
+    padding: '12px 16px',
+    marginBottom: '1.5rem',
+  },
+  warningText: {
+    fontSize: '13px',
+    color: '#ffd700',
+    margin: 0,
+    lineHeight: '1.4',
+  },
   divider: {
     display: 'flex',
     alignItems: 'center',
@@ -142,6 +186,20 @@ const styles = {
     cursor: 'pointer',
     fontFamily: 'inherit',
     marginBottom: '12px',
+  },
+  guestButton: {
+    width: '100%',
+    padding: '9px 16px',
+    background: 'rgba(255,255,255,0.03)',
+    border: '0.5px solid rgba(255,255,255,0.1)',
+    borderRadius: '8px',
+    fontSize: '14px',
+    fontWeight: '400',
+    color: '#888',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    marginBottom: '12px',
+    transition: 'all 0.2s',
   },
   disclaimer: {
     fontSize: '12px',

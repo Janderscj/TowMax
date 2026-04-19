@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import AppHeader from '../components/AppHeader';
 
-export default function UpgradeScreen({ onHome, onSignOut }) {
+export default function UpgradeScreen({ onHome, onSignOut, isGuest = false, onLogin }) {
   const navigate = useNavigate();
 
   const styles = {
@@ -81,6 +81,8 @@ export default function UpgradeScreen({ onHome, onSignOut }) {
         onBack={() => navigate(-1)}
         onHome={onHome}
         onSignOut={onSignOut}
+        isGuest={isGuest}
+        onLogin={onLogin}
       />
 
       <div style={styles.content}>

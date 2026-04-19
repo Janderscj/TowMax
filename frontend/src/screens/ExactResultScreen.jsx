@@ -20,6 +20,8 @@ export default function ExactResultScreen({
   onBack,
   onHome,
   onSignOut,
+  isGuest = false,
+  onLogin,
 }) {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -72,6 +74,8 @@ export default function ExactResultScreen({
           onBack={onBack}
           onHome={onHome}
           onSignOut={onSignOut}
+          isGuest={isGuest}
+          onLogin={onLogin}
         />
         <div
           style={{
@@ -248,7 +252,7 @@ export default function ExactResultScreen({
           payload, tongue weight, and trailer specifications.
         </div>
 
-        {showAddVehicle && (
+        {showAddVehicle && !isGuest && (
           <>
             <div
               style={{

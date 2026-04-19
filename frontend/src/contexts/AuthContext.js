@@ -101,9 +101,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // -----------------------------
+  // ─────────────────────────────────────────────────────────────────
+  // Guest Sign In
+  // ─────────────────────────────────────────────────────────────────
+  const signInAsGuest = () => {
+    console.log('👤 Signing in as guest...');
+    setUser({ isGuest: true });
+    resetProfileState();
+  };
+
+  // ─────────────────────────────────────────────────────────────────
   // Initial Session Load
-  // -----------------------------
+  // ─────────────────────────────────────────────────────────────────
   useEffect(() => {
     let mounted = true;
 
@@ -183,6 +192,15 @@ export const AuthProvider = ({ children }) => {
   // Sign Out
   // -----------------------------
   const signOut = async () => {
+    // Handle guest user logout
+    if (user?.isGuest) {
+      console.log('👤 Signing out guest...');
+      setUser(null);
+      resetProfileState();
+      return;
+    }
+
+    // Handle authenticated user logout
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
 
@@ -195,6 +213,7 @@ export const AuthProvider = ({ children }) => {
   const isFree = profile?.role === 'free';
   const isPremium = profile?.role === 'premium';
   const isDealer = profile?.role === 'dealer';
+  const isGuest = user?.isGuest === true;
 
   return (
     <AuthContext.Provider
@@ -205,10 +224,12 @@ export const AuthProvider = ({ children }) => {
         profileLoading,
         profileError,
         signInWithGoogle,
+        signInAsGuest,
         signOut,
         isFree,
         isPremium,
         isDealer,
+        isGuest,
         refetchProfile: () => user && fetchProfile(user.id),
       }}
     >

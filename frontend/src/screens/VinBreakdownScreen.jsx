@@ -17,7 +17,15 @@ import PremiumGate from '../components/PremiumGate';
  *
  * TODO: enforce premium access here when gating is ready
  */
-export default function VinBreakdownScreen({ vehicle, rawVinData, onBack, onHome, onSignOut }) {
+export default function VinBreakdownScreen({
+  vehicle,
+  rawVinData,
+  onBack,
+  onHome,
+  onSignOut,
+  isGuest = false,
+  onLogin,
+}) {
   const breakdownFields = useMemo(() => {
     if (!rawVinData || !Array.isArray(rawVinData)) return [];
 
@@ -50,6 +58,8 @@ export default function VinBreakdownScreen({ vehicle, rawVinData, onBack, onHome
           onBack={onBack}
           onHome={onHome}
           onSignOut={onSignOut}
+          isGuest={isGuest}
+          onLogin={onLogin}
         />
 
         {/* Vehicle identity card */}

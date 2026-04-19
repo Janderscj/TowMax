@@ -8,6 +8,8 @@ export default function WelcomeScreen({
   showGarage,
   onHome,
   onSignOut,
+  isGuest = false,
+  onLogin,
 }) {
   return (
     <div
@@ -43,7 +45,14 @@ export default function WelcomeScreen({
           zIndex: 1,
         }}
       >
-        <AppHeader title="TowMax" showBackButton={false} onHome={onHome} onSignOut={onSignOut} />
+        <AppHeader
+          title="TowMax"
+          showBackButton={false}
+          onHome={onHome}
+          onSignOut={onSignOut}
+          isGuest={isGuest}
+          onLogin={onLogin}
+        />
 
         <div style={{ flex: 1 }}>
           <div
@@ -56,7 +65,7 @@ export default function WelcomeScreen({
               fontWeight: '500',
             }}
           >
-            Towing Calculator
+            Towing Estimator
           </div>
 
           <h1

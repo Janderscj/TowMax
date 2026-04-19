@@ -1,6 +1,14 @@
-import { Home, LogOut, ArrowLeft } from 'lucide-react';
+import { Home, LogOut, LogIn, ArrowLeft } from 'lucide-react';
 
-export default function AppHeader({ title, showBackButton = false, onBack, onHome, onSignOut }) {
+export default function AppHeader({
+  title,
+  showBackButton = false,
+  onBack,
+  onHome,
+  onSignOut,
+  isGuest = false,
+  onLogin,
+}) {
   const styles = {
     header: {
       display: 'flex',
@@ -71,11 +79,15 @@ export default function AppHeader({ title, showBackButton = false, onBack, onHom
             <Home size={18} />
           </button>
         )}
-        {onSignOut && (
+        {isGuest && onLogin ? (
+          <button onClick={onLogin} style={styles.navButton} aria-label="Sign in">
+            <LogIn size={18} />
+          </button>
+        ) : onSignOut ? (
           <button onClick={onSignOut} style={styles.navButton} aria-label="Sign out">
             <LogOut size={18} />
           </button>
-        )}
+        ) : null}
       </div>
     </div>
   );

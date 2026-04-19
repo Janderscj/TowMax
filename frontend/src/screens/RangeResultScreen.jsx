@@ -11,6 +11,8 @@ export default function RangeResultScreen({
   onBack,
   onHome,
   onSignOut,
+  isGuest = false,
+  onLogin,
 }) {
   const navigate = useNavigate();
   const iconBtnStyle = {

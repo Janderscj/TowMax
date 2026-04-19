@@ -1,7 +1,16 @@
 import { AlertCircle, Search } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
 
-export default function VinEntryScreen({ vin, setVin, onBack, onDecode, onHome, onSignOut }) {
+export default function VinEntryScreen({
+  vin,
+  setVin,
+  onBack,
+  onDecode,
+  onHome,
+  onSignOut,
+  isGuest = false,
+  onLogin,
+}) {
   const handleDecode = () => {
     if (vin.length === 17) {
       onDecode(vin);
@@ -34,20 +43,6 @@ export default function VinEntryScreen({ vin, setVin, onBack, onDecode, onHome, 
       />
       <div
         style={{
-          padding: '8px 20px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          fontSize: '12px',
-          color: '#999',
-          borderBottom: '1px solid rgba(255,255,255,0.05)',
-        }}
-      >
-        <span>9:41</span>
-        <span>●●●●●</span>
-      </div>
-
-      <div
-        style={{
           padding: '24px',
           minHeight: 'calc(100vh - 40px)',
           display: 'flex',
@@ -62,6 +57,8 @@ export default function VinEntryScreen({ vin, setVin, onBack, onDecode, onHome, 
           onBack={onBack}
           onHome={onHome}
           onSignOut={onSignOut}
+          isGuest={isGuest}
+          onLogin={onLogin}
         />
 
         <h2
@@ -143,7 +140,7 @@ export default function VinEntryScreen({ vin, setVin, onBack, onDecode, onHome, 
           >
             <AlertCircle size={20} style={{ flexShrink: 0, marginTop: '2px' }} />
             <div>
-              <strong style={{ display: 'block', marginBottom: '4px' }}>Pro Tip:</strong>
+              <strong style={{ display: 'block', marginBottom: '4px' }}>Tip:</strong>
               VIN is located on the driver&apos;s side dashboard or door jamb
             </div>
           </div>

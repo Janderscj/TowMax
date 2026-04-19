@@ -22,6 +22,8 @@ export default function RangeFallbackScreen({
   onNewSearch, // → navigate to VIN input screen
   onHome,
   onSignOut,
+  isGuest = false,
+  onLogin,
 }) {
   const navigate = useNavigate();
   const iconBtnStyle = {
@@ -65,6 +67,8 @@ export default function RangeFallbackScreen({
           onBack={onRecheck || (() => navigate('/results/range'))}
           onHome={onHome}
           onSignOut={onSignOut}
+          isGuest={isGuest}
+          onLogin={onLogin}
         />
 
         {/* ─── Hero section ─── */}

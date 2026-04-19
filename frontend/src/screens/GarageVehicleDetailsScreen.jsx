@@ -4,7 +4,14 @@ import { API_URL } from '../utils/apiConfig';
 import VinBreakdownScreen from './VinBreakdownScreen';
 import AppHeader from '../components/AppHeader';
 
-export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome, onSignOut }) {
+export default function GarageVehicleDetailsScreen({
+  vehicle,
+  onBack,
+  onHome,
+  onSignOut,
+  isGuest = false,
+  onLogin,
+}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [decoded, setDecoded] = useState(null);
@@ -102,6 +109,8 @@ export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome, on
         onBack={() => setShowBreakdown(false)}
         onHome={onHome}
         onSignOut={onSignOut}
+        isGuest={isGuest}
+        onLogin={onLogin}
       />
     );
   }
@@ -114,6 +123,8 @@ export default function GarageVehicleDetailsScreen({ vehicle, onBack, onHome, on
         onBack={onBack}
         onHome={onHome}
         onSignOut={onSignOut}
+        isGuest={isGuest}
+        onLogin={onLogin}
       />
 
       <div style={styles.vehicleCard}>
