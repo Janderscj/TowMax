@@ -26,3 +26,8 @@ jobs:
 
       - name: Confirm Node is working
         run: node -v
+
+      - name: Run data validation
+        run: |
+          cd backend
+          node scripts/validateData.js
