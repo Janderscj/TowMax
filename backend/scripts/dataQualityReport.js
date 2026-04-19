@@ -74,7 +74,7 @@ export default function runDataQualityReport() {
   for (const file of files) {
     const json = loadJson(file);
 
-    const brand = path.basename(path.dirname(file));
+    const brand = path.basename(file, '.json');
     brandCounts[brand] = (brandCounts[brand] || 0) + json.length;
 
     for (const cfg of json) {

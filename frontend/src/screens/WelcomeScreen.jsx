@@ -92,7 +92,7 @@ export default function WelcomeScreen({
               maxWidth: '320px',
             }}
           >
-            Enter your VIN to discover your vehicle&apos;s exact towing capacity in seconds.
+            Enter your VIN to discover your vehicle&apos;s estimated towing capacity in seconds.
           </p>
 
           <div
