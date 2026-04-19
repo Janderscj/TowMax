@@ -3,7 +3,8 @@ import { useAuth } from './contexts/AuthContext';
 import { useLookup } from './contexts/LookupContext';
 import WelcomeScreen from './screens/WelcomeScreen';
 import VinEntryScreen from './screens/VinEntryScreen';
-import LoadingScreen from './screens/LoadingScreen';
+import VinLoadingScreen from './screens/VinLoadingScreen';
+import ProfileLoadingScreen from './screens/ProfileLoadingScreen';
 import QuestionsScreen from './screens/QuestionsScreen';
 import RangeResultScreen from './screens/RangeResultScreen';
 import RangeFallbackScreen from './screens/RangeFallbackScreen';
@@ -20,7 +21,7 @@ function ProtectedRoute({ children }) {
   const { user, loading: authLoading, profileLoading } = useAuth();
 
   if (authLoading || (user && profileLoading)) {
-    return <LoadingScreen />;
+    return <ProfileLoadingScreen />;
   }
 
   if (!user) {
@@ -35,7 +36,7 @@ function GuestDeniedRoute({ children, guestMessage }) {
   const { user, loading: authLoading, profileLoading, isGuest } = useAuth();
 
   if (authLoading || (user && profileLoading)) {
-    return <LoadingScreen />;
+    return <ProfileLoadingScreen />;
   }
 
   if (!user || isGuest) {
@@ -179,6 +180,7 @@ function AuthenticatedRoutes() {
     setGarageCount,
     setGarageCountLoading,
     decoded,
+    vinDecoding,
     garageLimit,
     garageLimitReached,
     canAddVehicleToGarage,
@@ -324,19 +326,23 @@ function AuthenticatedRoutes() {
       <Route
         path="/vin"
         element={
-          <VinEntryScreen
-            vin={vin}
-            setVin={setVin}
-            onBack={() => {
-              setError(null);
-              navigate(lookupOrigin === 'garage' ? '/garage' : '/');
-            }}
-            onDecode={decodeVin}
-            onHome={() => navigate('/')}
-            onSignOut={handleGlobalSignOut}
-            isGuest={isGuest}
-            onLogin={() => navigate('/login')}
-          />
+          vinDecoding ? (
+            <VinLoadingScreen />
+          ) : (
+            <VinEntryScreen
+              vin={vin}
+              setVin={setVin}
+              onBack={() => {
+                setError(null);
+                navigate(lookupOrigin === 'garage' ? '/garage' : '/');
+              }}
+              onDecode={decodeVin}
+              onHome={() => navigate('/')}
+              onSignOut={handleGlobalSignOut}
+              isGuest={isGuest}
+              onLogin={() => navigate('/login')}
+            />
+          )
         }
       />
       <Route

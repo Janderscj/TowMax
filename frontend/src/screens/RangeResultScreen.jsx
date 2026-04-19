@@ -15,18 +15,7 @@ export default function RangeResultScreen({
   onLogin,
 }) {
   const navigate = useNavigate();
-  const iconBtnStyle = {
-    width: '34px',
-    height: '34px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.22)',
-    borderRadius: '8px',
-    color: '#fff',
-    cursor: 'pointer',
-  };
+
   return (
     <div
       style={{

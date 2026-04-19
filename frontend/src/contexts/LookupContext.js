@@ -31,6 +31,7 @@ export const LookupProvider = ({ children }) => {
   const [garageCount, setGarageCount] = useState(0);
   const [garageCountLoading, setGarageCountLoading] = useState(false);
   const [isRefining, setIsRefining] = useState(false);
+  const [vinDecoding, setVinDecoding] = useState(false);
 
   // Cache for VIN responses to prevent redundant API calls
   const vinCacheRef = useRef(new Map());
@@ -83,6 +84,7 @@ export const LookupProvider = ({ children }) => {
     setGarageSaveError(null);
     setShowUpgradePrompt(false);
     setIsRefining(false);
+    setVinDecoding(false);
     setGarageCount(0);
     setGarageCountLoading(false);
     refineInFlightRef.current = false;
@@ -157,6 +159,8 @@ export const LookupProvider = ({ children }) => {
       return;
     }
 
+    setVinDecoding(true);
+
     try {
       setError(null);
       setVin(vinInput);
@@ -193,6 +197,8 @@ export const LookupProvider = ({ children }) => {
     } catch (err) {
       console.error('Error decoding VIN:', err);
       setError('Unable to connect to server. Please try again.');
+    } finally {
+      setVinDecoding(false);
     }
   };
 
@@ -329,6 +335,7 @@ export const LookupProvider = ({ children }) => {
     garageCountLoading,
     setGarageCountLoading,
     isRefining,
+    vinDecoding,
     decoded,
     garageLimit,
     garageLimitReached,
