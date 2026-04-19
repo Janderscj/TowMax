@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { VehicleDatasetSchema } from '../schemas/vehicleSchema.js';
 import { fileURLToPath } from 'url';
-
-// Define __dirname for ES modules
+import runDataQualityReport from './dataQualityReport.js';
+runDataQualityReport();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

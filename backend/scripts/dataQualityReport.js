@@ -1,8 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { VehicleConfigSchema } from '../schemas/vehicleSchema.js';
+import { fileURLToPath } from 'url';
 
-const dataDir = path.join(process.cwd(), 'backend/data');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const dataDir = path.join(__dirname, '../data');
 
 function loadJson(filePath) {
   const raw = fs.readFileSync(filePath, 'utf8');
