@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     setProfileError(null);
 
     try {
-      console.log('👤 Fetching profile for:', userId);
+      console.log(' Fetching profile for:', userId);
 
       let timeoutId;
       const profilePromise = supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
       if (data) {
         loadedProfileUserIdRef.current = userId;
         setProfile(data);
-        console.log('👤 Profile loaded:', data);
+        console.log(' Profile loaded:', data);
         return true;
       }
 
@@ -87,10 +87,10 @@ export const AuthProvider = ({ children }) => {
 
       loadedProfileUserIdRef.current = userId;
       setProfile(payload);
-      console.log('👤 Profile recovered from API:', payload);
+      console.log(' Profile recovered from API:', payload);
       return true;
     } catch (err) {
-      console.error('❌ Profile fetch exception:', err);
+      console.error(' Profile fetch exception:', err);
       loadedProfileUserIdRef.current = null;
       setProfile(null);
       setProfileError(err.message || 'Unable to load account details.');
@@ -105,7 +105,7 @@ export const AuthProvider = ({ children }) => {
   // Guest Sign In
   // ─────────────────────────────────────────────────────────────────
   const signInAsGuest = () => {
-    console.log('👤 Signing in as guest...');
+    console.log(' Signing in as guest...');
     setUser({ isGuest: true });
     resetProfileState();
   };
@@ -117,7 +117,7 @@ export const AuthProvider = ({ children }) => {
     let mounted = true;
 
     const loadSession = async () => {
-      console.log('🔐 Checking existing session...');
+      console.log(' Checking existing session...');
 
       const {
         data: { session },
@@ -127,7 +127,7 @@ export const AuthProvider = ({ children }) => {
       if (!mounted) return;
 
       if (error) {
-        console.error('❌ Session error:', error);
+        console.error(' Session error:', error);
         setLoading(false);
         return;
       }
@@ -154,7 +154,7 @@ export const AuthProvider = ({ children }) => {
     const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return;
 
-      console.log('🔐 Auth state change:', event);
+      console.log(' Auth state change:', event);
 
       const currentUser = session?.user ?? null;
       setUser(currentUser);
@@ -194,7 +194,7 @@ export const AuthProvider = ({ children }) => {
   const signOut = async () => {
     // Handle guest user logout
     if (user?.isGuest) {
-      console.log('👤 Signing out guest...');
+      console.log(' Signing out guest...');
       setUser(null);
       resetProfileState();
       return;
