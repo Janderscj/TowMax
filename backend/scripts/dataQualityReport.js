@@ -34,7 +34,17 @@ function detectDuplicates(configs) {
   const duplicates = [];
 
   for (const config of configs) {
-    const key = `${config.year}|${config.make}|${config.model}`;
+    const key = [
+      config.year,
+      config.make,
+      config.model,
+      config.engine,
+      config.drivetrain,
+      config.cab,
+      config.bed,
+      config.axleRatio,
+      config.towPackage,
+    ].join('|');
 
     if (seen.has(key)) {
       duplicates.push({ key, entries: [seen.get(key), config] });
