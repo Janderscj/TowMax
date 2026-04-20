@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import AppHeader from '../components/AppHeader';
+import LegalDisclaimer from '../components/LegalDisclaimer';
 
 export default function ExactResultScreen({
   decoded,
@@ -523,6 +524,8 @@ export default function ExactResultScreen({
             </div>
           </div>
         )}
+
+        <LegalDisclaimer />
       </div>
     </div>
   );

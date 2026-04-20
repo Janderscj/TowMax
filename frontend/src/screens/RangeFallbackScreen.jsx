@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { RotateCcw, Search } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
+import LegalDisclaimer from '../components/LegalDisclaimer';
 
 /**
  * RangeFallbackScreen
@@ -232,6 +233,8 @@ export default function RangeFallbackScreen({
         >
           Try new VIN
         </button>
+
+        <LegalDisclaimer />
       </div>
     </div>
   );

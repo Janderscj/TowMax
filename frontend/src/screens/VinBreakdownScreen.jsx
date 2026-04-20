@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import AppHeader from '../components/AppHeader';
-import PremiumGate from '../components/PremiumGate';
+import LegalDisclaimer from '../components/LegalDisclaimer';
 /**
  * VinBreakdownScreen
  *
@@ -50,57 +50,57 @@ export default function VinBreakdownScreen({
   }, [rawVinData]);
 
   return (
-    <PremiumGate onBack={onBack}>
-      <div style={styles.container}>
-        <AppHeader
-          title="Full VIN Breakdown"
-          showBackButton={true}
-          onBack={onBack}
-          onHome={onHome}
-          onSignOut={onSignOut}
-          isGuest={isGuest}
-          onLogin={onLogin}
-        />
+    <div style={styles.container}>
+      <AppHeader
+        title="Full VIN Breakdown"
+        showBackButton={true}
+        onBack={onBack}
+        onHome={onHome}
+        onSignOut={onSignOut}
+        isGuest={isGuest}
+        onLogin={onLogin}
+      />
 
-        {/* Vehicle identity card */}
-        <div style={styles.vehicleCard}>
-          <p style={styles.vehicleName}>
-            {vehicle?.year} {vehicle?.make} {vehicle?.model}
-            {vehicle?.trim ? ` ${vehicle.trim}` : ''}
-          </p>
-          <p style={styles.vehicleMeta}>VIN: {vehicle?.vin}</p>
-        </div>
-
-        {breakdownFields.length === 0 ? (
-          /*
-           * Empty state: raw data missing or entirely filtered out.
-           * Most likely for vehicles added before raw data was stored.
-           * Removing and re-adding the vehicle will refresh its data.
-           */
-          <div style={styles.emptyState}>
-            <p style={styles.emptyText}>No VIN breakdown data available for this vehicle.</p>
-            <p style={styles.emptySubtext}>
-              This can happen for vehicles added before this feature was introduced. Try removing
-              and re-adding the vehicle to refresh its data.
-            </p>
-          </div>
-        ) : (
-          <>
-            <p style={styles.fieldCount}>{breakdownFields.length} fields decoded</p>
-
-            {/* Two-column field list: label left, value right */}
-            <div style={styles.fieldList}>
-              {breakdownFields.map((field) => (
-                <div key={field.label} style={styles.fieldRow}>
-                  <span style={styles.fieldLabel}>{field.label}</span>
-                  <span style={styles.fieldValue}>{String(field.value)}</span>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
+      {/* Vehicle identity card */}
+      <div style={styles.vehicleCard}>
+        <p style={styles.vehicleName}>
+          {vehicle?.year} {vehicle?.make} {vehicle?.model}
+          {vehicle?.trim ? ` ${vehicle.trim}` : ''}
+        </p>
+        <p style={styles.vehicleMeta}>VIN: {vehicle?.vin}</p>
       </div>
-    </PremiumGate>
+
+      {breakdownFields.length === 0 ? (
+        /*
+         * Empty state: raw data missing or entirely filtered out.
+         * Most likely for vehicles added before raw data was stored.
+         * Removing and re-adding the vehicle will refresh its data.
+         */
+        <div style={styles.emptyState}>
+          <p style={styles.emptyText}>No VIN breakdown data available for this vehicle.</p>
+          <p style={styles.emptySubtext}>
+            This can happen for vehicles added before this feature was introduced. Try removing and
+            re-adding the vehicle to refresh its data.
+          </p>
+        </div>
+      ) : (
+        <>
+          <p style={styles.fieldCount}>{breakdownFields.length} fields decoded</p>
+
+          {/* Two-column field list: label left, value right */}
+          <div style={styles.fieldList}>
+            {breakdownFields.map((field) => (
+              <div key={field.label} style={styles.fieldRow}>
+                <span style={styles.fieldLabel}>{field.label}</span>
+                <span style={styles.fieldValue}>{String(field.value)}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      <LegalDisclaimer />
+    </div>
   );
 }
 

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Target } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
+import LegalDisclaimer from '../components/LegalDisclaimer';
 
 export default function RangeResultScreen({
   decoded,
@@ -210,6 +211,8 @@ export default function RangeResultScreen({
         >
           Start New Search
         </button>
+
+        <LegalDisclaimer />
       </div>
     </div>
   );

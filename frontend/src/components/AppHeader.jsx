@@ -13,44 +13,36 @@ export default function AppHeader({
   const styles = {
     header: {
       display: 'flex',
+      alignItems: 'center',
       justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '16px 0',
+      height: 'clamp(48px, 10vw, 56px)',
       borderBottom: '1px solid rgba(255,255,255,0.05)',
-      marginBottom: '24px',
+      padding: '0 clamp(8px, 2vw, 12px)',
+      marginBottom: 'clamp(16px, 3vw, 24px)',
     },
-    titleGroup: {
+    side: {
+      width: '25%',
       display: 'flex',
       alignItems: 'center',
-      gap: '12px',
-    },
-    backButton: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '6px',
-      padding: '8px 12px',
-      background: 'rgba(255,255,255,0.08)',
-      border: '1px solid rgba(255,255,255,0.22)',
-      borderRadius: '6px',
-      color: '#e0e0e0',
-      cursor: 'pointer',
-      fontSize: '14px',
-      fontWeight: '500',
-      transition: 'all 0.2s',
-    },
-    title: {
-      fontSize: '24px',
-      fontWeight: 'bold',
-      margin: 0,
-      color: '#fff',
-    },
-    navButtons: {
-      display: 'flex',
       gap: '8px',
     },
+    center: {
+      flex: 1,
+      display: 'flex',
+      justifyContent: 'center',
+      pointerEvents: 'none',
+    },
+    title: {
+      fontSize: 'clamp(18px, 4vw, 22px)',
+      fontWeight: '600',
+      margin: 0,
+      color: '#fff',
+      textAlign: 'center',
+      whiteSpace: 'nowrap',
+    },
     navButton: {
-      width: '40px',
-      height: '40px',
+      width: 'clamp(32px, 8vw, 40px)',
+      height: 'clamp(32px, 8vw, 40px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -60,32 +52,26 @@ export default function AppHeader({
       color: '#e0e0e0',
       cursor: 'pointer',
       transition: 'all 0.2s',
+      padding: 0,
     },
   };
 
   return (
     <div style={styles.header}>
-      <div style={styles.navButtons}>
+      <div style={styles.side}>
+        {showBackButton && onBack && (
+          <button onClick={onBack} style={styles.navButton}>
+            <ArrowLeft size={18} />
+          </button>
+        )}
         {onUpgrade && (
           <button onClick={onUpgrade} style={styles.navButton}>
             <Gem size={18} />
           </button>
         )}
       </div>
-      <div style={styles.titleGroup}>
-        {showBackButton && onBack && (
-          <button onClick={onBack} style={styles.backButton}>
-            <ArrowLeft size={16} />
-            Back
-          </button>
-        )}
-      </div>
-
-      <div style={{ flex: 1, textAlign: 'center' }}>
-        {title && <h1 style={styles.title}>{title}</h1>}
-      </div>
-
-      <div style={styles.navButtons}>
+      <div style={styles.center}>{title && <h1 style={styles.title}>{title}</h1>}</div>
+      <div style={{ ...styles.side, justifyContent: 'flex-end' }}>
         {onHome && (
           <button onClick={onHome} style={styles.navButton}>
             <Home size={18} />

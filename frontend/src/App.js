@@ -13,6 +13,9 @@ import LoginScreen from './screens/LoginScreen';
 import GarageScreen from './screens/GarageScreen';
 import GarageVehicleDetailsScreen from './screens/GarageVehicleDetailsScreen';
 import UpgradeScreen from './screens/UpgradeScreen';
+import TermsOfService from './screens/TermsOfService';
+import PrivacyPolicy from './screens/PrivacyPolicy';
+import AppFooter from './components/AppFooter';
 import { supabase } from './utils/supabase';
 import { API_URL } from './utils/apiConfig';
 import { useEffect, useCallback } from 'react';
@@ -457,6 +460,28 @@ function AuthenticatedRoutes() {
           </GuestDeniedRoute>
         }
       />
+      <Route
+        path="/terms"
+        element={
+          <TermsOfService
+            onHome={() => navigate('/')}
+            onSignOut={handleGlobalSignOut}
+            isGuest={isGuest}
+            onLogin={() => navigate('/login')}
+          />
+        }
+      />
+      <Route
+        path="/privacy"
+        element={
+          <PrivacyPolicy
+            onHome={() => navigate('/')}
+            onSignOut={handleGlobalSignOut}
+            isGuest={isGuest}
+            onLogin={() => navigate('/login')}
+          />
+        }
+      />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
@@ -476,6 +501,9 @@ function AppContent() {
           }
         />
       </Routes>
+      <div style={{ padding: '0 24px' }}>
+        <AppFooter />
+      </div>
     </div>
   );
 }
