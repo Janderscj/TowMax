@@ -1,6 +1,5 @@
 import { ArrowRight, Car } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
-import PageTitle from '../components/PageTitle';
 
 export default function WelcomeScreen({
   error,

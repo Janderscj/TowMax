@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { RotateCcw, Search } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
-import PageTitle from '../components/PageTitle';
 import LegalDisclaimer from '../components/LegalDisclaimer';
 
 /**
@@ -20,8 +19,8 @@ export default function RangeFallbackScreen({
   decoded,
   minTow,
   maxTow,
-  onRecheck, // → navigate back to MissingInfoQuestions / QuestionsScreen
-  onNewSearch, // → navigate to VIN input screen
+  onRecheck,
+  onNewSearch,
   onHome,
   onSignOut,
   isGuest = false,
@@ -61,7 +60,6 @@ export default function RangeFallbackScreen({
           onLogin={onLogin}
         />
 
-        {/* ─── Hero section ─── */}
         <div
           style={{
             textAlign: 'center',
@@ -69,7 +67,6 @@ export default function RangeFallbackScreen({
             marginBottom: '32px',
           }}
         >
-          {/* Amber/orange icon to match app palette, uses Search to signal "investigating" */}
           <div
             style={{
               width: '80px',
