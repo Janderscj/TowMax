@@ -1,5 +1,6 @@
 import { AlertCircle, Search } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 
 export default function VinEntryScreen({
   vin,
@@ -52,7 +53,6 @@ export default function VinEntryScreen({
         }}
       >
         <AppHeader
-          title="VIN Lookup"
           showBackButton={true}
           onBack={onBack}
           onHome={onHome}
@@ -60,6 +60,8 @@ export default function VinEntryScreen({
           isGuest={isGuest}
           onLogin={onLogin}
         />
+
+        <PageTitle>VIN Lookup</PageTitle>
 
         <h2
           style={{

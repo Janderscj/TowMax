@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 import LegalDisclaimer from '../components/LegalDisclaimer';
 
 export default function ExactResultScreen({
@@ -94,6 +95,7 @@ export default function ExactResultScreen({
           isGuest={isGuest}
           onLogin={onLogin}
         />
+        <PageTitle>Vehicle Details</PageTitle>
         <div
           style={{
             textAlign: 'center',

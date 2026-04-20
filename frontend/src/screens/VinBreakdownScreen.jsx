@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 import LegalDisclaimer from '../components/LegalDisclaimer';
 /**
  * VinBreakdownScreen
@@ -52,7 +53,6 @@ export default function VinBreakdownScreen({
   return (
     <div style={styles.container}>
       <AppHeader
-        title="Full VIN Breakdown"
         showBackButton={true}
         onBack={onBack}
         onHome={onHome}
@@ -60,6 +60,8 @@ export default function VinBreakdownScreen({
         isGuest={isGuest}
         onLogin={onLogin}
       />
+
+      <PageTitle>Full VIN Breakdown</PageTitle>
 
       {/* Vehicle identity card */}
       <div style={styles.vehicleCard}>

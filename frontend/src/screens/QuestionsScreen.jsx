@@ -1,4 +1,5 @@
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 import MissingInfoQuestions from '../components/questions/MissingInfoQuestions';
 
 export default function QuestionsScreen({
@@ -44,7 +45,6 @@ export default function QuestionsScreen({
         }}
       >
         <AppHeader
-          title="Refine Your Results"
           showBackButton={true}
           onBack={onBack}
           onHome={onHome}
@@ -52,6 +52,8 @@ export default function QuestionsScreen({
           isGuest={isGuest}
           onLogin={onLogin}
         />
+
+        <PageTitle>Refine Your Results</PageTitle>
         {/* Progress Bar */}
         <div
           style={{

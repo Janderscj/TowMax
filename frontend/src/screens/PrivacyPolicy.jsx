@@ -1,4 +1,5 @@
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 
 export default function PrivacyPolicy({ onHome, onSignOut, isGuest = false, onLogin }) {
   return (
@@ -13,7 +14,6 @@ export default function PrivacyPolicy({ onHome, onSignOut, isGuest = false, onLo
     >
       <div style={{ padding: '24px' }}>
         <AppHeader
-          title="Privacy Policy"
           showBackButton={true}
           onBack={() => window.history.back()}
           onHome={onHome}
@@ -21,6 +21,8 @@ export default function PrivacyPolicy({ onHome, onSignOut, isGuest = false, onLo
           isGuest={isGuest}
           onLogin={onLogin}
         />
+
+        <PageTitle>Privacy Policy</PageTitle>
 
         <div
           style={{

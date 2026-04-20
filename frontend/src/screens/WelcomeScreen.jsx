@@ -1,5 +1,6 @@
 import { ArrowRight, Car } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 
 export default function WelcomeScreen({
   error,
@@ -47,7 +48,6 @@ export default function WelcomeScreen({
         }}
       >
         <AppHeader
-          title="TowMax"
           showBackButton={false}
           onHome={onHome}
           onSignOut={onSignOut}

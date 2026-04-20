@@ -1,7 +1,6 @@
 import { Home, LogOut, LogIn, ArrowLeft, Gem } from 'lucide-react';
 
 export default function AppHeader({
-  title,
   showBackButton = false,
   onBack,
   onHome,
@@ -70,7 +69,9 @@ export default function AppHeader({
           </button>
         )}
       </div>
-      <div style={styles.center}>{title && <h1 style={styles.title}>{title}</h1>}</div>
+      <div style={styles.center}>
+        <h1 style={styles.title}>TowMax</h1>
+      </div>
       <div style={{ ...styles.side, justifyContent: 'flex-end' }}>
         {onHome && (
           <button onClick={onHome} style={styles.navButton}>

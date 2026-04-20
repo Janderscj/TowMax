@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { RotateCcw, Search } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 import LegalDisclaimer from '../components/LegalDisclaimer';
 
 /**

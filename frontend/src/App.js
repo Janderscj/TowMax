@@ -16,6 +16,7 @@ import UpgradeScreen from './screens/UpgradeScreen';
 import TermsOfService from './screens/TermsOfService';
 import PrivacyPolicy from './screens/PrivacyPolicy';
 import AppFooter from './components/AppFooter';
+import ScrollToTop from './components/ScrollToTop';
 import { supabase } from './utils/supabase';
 import { API_URL } from './utils/apiConfig';
 import { useEffect, useCallback } from 'react';
@@ -490,6 +491,7 @@ function AuthenticatedRoutes() {
 function AppContent() {
   return (
     <div style={styles.appContainer}>
+      <ScrollToTop />
       <Routes>
         <Route path="/login" element={<LoginScreen />} />
         <Route

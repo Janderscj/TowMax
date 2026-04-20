@@ -1,4 +1,5 @@
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 
 export default function TermsOfService({ onHome, onSignOut, isGuest = false, onLogin }) {
   return (
@@ -13,7 +14,6 @@ export default function TermsOfService({ onHome, onSignOut, isGuest = false, onL
     >
       <div style={{ padding: '24px' }}>
         <AppHeader
-          title="Terms of Service"
           showBackButton={true}
           onBack={() => window.history.back()}
           onHome={onHome}
@@ -21,6 +21,8 @@ export default function TermsOfService({ onHome, onSignOut, isGuest = false, onL
           isGuest={isGuest}
           onLogin={onLogin}
         />
+
+        <PageTitle>Terms of Service</PageTitle>
 
         <div
           style={{

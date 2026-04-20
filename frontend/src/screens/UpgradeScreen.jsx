@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 
 export default function UpgradeScreen({ onHome, onSignOut, isGuest = false, onLogin }) {
   const navigate = useNavigate();
@@ -76,7 +77,6 @@ export default function UpgradeScreen({ onHome, onSignOut, isGuest = false, onLo
   return (
     <div style={styles.container}>
       <AppHeader
-        title="Upgrade"
         showBackButton={true}
         onBack={() => navigate(-1)}
         onHome={onHome}
@@ -85,6 +85,7 @@ export default function UpgradeScreen({ onHome, onSignOut, isGuest = false, onLo
         onLogin={onLogin}
       />
 
+      <PageTitle>Upgrade to Premium</PageTitle>
       <div style={styles.content}>
         <h1 style={styles.title}>Upgrade to Premium</h1>
         <p style={styles.description}>

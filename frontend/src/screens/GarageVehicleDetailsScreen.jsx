@@ -3,6 +3,7 @@ import { supabase } from '../utils/supabase';
 import { API_URL } from '../utils/apiConfig';
 import VinBreakdownScreen from './VinBreakdownScreen';
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 
 export default function GarageVehicleDetailsScreen({
   vehicle,
@@ -118,7 +119,6 @@ export default function GarageVehicleDetailsScreen({
   return (
     <div style={styles.container}>
       <AppHeader
-        title="Vehicle Details"
         showBackButton={true}
         onBack={onBack}
         onHome={onHome}
@@ -127,6 +127,7 @@ export default function GarageVehicleDetailsScreen({
         onLogin={onLogin}
       />
 
+      <PageTitle>Vehicle Details</PageTitle>
       <div style={styles.vehicleCard}>
         <p style={styles.vehicleName}>
           {vehicle?.year} {vehicle?.make} {vehicle?.model}

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Target } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 import LegalDisclaimer from '../components/LegalDisclaimer';
 
 export default function RangeResultScreen({
@@ -40,12 +41,14 @@ export default function RangeResultScreen({
         }}
       >
         <AppHeader
-          title="Towing Range Found"
           showBackButton={true}
           onBack={onBack || (() => navigate('/vin'))}
           onHome={onHome}
           onSignOut={onSignOut}
         />
+
+        <PageTitle>Towing Range Found</PageTitle>
+
         <div
           style={{
             textAlign: 'center',

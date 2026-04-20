@@ -4,6 +4,7 @@ import { Plus, Trash2, Car } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { API_URL } from '../utils/apiConfig';
 import AppHeader from '../components/AppHeader';
+import PageTitle from '../components/PageTitle';
 
 function GarageScreen({
   onVinSelect,
@@ -122,7 +123,6 @@ function GarageScreen({
   return (
     <div style={styles.container}>
       <AppHeader
-        title="My Garage"
         showBackButton={true}
         onBack={onBack}
         onHome={onHome}
@@ -130,6 +130,8 @@ function GarageScreen({
         isGuest={isGuest}
         onLogin={onLogin}
       />
+
+      <PageTitle>My Garage</PageTitle>
 
       <div style={styles.roleInfo}>
         <p style={styles.roleText}>
