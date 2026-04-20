@@ -96,8 +96,14 @@ function LoginScreen() {
         </button>
 
         <p style={styles.disclaimer}>
-          By signing in, you agree to our <span style={styles.link}>terms of service</span> and{' '}
-          <span style={styles.link}>privacy policy</span>
+          By signing in, you agree to our{' '}
+          <span style={styles.link} onClick={() => navigate('/terms')}>
+            terms of service
+          </span>{' '}
+          and{' '}
+          <span style={styles.link} onClick={() => navigate('/privacy')}>
+            privacy policy
+          </span>
         </p>
       </div>
     </div>
@@ -209,10 +215,11 @@ const styles = {
     margin: '1.25rem 0 0',
   },
   link: {
-    color: '#888',
+    color: '#4ecdc4',
     textDecoration: 'underline',
     textUnderlineOffset: '2px',
     cursor: 'pointer',
+    transition: 'color 0.2s',
   },
 };
 
