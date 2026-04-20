@@ -117,6 +117,7 @@ function GarageScreen({
   const garageLimitLabel =
     garageLimit == null ? 'Unlimited vehicles' : `${garage.length} / ${garageLimit} vehicles`;
   const garageFull = garageLimit != null && garage.length >= garageLimit;
+  const disableAdd = isFree && garageFull;
 
   return (
     <div style={styles.container}>
@@ -185,7 +186,15 @@ function GarageScreen({
           </div>
         ))}
 
-        <button onClick={onAddVehicle} style={styles.addButton}>
+        <button
+          onClick={!disableAdd ? onAddVehicle : undefined}
+          disabled={disableAdd}
+          style={{
+            ...styles.addButton,
+            opacity: disableAdd ? 0.5 : 1,
+            cursor: disableAdd ? 'not-allowed' : 'pointer',
+          }}
+        >
           <Plus size={20} />
           Add Vehicle
         </button>
