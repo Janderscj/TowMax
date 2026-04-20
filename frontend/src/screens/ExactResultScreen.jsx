@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 import AppHeader from '../components/AppHeader';
 
 export default function ExactResultScreen({
@@ -23,7 +24,9 @@ export default function ExactResultScreen({
   isGuest = false,
   onLogin,
 }) {
+  const { isFree } = useAuth();
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [showFreeAccountWarning, setShowFreeAccountWarning] = useState(false);
 
   useEffect(() => {
     // Reset local success UI when a new exact-result vehicle is shown.
@@ -40,6 +43,19 @@ export default function ExactResultScreen({
       return;
     }
 
+    if (isFree) {
+      setShowFreeAccountWarning(true);
+      return;
+    }
+
+    const wasSaved = await onAddVehicle();
+    if (wasSaved) {
+      setSaveSuccess(true);
+    }
+  };
+
+  const handleContinueAddVehicle = async () => {
+    setShowFreeAccountWarning(false);
     const wasSaved = await onAddVehicle();
     if (wasSaved) {
       setSaveSuccess(true);
@@ -414,6 +430,99 @@ export default function ExactResultScreen({
         >
           Check Another Vehicle
         </button>
+
+        {showFreeAccountWarning && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.7)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000,
+            }}
+            onClick={() => setShowFreeAccountWarning(false)}
+          >
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
+                borderRadius: '16px',
+                padding: '28px',
+                maxWidth: '360px',
+                border: '1px solid rgba(255, 152, 0, 0.3)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3
+                style={{
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  marginBottom: '12px',
+                  color: '#ffb74d',
+                  margin: '0 0 12px 0',
+                }}
+              >
+                Free Account Notice
+              </h3>
+              <p
+                style={{
+                  fontSize: '14px',
+                  color: '#ccc',
+                  lineHeight: '1.6',
+                  marginBottom: '24px',
+                  margin: '0 0 24px 0',
+                }}
+              >
+                Free accounts can save vehicles to their garage, but cannot remove them once added.
+                Upgrade to Premium to unlock full garage management and unlimited vehicles.
+              </p>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '12px',
+                }}
+              >
+                <button
+                  onClick={() => setShowFreeAccountWarning(false)}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    borderRadius: '8px',
+                    color: '#fff',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                  }}
+                >
+                  Back
+                </button>
+                <button
+                  onClick={handleContinueAddVehicle}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    background: 'linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    color: '#000',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                  }}
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

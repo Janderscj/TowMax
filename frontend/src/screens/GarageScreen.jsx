@@ -19,6 +19,7 @@ function GarageScreen({
   const [garage, setGarage] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showRemoveWarning, setShowRemoveWarning] = useState(false);
 
   useEffect(() => {
     if (!user || isDealer) {
@@ -54,6 +55,14 @@ function GarageScreen({
 
     loadGarage();
   }, [API_URL, user, isDealer]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleRemoveClick = (vehicleId) => {
+    if (isFree) {
+      setShowRemoveWarning(true);
+      return;
+    }
+    removeVehicle(vehicleId);
+  };
 
   const removeVehicle = async (vehicleId) => {
     try {
@@ -166,10 +175,9 @@ function GarageScreen({
               <button
                 onClick={(event) => {
                   event.stopPropagation();
-                  removeVehicle(vehicle.id);
+                  handleRemoveClick(vehicle.id);
                 }}
                 style={styles.removeButton}
-                disabled={isFree && garage.length <= 1}
               >
                 <Trash2 size={16} />
               </button>
@@ -182,6 +190,75 @@ function GarageScreen({
           Add Vehicle
         </button>
       </div>
+
+      {showRemoveWarning && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+          onClick={() => setShowRemoveWarning(false)}
+        >
+          <div
+            style={{
+              background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
+              borderRadius: '16px',
+              padding: '28px',
+              maxWidth: '320px',
+              border: '1px solid rgba(255, 107, 107, 0.3)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3
+              style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                marginBottom: '12px',
+                color: '#ff6b6b',
+                margin: '0 0 12px 0',
+              }}
+            >
+              Free Account Restriction
+            </h3>
+            <p
+              style={{
+                fontSize: '14px',
+                color: '#ccc',
+                lineHeight: '1.5',
+                marginBottom: '20px',
+                margin: '0 0 20px 0',
+              }}
+            >
+              Free accounts cannot remove vehicles. Please upgrade to Premium to manage your garage.
+            </p>
+            <button
+              onClick={() => setShowRemoveWarning(false)}
+              style={{
+                width: '100%',
+                padding: '12px',
+                background: 'rgba(255, 107, 107, 0.2)',
+                border: '1px solid rgba(255, 107, 107, 0.4)',
+                borderRadius: '8px',
+                color: '#ff6b6b',
+                fontWeight: '600',
+                cursor: 'pointer',
+                fontSize: '14px',
+              }}
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
