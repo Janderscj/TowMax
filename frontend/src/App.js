@@ -320,6 +320,7 @@ function AuthenticatedRoutes() {
             onSignOut={handleGlobalSignOut}
             isGuest={isGuest}
             onLogin={() => navigate('/login')}
+            onUpgrade={() => navigate('/upgrade')}
           />
         }
       />

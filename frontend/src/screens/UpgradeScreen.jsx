@@ -76,7 +76,7 @@ export default function UpgradeScreen({ onHome, onSignOut, isGuest = false, onLo
   return (
     <div style={styles.container}>
       <AppHeader
-        title="Upgrade to Premium"
+        title="Upgrade"
         showBackButton={true}
         onBack={() => navigate(-1)}
         onHome={onHome}

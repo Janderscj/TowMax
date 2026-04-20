@@ -10,6 +10,7 @@ export default function WelcomeScreen({
   onSignOut,
   isGuest = false,
   onLogin,
+  onUpgrade,
 }) {
   return (
     <div
@@ -52,6 +53,7 @@ export default function WelcomeScreen({
           onSignOut={onSignOut}
           isGuest={isGuest}
           onLogin={onLogin}
+          onUpgrade={onUpgrade}
         />
 
         <div style={{ flex: 1 }}>

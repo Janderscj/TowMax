@@ -1,4 +1,4 @@
-import { Home, LogOut, LogIn, ArrowLeft } from 'lucide-react';
+import { Home, LogOut, LogIn, ArrowLeft, Gem } from 'lucide-react';
 
 export default function AppHeader({
   title,
@@ -8,6 +8,7 @@ export default function AppHeader({
   onSignOut,
   isGuest = false,
   onLogin,
+  onUpgrade,
 }) {
   const styles = {
     header: {
@@ -64,27 +65,38 @@ export default function AppHeader({
 
   return (
     <div style={styles.header}>
+      <div style={styles.navButtons}>
+        {onUpgrade && (
+          <button onClick={onUpgrade} style={styles.navButton}>
+            <Gem size={18} />
+          </button>
+        )}
+      </div>
       <div style={styles.titleGroup}>
         {showBackButton && onBack && (
-          <button onClick={onBack} style={styles.backButton} aria-label="Go back">
+          <button onClick={onBack} style={styles.backButton}>
             <ArrowLeft size={16} />
             Back
           </button>
         )}
+      </div>
+
+      <div style={{ flex: 1, textAlign: 'center' }}>
         {title && <h1 style={styles.title}>{title}</h1>}
       </div>
+
       <div style={styles.navButtons}>
         {onHome && (
-          <button onClick={onHome} style={styles.navButton} aria-label="Home">
+          <button onClick={onHome} style={styles.navButton}>
             <Home size={18} />
           </button>
         )}
         {isGuest && onLogin ? (
-          <button onClick={onLogin} style={styles.navButton} aria-label="Sign in">
+          <button onClick={onLogin} style={styles.navButton}>
             <LogIn size={18} />
           </button>
         ) : onSignOut ? (
-          <button onClick={onSignOut} style={styles.navButton} aria-label="Sign out">
+          <button onClick={onSignOut} style={styles.navButton}>
             <LogOut size={18} />
           </button>
         ) : null}
