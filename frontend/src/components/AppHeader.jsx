@@ -1,4 +1,5 @@
 import { Home, LogOut, LogIn, ArrowLeft, Gem } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function AppHeader({
   showBackButton = false,
@@ -9,6 +10,36 @@ export default function AppHeader({
   onLogin,
   onUpgrade,
 }) {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    let scrollTimeout;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Show header if at top
+      if (currentScrollY < 10) {
+        setIsVisible(true);
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY) {
+        // Scrolling down
+        setIsVisible(false);
+      }
+
+      setLastScrollY(currentScrollY);
+
+      // Debounce to avoid excessive updates
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {}, 150);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
   const styles = {
     header: {
       display: 'flex',
@@ -18,6 +49,13 @@ export default function AppHeader({
       borderBottom: '1px solid rgba(255,255,255,0.05)',
       padding: '0 clamp(8px, 2vw, 12px)',
       marginBottom: 'clamp(16px, 3vw, 24px)',
+      position: 'sticky',
+      top: 0,
+      zIndex: 1000,
+      background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
+      backdropFilter: 'blur(10px)',
+      transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
+      transition: 'transform 0.3s ease-out',
     },
     side: {
       width: '25%',
