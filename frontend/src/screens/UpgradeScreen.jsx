@@ -16,6 +16,7 @@ export default function UpgradeScreen({ onHome, onSignOut, isGuest = false, onLo
       position: 'relative',
       overflow: 'hidden',
       padding: '20px',
+      paddingTop: 'clamp(60px, 12vw, 72px)',
     },
     content: {
       flex: 1,

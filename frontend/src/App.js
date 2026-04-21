@@ -15,7 +15,7 @@ import GarageVehicleDetailsScreen from './screens/GarageVehicleDetailsScreen';
 import UpgradeScreen from './screens/UpgradeScreen';
 import TermsOfService from './screens/TermsOfService';
 import PrivacyPolicy from './screens/PrivacyPolicy';
-import AppFooter from './components/AppFooter';
+import AppShell from './components/AppShell';
 import ScrollToTop from './components/ScrollToTop';
 import { supabase } from './utils/supabase';
 import { API_URL } from './utils/apiConfig';
@@ -490,23 +490,20 @@ function AuthenticatedRoutes() {
 
 function AppContent() {
   return (
-    <div style={styles.appContainer}>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/login" element={<LoginScreen />} />
-        <Route
-          path="/*"
-          element={
-            <ProtectedRoute>
+    <Routes>
+      <Route path="/login" element={<LoginScreen />} />
+      <Route
+        path="/*"
+        element={
+          <ProtectedRoute>
+            <AppShell>
+              <ScrollToTop />
               <AuthenticatedRoutes />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-      <div style={{ padding: '0 24px' }}>
-        <AppFooter />
-      </div>
-    </div>
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 
@@ -515,13 +512,6 @@ function App() {
 }
 
 const styles = {
-  appContainer: {
-    width: '100%',
-    maxWidth: '430px',
-    margin: '0 auto',
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
-  },
   profileErrorContainer: {
     minHeight: '100vh',
     display: 'flex',

@@ -12,7 +12,7 @@ export default function PrivacyPolicy({ onHome, onSignOut, isGuest = false, onLo
         paddingBottom: '40px',
       }}
     >
-      <div style={{ padding: '24px' }}>
+      <div style={{ padding: '24px', paddingTop: 'clamp(60px, 12vw, 72px)' }}>
         <AppHeader
           showBackButton={true}
           onBack={() => window.history.back()}

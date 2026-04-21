@@ -112,6 +112,7 @@ const styles = {
     background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
     color: '#fff',
     padding: '20px',
+    paddingTop: 'clamp(60px, 12vw, 72px)',
     fontFamily: '"Space Mono", monospace',
   },
   headerRow: {

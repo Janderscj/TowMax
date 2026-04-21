@@ -39,6 +39,7 @@ export default function WelcomeScreen({
       <div
         style={{
           padding: '24px',
+          paddingTop: 'clamp(60px, 12vw, 72px)',
           display: 'flex',
           flexDirection: 'column',
           minHeight: 'calc(100vh - 40px)',

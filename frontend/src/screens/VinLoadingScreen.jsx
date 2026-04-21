@@ -14,6 +14,7 @@ export default function VinLoadingScreen() {
       <div
         style={{
           padding: '24px',
+          paddingTop: 'clamp(60px, 12vw, 72px)',
           minHeight: 'calc(100vh - 40px)',
           display: 'flex',
           flexDirection: 'column',

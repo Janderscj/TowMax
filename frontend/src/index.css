@@ -18,12 +18,11 @@ code {
 }
 
 /*
-  .app-shell — outermost layout wrapper applied in index.js.
+  .app-shell — outermost layout wrapper
   Keeps the mobile UI layout intact at all sizes.
   On mobile: full width, no visual change.
   On desktop: centered column capped at 480px with a
-  subtle phone-frame shadow to distinguish it from the
-  dark background.
+  subtle phone-frame shadow to distinguish it from the dark background.
 */
 .app-shell {
   width: 100%;
@@ -33,6 +32,8 @@ code {
   position: relative;
   /* Inherit the app gradient so the shell itself is never bare */
   background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 600px) {
@@ -42,4 +43,20 @@ code {
       0 0 80px rgba(0, 0, 0, 0.7),
       0 0 0 1px rgba(255, 255, 255, 0.06);
   }
+}
+
+/*
+  .app-body — main scrollable content area
+  Sits below the fixed header
+  Grows to fill available space
+  Scrolls independently
+*/
+.app-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  /* Padding-top compensates for fixed header */
+  padding-top: clamp(60px, 12vw, 72px);
+  padding-bottom: 24px;
 }

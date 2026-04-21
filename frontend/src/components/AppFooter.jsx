@@ -1,62 +1,69 @@
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * AppFooter: Sits at bottom of app-shell
+ *
+ * Features:
+ * - Width matches app-shell (100% max-width: 480px)
+ * - Consistent spacing and alignment
+ * - Legal links with hover states
+ */
 export default function AppFooter() {
   const navigate = useNavigate();
 
-  const styles = {
-    footer: {
-      marginTop: '60px',
-      paddingTop: '24px',
-      paddingBottom: '24px',
-      borderTop: '1px solid rgba(255,255,255,0.05)',
-      textAlign: 'center',
-      fontSize: '12px',
-      color: '#666',
-    },
-    links: {
-      display: 'flex',
-      justifyContent: 'center',
-      gap: '20px',
-      marginBottom: '16px',
-      flexWrap: 'wrap',
-    },
-    link: {
-      color: '#4ecdc4',
-      cursor: 'pointer',
-      textDecoration: 'none',
-      fontSize: '12px',
-      transition: 'color 0.2s',
-    },
+  const footerStyle = {
+    marginTop: 'auto',
+    paddingTop: '24px',
+    paddingBottom: '24px',
+    borderTop: '1px solid rgba(255,255,255,0.05)',
+    textAlign: 'center',
   };
 
-  const handleLinkClick = (path) => {
-    navigate(path);
+  const linksStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '20px',
+    marginBottom: '16px',
+    flexWrap: 'wrap',
+  };
+
+  const linkStyle = {
+    color: '#4ecdc4',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    fontSize: '12px',
+    transition: 'color 0.2s',
+  };
+
+  const copyrightStyle = {
+    fontSize: '12px',
+    color: '#666',
+    margin: 0,
   };
 
   return (
-    <div style={styles.footer}>
-      <div style={styles.links}>
-        <span
-          style={styles.link}
-          onClick={() => handleLinkClick('/terms')}
-          onKeyDown={(e) => e.key === 'Enter' && handleLinkClick('/terms')}
+    <footer style={footerStyle}>
+      <div style={linksStyle}>
+        <a
+          style={linkStyle}
+          onClick={() => navigate('/terms')}
+          onKeyDown={(e) => e.key === 'Enter' && navigate('/terms')}
           role="button"
           tabIndex={0}
         >
           Terms of Service
-        </span>
-        <span style={{ color: '#444' }}>•</span>
-        <span
-          style={styles.link}
-          onClick={() => handleLinkClick('/privacy')}
-          onKeyDown={(e) => e.key === 'Enter' && handleLinkClick('/privacy')}
+        </a>
+        <a
+          style={linkStyle}
+          onClick={() => navigate('/privacy')}
+          onKeyDown={(e) => e.key === 'Enter' && navigate('/privacy')}
           role="button"
           tabIndex={0}
         >
           Privacy Policy
-        </span>
+        </a>
       </div>
-      <div>© 2026 TowMax. All rights reserved.</div>
-    </div>
+      <p style={copyrightStyle}>© {new Date().getFullYear()} TowMax. All rights reserved.</p>
+    </footer>
   );
 }

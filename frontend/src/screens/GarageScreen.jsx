@@ -277,6 +277,7 @@ function GarageScreen({
 const styles = {
   container: {
     padding: '20px',
+    paddingTop: 'clamp(60px, 12vw, 72px)',
     minHeight: '100vh',
     background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
     color: 'white',
