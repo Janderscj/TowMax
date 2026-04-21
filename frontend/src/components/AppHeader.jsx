@@ -53,13 +53,8 @@ export default function AppHeader({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
-  // Dynamic style for visibility animation
-  const outerStyle = {
-    transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
-  };
-
   return (
-    <div className={styles.headerOuter} style={outerStyle}>
+    <div className={`${styles.headerOuter}${isVisible ? '' : ` ${styles.headerHidden}`}`}>
       <div className={styles.headerInner}>
         <div className={styles.sideNav}>
           {showBackButton && onBack && (
