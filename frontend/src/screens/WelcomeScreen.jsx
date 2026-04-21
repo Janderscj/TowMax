@@ -52,17 +52,22 @@ export default function WelcomeScreen({
           {error && <p className={styles.errorMessage}>{error}</p>}
         </div>
 
-        {showGarage && (
-          <button onClick={onGarage} className={styles.secondaryButton}>
-            <Car size={20} />
-            My Garage
-          </button>
-        )}
+        <div className={styles.buttonGroup}>
+          {showGarage && (
+            <>
+              <button onClick={onGarage} className={styles.secondaryButton}>
+                <Car size={20} />
+                My Garage
+              </button>
+              <div style={{ height: '16px' }} />
+            </>
+          )}
 
-        <button onClick={onGetStarted} className={styles.primaryButton}>
-          Get Started
-          <ArrowRight size={20} />
-        </button>
+          <button onClick={onGetStarted} className={styles.primaryButton}>
+            Get Started
+            <ArrowRight size={20} />
+          </button>
+        </div>
       </div>
     </div>
   );
