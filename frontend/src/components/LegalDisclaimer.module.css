@@ -1,0 +1,20 @@
+/* LegalDisclaimer: Legal notices and warnings */
+
+.container {
+  margin-top: 40px;
+  padding: 16px;
+  background: rgba(255, 152, 0, 0.05);
+  border: 1px solid rgba(255, 152, 0, 0.15);
+  border-radius: 8px;
+  font-size: 12px;
+  color: #999;
+  line-height: 1.6;
+}
+
+.paragraph {
+  margin: 0 0 10px 0;
+}
+
+.lastParagraph {
+  margin: 0;
+}

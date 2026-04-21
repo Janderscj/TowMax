@@ -1,0 +1,153 @@
+/* GarageVehicleDetailsScreen.module.css */
+/* Main container */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  color: #fff;
+  padding: 20px;
+  padding-top: clamp(60px, 12vw, 72px);
+  font-family: 'Space Mono', monospace;
+}
+
+/* Vehicle info card */
+.vehicleCard {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 18px;
+}
+
+/* Vehicle name display */
+.vehicleName {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* Vehicle meta info */
+.vehicleMeta {
+  margin: 6px 0 0;
+  color: #b0b0b0;
+  font-size: 0.9rem;
+}
+
+/* Loading state */
+.loading {
+  text-align: center;
+  padding: 24px 0;
+  color: #ccc;
+}
+
+/* Error message box */
+.error {
+  text-align: center;
+  padding: 16px;
+  border-radius: 10px;
+  background: rgba(244, 67, 54, 0.14);
+  border: 1px solid rgba(244, 67, 54, 0.25);
+  color: #ef9a9a;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+/* Section container */
+.section {
+  margin-bottom: 20px;
+}
+
+/* Section title */
+.sectionTitle {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+/* Towing summary card */
+.summaryCard {
+  background: rgba(255, 140, 0, 0.1);
+  border: 1px solid rgba(255, 140, 0, 0.25);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+/* Summary label */
+.summaryLabel {
+  margin: 0;
+  color: #ffcc80;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Summary value (large number) */
+.summaryValue {
+  margin: 8px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Additional summary metadata */
+.summaryMeta {
+  margin: 4px 0 0;
+  color: #ddd;
+  font-size: 0.9rem;
+}
+
+/* Decoded VIN data grid */
+.decodedGrid {
+  display: grid;
+  gap: 8px;
+}
+
+/* Individual decoded row */
+.decodedRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+/* Decoded field label */
+.decodedLabel {
+  color: #bdbdbd;
+  font-size: 0.85rem;
+}
+
+/* Decoded field value */
+.decodedValue {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* View full breakdown button */
+.breakdownButton {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px;
+  background: rgba(255, 140, 0, 0.12);
+  border: 1px solid rgba(255, 140, 0, 0.35);
+  border-radius: 12px;
+  color: #ff8c00;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: all 0.2s;
+}
+
+.breakdownButton:hover {
+  background: rgba(255, 140, 0, 0.18);
+  transform: translateY(-2px);
+}
+
+.breakdownButton:active {
+  transform: scale(0.98);
+}

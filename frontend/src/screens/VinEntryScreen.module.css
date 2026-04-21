@@ -1,0 +1,153 @@
+/* VinEntryScreen.module.css */
+/* Main container with dark gradient background */
+.container {
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  min-height: 100vh;
+  font-family: 'Space Mono', monospace;
+  color: #e0e0e0;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 24px;
+}
+
+/* Decorative background glow element */
+.backgroundGlow {
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255, 140, 0, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Main content wrapper with flexbox layout */
+.contentWrapper {
+  padding: 24px;
+  padding-top: clamp(60px, 12vw, 72px);
+  min-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+/* Main heading */
+.heading {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+/* Subheading/description text */
+.subheading {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+/* Flexible content area */
+.flexContent {
+  flex: 1;
+}
+
+/* Input container with border and padding */
+.inputContainer {
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 140, 0, 0.3);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+/* VIN input field */
+.vinInput {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 1px;
+  outline: none;
+}
+
+.vinInput::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Character counter row */
+.counterRow {
+  font-size: 11px;
+  color: #666;
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Info box with blue styling */
+.infoBox {
+  background: rgba(33, 150, 243, 0.1);
+  border: 1px solid rgba(33, 150, 243, 0.2);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: #64b5f6;
+  line-height: 1.5;
+}
+
+/* Alert circle icon styling */
+.alertIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Bold text within info box */
+.infoBold {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+/* Button with conditional styling */
+.button {
+  width: 100%;
+  padding: 18px;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.button:enabled {
+  background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+  color: #000;
+  cursor: pointer;
+}
+
+.button:enabled:hover {
+  transform: translateY(-2px);
+}
+
+.button:enabled:active {
+  transform: scale(0.98);
+}
+
+.button:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  color: #555;
+  cursor: not-allowed;
+}

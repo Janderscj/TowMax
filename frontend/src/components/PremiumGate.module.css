@@ -1,0 +1,57 @@
+/* PremiumGate: Premium feature paywall modal */
+
+.modal {
+  padding: 24px;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(180deg, #1e1e1e, #111);
+  border-radius: 12px;
+  position: relative;
+}
+
+.backButton {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.2s;
+}
+
+.backButton:hover {
+  opacity: 0.8;
+}
+
+.title {
+  margin-bottom: 12px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.description {
+  opacity: 0.8;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.button {
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.button:hover {
+  background: #5a4fe5;
+}

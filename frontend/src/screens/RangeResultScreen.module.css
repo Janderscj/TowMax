@@ -1,0 +1,178 @@
+/* RangeResultScreen.module.css */
+/* Main container with dark gradient background */
+.container {
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  min-height: 100vh;
+  font-family: 'Space Mono', monospace;
+  color: #e0e0e0;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 24px;
+}
+
+/* Main content wrapper */
+.contentWrapper {
+  padding: 24px;
+  padding-top: clamp(60px, 12vw, 72px);
+  min-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+/* Centered content section */
+.centerSection {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 32px;
+}
+
+/* Target icon box with gradient */
+.iconBox {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+}
+
+/* Main heading */
+.heading {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+/* Subtitle text */
+.subtitle {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 32px;
+}
+
+/* Vehicle information card */
+.vehicleCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+/* Vehicle card label */
+.vehicleLabel {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+/* Vehicle name display */
+.vehicleName {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Vehicle series/variant */
+.vehicleSeries {
+  font-size: 14px;
+  color: #aaa;
+}
+
+/* Towing capacity display box with gradient background */
+.capacityBox {
+  background: linear-gradient(135deg, rgba(255, 140, 0, 0.15) 0%, rgba(255, 107, 0, 0.1) 100%);
+  border: 2px solid rgba(255, 140, 0, 0.3);
+  border-radius: 16px;
+  padding: 28px 24px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Capacity box label */
+.capacityLabel {
+  font-size: 13px;
+  color: #ff8c00;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Large capacity value with gradient text */
+.capacityValue {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #ffffff 0%, #ff8c00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Unit text below capacity */
+.capacityUnit {
+  font-size: 16px;
+  color: #aaa;
+}
+
+/* Info/disclaimer box */
+.infoBox {
+  background: rgba(33, 150, 243, 0.08);
+  border: 1px solid rgba(33, 150, 243, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: #64b5f6;
+  line-height: 1.6;
+}
+
+/* Primary action button */
+.primaryButton {
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+  border: none;
+  border-radius: 16px;
+  color: #000;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  margin-bottom: 12px;
+  transition: transform 0.2s;
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+}
+
+.primaryButton:active {
+  transform: scale(0.98);
+}
+
+/* Secondary action button */
+.secondaryButton {
+  width: 100%;
+  padding: 18px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.secondaryButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}

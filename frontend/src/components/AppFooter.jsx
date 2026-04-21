@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import styles from './AppFooter.module.css';
 
 /**
  * AppFooter: Sits at bottom of app-shell
@@ -11,41 +12,11 @@ import { useNavigate } from 'react-router-dom';
 export default function AppFooter() {
   const navigate = useNavigate();
 
-  const footerStyle = {
-    marginTop: 'auto',
-    paddingTop: '24px',
-    paddingBottom: '24px',
-    borderTop: '1px solid rgba(255,255,255,0.05)',
-    textAlign: 'center',
-  };
-
-  const linksStyle = {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '20px',
-    marginBottom: '16px',
-    flexWrap: 'wrap',
-  };
-
-  const linkStyle = {
-    color: '#4ecdc4',
-    cursor: 'pointer',
-    textDecoration: 'none',
-    fontSize: '12px',
-    transition: 'color 0.2s',
-  };
-
-  const copyrightStyle = {
-    fontSize: '12px',
-    color: '#666',
-    margin: 0,
-  };
-
   return (
-    <footer style={footerStyle}>
-      <div style={linksStyle}>
+    <footer className={styles.footer}>
+      <div className={styles.links}>
         <a
-          style={linkStyle}
+          className={styles.link}
           onClick={() => navigate('/terms')}
           onKeyDown={(e) => e.key === 'Enter' && navigate('/terms')}
           role="button"
@@ -54,7 +25,7 @@ export default function AppFooter() {
           Terms of Service
         </a>
         <a
-          style={linkStyle}
+          className={styles.link}
           onClick={() => navigate('/privacy')}
           onKeyDown={(e) => e.key === 'Enter' && navigate('/privacy')}
           role="button"
@@ -63,7 +34,7 @@ export default function AppFooter() {
           Privacy Policy
         </a>
       </div>
-      <p style={copyrightStyle}>© {new Date().getFullYear()} TowMax. All rights reserved.</p>
+      <p className={styles.copyright}>© {new Date().getFullYear()} TowMax. All rights reserved.</p>
     </footer>
   );
 }

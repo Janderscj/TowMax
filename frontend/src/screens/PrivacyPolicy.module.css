@@ -1,0 +1,68 @@
+/* PrivacyPolicy.module.css */
+/* Main container */
+.container {
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  min-height: 100vh;
+  font-family: 'Space Mono', monospace;
+  color: #e0e0e0;
+  padding-bottom: 40px;
+}
+
+/* Header and content wrapper */
+.wrapper {
+  padding: 24px;
+  padding-top: clamp(60px, 12vw, 72px);
+}
+
+/* Content section */
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #ccc;
+}
+
+/* Section heading */
+.sectionHeading {
+  color: #fff;
+  margin-top: 30px;
+  margin-bottom: 16px;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+/* Paragraph text */
+.paragraph {
+  margin-bottom: 16px;
+  line-height: 1.8;
+}
+
+/* Unordered list */
+.list {
+  padding-left: 20px;
+  margin-bottom: 16px;
+}
+
+.list li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+/* Last updated timestamp */
+.lastUpdated {
+  margin-top: 40px;
+  font-size: 12px;
+  color: #666;
+}
+
+.list strong {
+  color: #fff;
+}
+
+/* Last updated text */
+.lastUpdated {
+  margin-top: 40px;
+  font-size: 12px;
+  color: #666;
+}

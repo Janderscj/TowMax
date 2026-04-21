@@ -1,0 +1,75 @@
+/* AppHeader: Two-layer structure for proper positioning */
+
+.headerOuter {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease-out;
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: clamp(60px, 12vw, 72px);
+  padding: 0 clamp(16px, 3vw, 24px);
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.sideNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 25%;
+}
+
+.centerNav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.centerNav.withPointer {
+  pointer-events: auto;
+}
+
+.title {
+  font-size: clamp(18px, 4vw, 22px);
+  font-weight: 600;
+  margin: 0;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.navButton {
+  width: clamp(32px, 8vw, 40px);
+  height: clamp(32px, 8vw, 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  color: #e0e0e0;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.navButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.sideNavRight {
+  justify-content: flex-end;
+}

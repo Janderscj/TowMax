@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { RotateCcw, Search } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
 import LegalDisclaimer from '../components/LegalDisclaimer';
+import styles from './RangeFallbackScreen.module.css';
 
 /**
  * RangeFallbackScreen
@@ -29,28 +30,8 @@ export default function RangeFallbackScreen({
   const navigate = useNavigate();
 
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
-        minHeight: '100vh',
-        fontFamily: '"Space Mono", monospace',
-        color: '#e0e0e0',
-        position: 'relative',
-        overflow: 'hidden',
-        paddingBottom: '24px',
-      }}
-    >
-      <div
-        style={{
-          padding: '24px',
-          paddingTop: 'clamp(60px, 12vw, 72px)',
-          minHeight: 'calc(100vh - 40px)',
-          display: 'flex',
-          flexDirection: 'column',
-          position: 'relative',
-          zIndex: 1,
-        }}
-      >
+    <div className={styles.container}>
+      <div className={styles.contentWrapper}>
         <AppHeader
           title="Refine Results"
           showBackButton={true}
@@ -61,47 +42,14 @@ export default function RangeFallbackScreen({
           onLogin={onLogin}
         />
 
-        <div
-          style={{
-            textAlign: 'center',
-            marginTop: '40px',
-            marginBottom: '32px',
-          }}
-        >
-          <div
-            style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '20px',
-              background: 'linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 24px',
-            }}
-          >
+        <div className={styles.centerSection}>
+          <div className={styles.iconBox}>
             <Search size={40} color="#000" />
           </div>
 
-          <h2
-            style={{
-              fontSize: '26px',
-              fontWeight: '700',
-              marginBottom: '12px',
-              letterSpacing: '-0.5px',
-            }}
-          >
-            No Exact Match Found
-          </h2>
+          <h2 className={styles.heading}>No Exact Match Found</h2>
 
-          <p
-            style={{
-              fontSize: '14px',
-              color: '#888',
-              marginBottom: '32px',
-              lineHeight: '1.5',
-            }}
-          >
+          <p className={styles.subtitle}>
             Your answers didn&apos;t match a single configuration,
             <br />
             but a towing range is still available.
@@ -110,78 +58,26 @@ export default function RangeFallbackScreen({
 
         {/* ─── Vehicle card ─── */}
         {decoded && (
-          <div
-            style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '16px',
-              padding: '20px',
-              marginBottom: '24px',
-            }}
-          >
-            <div style={{ fontSize: '13px', color: '#888', marginBottom: '12px' }}>
-              YOUR VEHICLE
-            </div>
-            <div style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
+          <div className={styles.vehicleCard}>
+            <div className={styles.vehicleLabel}>YOUR VEHICLE</div>
+            <div className={styles.vehicleName}>
               {decoded.year} {decoded.make} {decoded.model}
             </div>
-            <div style={{ fontSize: '14px', color: '#aaa' }}>{decoded.series}</div>
+            <div className={styles.vehicleSeries}>{decoded.series}</div>
           </div>
         )}
 
         {/* ─── Range display ─── */}
-        <div
-          style={{
-            background:
-              'linear-gradient(135deg, rgba(255,140,0,0.15) 0%, rgba(255,107,0,0.1) 100%)',
-            border: '2px solid rgba(255,140,0,0.3)',
-            borderRadius: '16px',
-            padding: '28px 24px',
-            marginBottom: '24px',
-            textAlign: 'center',
-          }}
-        >
-          <div
-            style={{
-              fontSize: '13px',
-              color: '#ff8c00',
-              marginBottom: '12px',
-              letterSpacing: '1px',
-              textTransform: 'uppercase',
-              fontWeight: '600',
-            }}
-          >
-            Closest Towing Range
-          </div>
-          <div
-            style={{
-              fontSize: '48px',
-              fontWeight: '700',
-              marginBottom: '8px',
-              letterSpacing: '-1px',
-              background: 'linear-gradient(135deg, #ffffff 0%, #ff8c00 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
+        <div className={styles.capacityBox}>
+          <div className={styles.capacityLabel}>Closest Towing Range</div>
+          <div className={styles.capacityValue}>
             {minTow.toLocaleString()} – {maxTow.toLocaleString()}
           </div>
-          <div style={{ fontSize: '16px', color: '#aaa' }}>pounds</div>
+          <div className={styles.capacityUnit}>pounds</div>
         </div>
 
         {/* ─── Explanatory note ─── */}
-        <div
-          style={{
-            background: 'rgba(255,140,0,0.06)',
-            border: '1px solid rgba(255,140,0,0.18)',
-            borderRadius: '12px',
-            padding: '16px',
-            marginBottom: '24px',
-            fontSize: '13px',
-            color: '#ffb347',
-            lineHeight: '1.6',
-          }}
-        >
+        <div className={styles.explanationBox}>
           <strong>No exact configuration matched your selections.</strong> The range above
           represents all remaining possible towing ratings for your vehicle. Verify final capacity
           in your owner&apos;s manual or window sticker.
@@ -190,46 +86,13 @@ export default function RangeFallbackScreen({
         {/* ─── Action buttons ─── */}
 
         {/* Recheck options → back to questions screen */}
-        <button
-          onClick={onRecheck}
-          style={{
-            width: '100%',
-            padding: '18px',
-            background: 'linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%)',
-            border: 'none',
-            borderRadius: '16px',
-            color: '#000',
-            fontSize: '16px',
-            fontWeight: '700',
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            marginBottom: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-          }}
-        >
+        <button onClick={onRecheck} className={styles.primaryButton}>
           <RotateCcw size={18} />
           Recheck options?
         </button>
 
         {/* Try new VIN → back to VIN entry */}
-        <button
-          onClick={onNewSearch}
-          style={{
-            width: '100%',
-            padding: '18px',
-            background: 'transparent',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '16px',
-            color: '#fff',
-            fontSize: '16px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-          }}
-        >
+        <button onClick={onNewSearch} className={styles.secondaryButton}>
           Try new VIN
         </button>
 

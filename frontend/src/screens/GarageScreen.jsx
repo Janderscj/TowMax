@@ -5,6 +5,7 @@ import { supabase } from '../utils/supabase';
 import { API_URL } from '../utils/apiConfig';
 import AppHeader from '../components/AppHeader';
 import PageTitle from '../components/PageTitle';
+import styles from './GarageScreen.module.css';
 
 function GarageScreen({
   onVinSelect,
@@ -94,19 +95,19 @@ function GarageScreen({
 
   if (loading) {
     return (
-      <div style={styles.container}>
-        <div style={styles.loading}>Loading garage...</div>
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading garage...</div>
       </div>
     );
   }
 
   if (isDealer) {
     return (
-      <div style={styles.container}>
-        <div style={styles.dealerMessage}>
+      <div className={styles.container}>
+        <div className={styles.dealerMessage}>
           <h2>Dealer Dashboard</h2>
           <p>As a dealer, you have direct access to VIN lookup tools.</p>
-          <button onClick={() => onVinSelect()} style={styles.vinButton}>
+          <button onClick={() => onVinSelect()} className={styles.vinButton}>
             Go to VIN Lookup
           </button>
         </div>
@@ -121,7 +122,7 @@ function GarageScreen({
   const disableAdd = isFree && garageFull;
 
   return (
-    <div style={styles.container}>
+    <div className={styles.container}>
       <AppHeader
         showBackButton={true}
         onBack={onBack}
@@ -133,26 +134,26 @@ function GarageScreen({
 
       <PageTitle>My Garage</PageTitle>
 
-      <div style={styles.roleInfo}>
-        <p style={styles.roleText}>
+      <div className={styles.roleInfo}>
+        <p className={styles.roleText}>
           {isFree ? 'Free Account' : isPremium ? 'Premium Account' : 'Unknown Role'}
         </p>
-        <p style={styles.limitText}>{garageLimitLabel}</p>
+        <p className={styles.limitText}>{garageLimitLabel}</p>
       </div>
 
-      {error && <div style={styles.error}>{error}</div>}
+      {error && <div className={styles.error}>{error}</div>}
       {garageFull && (
-        <div style={styles.notice}>
+        <div className={styles.notice}>
           Your garage is full. Find an exact match first, then upgrade to Premium to save unlimited
           vehicles.
         </div>
       )}
 
-      <div style={styles.vehiclesList}>
+      <div className={styles.vehiclesList}>
         {garage.map((vehicle) => (
           <div
             key={vehicle.id}
-            style={styles.vehicleCard}
+            className={styles.vehicleCard}
             onClick={() => onVehicleClick(vehicle)}
             role="button"
             tabIndex={0}
@@ -164,23 +165,23 @@ function GarageScreen({
             }}
             aria-label={`View details for ${vehicle.year} ${vehicle.make} ${vehicle.model}`}
           >
-            <div style={styles.vehicleInfo}>
-              <Car size={24} style={styles.carIcon} />
+            <div className={styles.vehicleInfo}>
+              <Car size={24} className={styles.carIcon} />
               <div>
-                <p style={styles.vehicleTitle}>
+                <p className={styles.vehicleTitle}>
                   {vehicle.year} {vehicle.make} {vehicle.model}
                   {vehicle.trim && ` ${vehicle.trim}`}
                 </p>
-                <p style={styles.vinText}>VIN: {vehicle.vin}</p>
+                <p className={styles.vinText}>VIN: {vehicle.vin}</p>
               </div>
             </div>
-            <div style={styles.vehicleActions}>
+            <div className={styles.vehicleActions}>
               <button
                 onClick={(event) => {
                   event.stopPropagation();
                   handleRemoveClick(vehicle.id);
                 }}
-                style={styles.removeButton}
+                className={styles.removeButton}
               >
                 <Trash2 size={16} />
               </button>
@@ -191,11 +192,7 @@ function GarageScreen({
         <button
           onClick={!disableAdd ? onAddVehicle : undefined}
           disabled={disableAdd}
-          style={{
-            ...styles.addButton,
-            opacity: disableAdd ? 0.5 : 1,
-            cursor: disableAdd ? 'not-allowed' : 'pointer',
-          }}
+          className={styles.addButton}
         >
           <Plus size={20} />
           Add Vehicle
@@ -203,68 +200,13 @@ function GarageScreen({
       </div>
 
       {showRemoveWarning && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.7)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-          }}
-          onClick={() => setShowRemoveWarning(false)}
-        >
-          <div
-            style={{
-              background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
-              borderRadius: '16px',
-              padding: '28px',
-              maxWidth: '320px',
-              border: '1px solid rgba(255, 107, 107, 0.3)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3
-              style={{
-                fontSize: '18px',
-                fontWeight: '700',
-                marginBottom: '12px',
-                color: '#ff6b6b',
-                margin: '0 0 12px 0',
-              }}
-            >
-              Free Account Restriction
-            </h3>
-            <p
-              style={{
-                fontSize: '14px',
-                color: '#ccc',
-                lineHeight: '1.5',
-                marginBottom: '20px',
-                margin: '0 0 20px 0',
-              }}
-            >
+        <div className={styles.modalOverlay} onClick={() => setShowRemoveWarning(false)}>
+          <div className={styles.modalDialog} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.modalTitle}>Free Account Restriction</h3>
+            <p className={styles.modalText}>
               Free accounts cannot remove vehicles. Please upgrade to Premium to manage your garage.
             </p>
-            <button
-              onClick={() => setShowRemoveWarning(false)}
-              style={{
-                width: '100%',
-                padding: '12px',
-                background: 'rgba(255, 107, 107, 0.2)',
-                border: '1px solid rgba(255, 107, 107, 0.4)',
-                borderRadius: '8px',
-                color: '#ff6b6b',
-                fontWeight: '600',
-                cursor: 'pointer',
-                fontSize: '14px',
-              }}
-            >
+            <button onClick={() => setShowRemoveWarning(false)} className={styles.modalButton}>
               Got it
             </button>
           </div>
@@ -273,117 +215,5 @@ function GarageScreen({
     </div>
   );
 }
-
-const styles = {
-  container: {
-    padding: '20px',
-    paddingTop: 'clamp(60px, 12vw, 72px)',
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
-    color: 'white',
-  },
-  roleInfo: {
-    marginBottom: '20px',
-    textAlign: 'center',
-  },
-  roleText: {
-    fontSize: '1.1rem',
-    fontWeight: 'bold',
-    marginBottom: '5px',
-  },
-  limitText: {
-    color: '#ccc',
-  },
-  error: {
-    color: '#ff6b6b',
-    textAlign: 'center',
-    marginBottom: '20px',
-  },
-  notice: {
-    background: 'rgba(255, 140, 0, 0.12)',
-    border: '1px solid rgba(255, 140, 0, 0.25)',
-    color: '#ffb74d',
-    borderRadius: '10px',
-    padding: '12px 14px',
-    marginBottom: '20px',
-    lineHeight: 1.5,
-    fontSize: '0.95rem',
-  },
-  vehiclesList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '15px',
-  },
-  vehicleCard: {
-    background: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: '8px',
-    padding: '15px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    cursor: 'pointer',
-    border: '1px solid rgba(255,255,255,0.08)',
-  },
-  vehicleInfo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '15px',
-  },
-  carIcon: {
-    color: '#4ecdc4',
-  },
-  vehicleTitle: {
-    fontWeight: 'bold',
-    margin: '0 0 5px 0',
-  },
-  vinText: {
-    color: '#ccc',
-    margin: 0,
-    fontSize: '0.9rem',
-  },
-  vehicleActions: {
-    display: 'flex',
-    gap: '10px',
-  },
-  removeButton: {
-    background: '#ff6b6b',
-    color: 'white',
-    border: 'none',
-    padding: '8px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
-  addButton: {
-    background: '#4ecdc4',
-    color: 'white',
-    border: 'none',
-    padding: '15px',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '10px',
-    fontSize: '1rem',
-  },
-  loading: {
-    textAlign: 'center',
-    padding: '50px',
-  },
-  dealerMessage: {
-    textAlign: 'center',
-    padding: '50px',
-  },
-  vinButton: {
-    background: '#4ecdc4',
-    color: 'white',
-    border: 'none',
-    padding: '15px 30px',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontSize: '1.1rem',
-    marginTop: '20px',
-  },
-};
 
 export default GarageScreen;

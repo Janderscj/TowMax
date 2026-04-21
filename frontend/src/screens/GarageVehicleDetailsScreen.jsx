@@ -4,6 +4,7 @@ import { API_URL } from '../utils/apiConfig';
 import VinBreakdownScreen from './VinBreakdownScreen';
 import AppHeader from '../components/AppHeader';
 import PageTitle from '../components/PageTitle';
+import styles from './GarageVehicleDetailsScreen.module.css';
 
 export default function GarageVehicleDetailsScreen({
   vehicle,
@@ -117,7 +118,7 @@ export default function GarageVehicleDetailsScreen({
   }
 
   return (
-    <div style={styles.container}>
+    <div className={styles.container}>
       <AppHeader
         showBackButton={true}
         onBack={onBack}
@@ -128,32 +129,32 @@ export default function GarageVehicleDetailsScreen({
       />
 
       <PageTitle>Vehicle Details</PageTitle>
-      <div style={styles.vehicleCard}>
-        <p style={styles.vehicleName}>
+      <div className={styles.vehicleCard}>
+        <p className={styles.vehicleName}>
           {vehicle?.year} {vehicle?.make} {vehicle?.model}
           {vehicle?.trim ? ` ${vehicle.trim}` : ''}
         </p>
-        <p style={styles.vehicleMeta}>VIN: {vehicle?.vin}</p>
+        <p className={styles.vehicleMeta}>VIN: {vehicle?.vin}</p>
       </div>
 
-      {loading && <div style={styles.loading}>Loading towing details...</div>}
-      {error && <div style={styles.error}>{error}</div>}
+      {loading && <div className={styles.loading}>Loading towing details...</div>}
+      {error && <div className={styles.error}>{error}</div>}
 
       {!loading && !error && (
         <>
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Towing Information</h2>
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Towing Information</h2>
 
             {towingSummary.type === 'exact' && (
-              <div style={styles.summaryCard}>
-                <p style={styles.summaryLabel}>Exact Maximum Tow</p>
-                <p style={styles.summaryValue}>
+              <div className={styles.summaryCard}>
+                <p className={styles.summaryLabel}>Exact Maximum Tow</p>
+                <p className={styles.summaryValue}>
                   {(towingSummary.maxTow || 0).toLocaleString()} lbs
                 </p>
-                <p style={styles.summaryMeta}>
+                <p className={styles.summaryMeta}>
                   GCWR: {towingSummary.gcwr ? `${towingSummary.gcwr.toLocaleString()} lbs` : 'N/A'}
                 </p>
-                <p style={styles.summaryMeta}>
+                <p className={styles.summaryMeta}>
                   Payload:{' '}
                   {towingSummary.payload ? `${towingSummary.payload.toLocaleString()} lbs` : 'N/A'}
                 </p>
@@ -161,42 +162,42 @@ export default function GarageVehicleDetailsScreen({
             )}
 
             {towingSummary.type === 'range' && (
-              <div style={styles.summaryCard}>
-                <p style={styles.summaryLabel}>Estimated Towing Range</p>
-                <p style={styles.summaryValue}>
+              <div className={styles.summaryCard}>
+                <p className={styles.summaryLabel}>Estimated Towing Range</p>
+                <p className={styles.summaryValue}>
                   {towingSummary.minTow.toLocaleString()} - {towingSummary.maxTow.toLocaleString()}{' '}
                   lbs
                 </p>
-                <p style={styles.summaryMeta}>
+                <p className={styles.summaryMeta}>
                   Based on {towingSummary.combinations} possible configurations for this VIN.
                 </p>
               </div>
             )}
 
             {towingSummary.type === 'multiple' && (
-              <div style={styles.summaryCard}>
-                <p style={styles.summaryLabel}>Multiple Configurations Found</p>
-                <p style={styles.summaryMeta}>
+              <div className={styles.summaryCard}>
+                <p className={styles.summaryLabel}>Multiple Configurations Found</p>
+                <p className={styles.summaryMeta}>
                   Exact towing numbers are unavailable for this saved VIN.
                 </p>
               </div>
             )}
 
             {towingSummary.type === 'none' && (
-              <div style={styles.summaryCard}>
-                <p style={styles.summaryLabel}>No Towing Match Found</p>
-                <p style={styles.summaryMeta}>We could not map this VIN to a towing record.</p>
+              <div className={styles.summaryCard}>
+                <p className={styles.summaryLabel}>No Towing Match Found</p>
+                <p className={styles.summaryMeta}>We could not map this VIN to a towing record.</p>
               </div>
             )}
           </div>
 
-          <div style={styles.section}>
-            <h2 style={styles.sectionTitle}>Decoded VIN Data</h2>
-            <div style={styles.decodedGrid}>
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Decoded VIN Data</h2>
+            <div className={styles.decodedGrid}>
               {decodedPairs.map((field) => (
-                <div key={field.key} style={styles.decodedRow}>
-                  <span style={styles.decodedLabel}>{field.label}</span>
-                  <span style={styles.decodedValue}>{String(field.value)}</span>
+                <div key={field.key} className={styles.decodedRow}>
+                  <span className={styles.decodedLabel}>{field.label}</span>
+                  <span className={styles.decodedValue}>{String(field.value)}</span>
                 </div>
               ))}
             </div>
@@ -204,7 +205,7 @@ export default function GarageVehicleDetailsScreen({
 
           {/* Show breakdown button only when raw NHTSA data is available */}
           {decoded?.raw && decoded.raw.length > 0 && (
-            <button onClick={() => setShowBreakdown(true)} style={styles.breakdownButton}>
+            <button onClick={() => setShowBreakdown(true)} className={styles.breakdownButton}>
               View Full VIN Breakdown
             </button>
           )}
@@ -213,113 +214,3 @@ export default function GarageVehicleDetailsScreen({
     </div>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
-    color: '#fff',
-    padding: '20px',
-    paddingTop: 'clamp(60px, 12vw, 72px)',
-    fontFamily: '"Space Mono", monospace',
-  },
-  vehicleCard: {
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.14)',
-    borderRadius: '12px',
-    padding: '14px',
-    marginBottom: '18px',
-  },
-  vehicleName: {
-    margin: 0,
-    fontWeight: '700',
-    fontSize: '1rem',
-  },
-  vehicleMeta: {
-    margin: '6px 0 0',
-    color: '#b0b0b0',
-    fontSize: '0.9rem',
-  },
-  loading: {
-    textAlign: 'center',
-    padding: '24px 0',
-    color: '#ccc',
-  },
-  error: {
-    textAlign: 'center',
-    padding: '16px',
-    borderRadius: '10px',
-    background: 'rgba(244,67,54,0.14)',
-    border: '1px solid rgba(244,67,54,0.25)',
-    color: '#ef9a9a',
-    marginBottom: '16px',
-  },
-  section: {
-    marginBottom: '20px',
-  },
-  sectionTitle: {
-    margin: '0 0 10px',
-    fontSize: '1.05rem',
-  },
-  summaryCard: {
-    background: 'rgba(255,140,0,0.10)',
-    border: '1px solid rgba(255,140,0,0.25)',
-    borderRadius: '12px',
-    padding: '14px',
-  },
-  summaryLabel: {
-    margin: 0,
-    color: '#ffcc80',
-    fontSize: '0.85rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
-  },
-  summaryValue: {
-    margin: '8px 0',
-    fontSize: '1.5rem',
-    fontWeight: '700',
-    color: '#fff',
-  },
-  summaryMeta: {
-    margin: '4px 0 0',
-    color: '#ddd',
-    fontSize: '0.9rem',
-  },
-  decodedGrid: {
-    display: 'grid',
-    gap: '8px',
-  },
-  decodedRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: '12px',
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '10px',
-    padding: '10px 12px',
-  },
-  decodedLabel: {
-    color: '#bdbdbd',
-    fontSize: '0.85rem',
-  },
-  decodedValue: {
-    color: '#fff',
-    fontSize: '0.9rem',
-    fontWeight: '600',
-    textAlign: 'right',
-  },
-  breakdownButton: {
-    width: '100%',
-    marginTop: '8px',
-    padding: '14px',
-    background: 'rgba(255,140,0,0.12)',
-    border: '1px solid rgba(255,140,0,0.35)',
-    borderRadius: '12px',
-    color: '#ff8c00',
-    fontFamily: '"Space Mono", monospace',
-    fontSize: '0.9rem',
-    fontWeight: '700',
-    cursor: 'pointer',
-    letterSpacing: '0.03em',
-  },
-};

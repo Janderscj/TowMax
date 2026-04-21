@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import AppHeader from '../components/AppHeader';
 import PageTitle from '../components/PageTitle';
 import LegalDisclaimer from '../components/LegalDisclaimer';
+import styles from './ExactResultScreen.module.css';
 
 export default function ExactResultScreen({
   decoded,
@@ -65,28 +66,8 @@ export default function ExactResultScreen({
   };
 
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
-        minHeight: '100vh',
-        fontFamily: '"Space Mono", monospace',
-        color: '#e0e0e0',
-        position: 'relative',
-        overflow: 'hidden',
-        paddingBottom: '24px',
-      }}
-    >
-      <div
-        style={{
-          padding: '24px',
-          paddingTop: 'clamp(60px, 12vw, 72px)',
-          minHeight: 'calc(100vh - 40px)',
-          display: 'flex',
-          flexDirection: 'column',
-          position: 'relative',
-          zIndex: 1,
-        }}
-      >
+    <div className={styles.container}>
+      <div className={styles.contentWrapper}>
         <AppHeader
           title="Vehicle Details"
           showBackButton={true}
@@ -97,177 +78,48 @@ export default function ExactResultScreen({
           onLogin={onLogin}
         />
         <PageTitle>Vehicle Details</PageTitle>
-        <div
-          style={{
-            textAlign: 'center',
-            marginTop: '40px',
-            marginBottom: '32px',
-          }}
-        >
-          <div
-            style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '20px',
-              background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 24px',
-            }}
-          >
+        <div className={styles.centerSection}>
+          <div className={styles.iconBox}>
             <CheckCircle2 size={48} color="#fff" />
           </div>
 
-          <h2
-            style={{
-              fontSize: '28px',
-              fontWeight: '700',
-              marginBottom: '12px',
-              letterSpacing: '-0.5px',
-            }}
-          >
-            Exact Match Found
-          </h2>
+          <h2 className={styles.heading}>Exact Match Found</h2>
 
-          <p
-            style={{
-              fontSize: '14px',
-              color: '#888',
-              marginBottom: '32px',
-            }}
-          >
-            Here&apos;s your precise towing capacity
-          </p>
+          <p className={styles.subtitle}>Here&apos;s your precise towing capacity</p>
         </div>
 
-        <div
-          style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: '16px',
-            padding: '20px',
-            marginBottom: '24px',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              marginBottom: '16px',
-            }}
-          >
+        <div className={styles.vehicleCard}>
+          <div className={styles.vehicleCardHeader}>
             <div>
-              <div
-                style={{
-                  fontSize: '13px',
-                  color: '#888',
-                  marginBottom: '8px',
-                }}
-              >
-                YOUR VEHICLE
-              </div>
-              <div
-                style={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  marginBottom: '4px',
-                }}
-              >
+              <div className={styles.vehicleLabel}>YOUR VEHICLE</div>
+              <div className={styles.vehicleName}>
                 {decoded.year} {decoded.make} {decoded.model}
               </div>
-              <div
-                style={{
-                  fontSize: '13px',
-                  color: '#aaa',
-                  lineHeight: '1.6',
-                }}
-              >
-                {decoded.series}
-              </div>
+              <div className={styles.vehicleSeries}>{decoded.series}</div>
             </div>
           </div>
         </div>
 
-        <div
-          style={{
-            background:
-              'linear-gradient(135deg, rgba(76,175,80,0.15) 0%, rgba(46,125,50,0.1) 100%)',
-            border: '2px solid rgba(76,175,80,0.3)',
-            borderRadius: '16px',
-            padding: '32px 24px',
-            marginBottom: '24px',
-            textAlign: 'center',
-          }}
-        >
-          <div
-            style={{
-              fontSize: '13px',
-              color: '#81c784',
-              marginBottom: '12px',
-              letterSpacing: '1px',
-              textTransform: 'uppercase',
-              fontWeight: '600',
-            }}
-          >
-            Maximum Towing Capacity
-          </div>
-          <div
-            style={{
-              fontSize: '56px',
-              fontWeight: '700',
-              marginBottom: '8px',
-              letterSpacing: '-2px',
-              background: 'linear-gradient(135deg, #ffffff 0%, #4caf50 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            {match.maxTow.toLocaleString()}
-          </div>
-          <div style={{ fontSize: '18px', color: '#aaa' }}>pounds</div>
+        <div className={styles.capacityBox}>
+          <div className={styles.capacityLabel}>Maximum Towing Capacity</div>
+          <div className={styles.capacityValue}>{match.maxTow.toLocaleString()}</div>
+          <div className={styles.capacityUnit}>pounds</div>
         </div>
 
-        <div
-          style={{
-            background: 'rgba(255,255,255,0.02)',
-            borderRadius: '12px',
-            padding: '16px',
-            marginBottom: '24px',
-          }}
-        >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '16px',
-              fontSize: '13px',
-            }}
-          >
-            <div>
-              <div style={{ color: '#888', marginBottom: '4px' }}>GCWR</div>
-              <div style={{ fontWeight: '600' }}>{gcwr.toLocaleString()} lbs</div>
+        <div className={styles.specsBox}>
+          <div className={styles.specsGrid}>
+            <div className={styles.specItem}>
+              <div className={styles.specLabel}>GCWR</div>
+              <div className={styles.specValue}>{gcwr.toLocaleString()} lbs</div>
             </div>
-            <div>
-              <div style={{ color: '#888', marginBottom: '4px' }}>Payload</div>
-              <div style={{ fontWeight: '600' }}>{payload.toLocaleString()} lbs</div>
+            <div className={styles.specItem}>
+              <div className={styles.specLabel}>Payload</div>
+              <div className={styles.specValue}>{payload.toLocaleString()} lbs</div>
             </div>
           </div>
         </div>
 
-        <div
-          style={{
-            background: 'rgba(255,152,0,0.08)',
-            border: '1px solid rgba(255,152,0,0.2)',
-            borderRadius: '12px',
-            padding: '14px',
-            marginBottom: '24px',
-            fontSize: '12px',
-            color: '#ffb74d',
-            lineHeight: '1.5',
-          }}
-        >
+        <div className={styles.warningBox}>
           <strong>⚠️ Important:</strong> Always verify with your owner&apos;s manual and consider
           payload, tongue weight, and trailer specifications.
         </div>
@@ -275,20 +127,7 @@ export default function ExactResultScreen({
         {showAddVehicle && !isGuest && (
           <>
             <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                marginBottom: '10px',
-                opacity: saveSuccess ? 1 : 0,
-                transform: saveSuccess ? 'scale(1)' : 'scale(0.92)',
-                transition: 'opacity 220ms ease, transform 220ms ease',
-                color: '#81c784',
-                fontSize: '14px',
-                fontWeight: 700,
-                pointerEvents: 'none',
-              }}
+              className={`${styles.successIndicator} ${saveSuccess ? styles.visible : ''}`}
               aria-live="polite"
             >
               <CheckCircle2 size={18} />
@@ -298,31 +137,7 @@ export default function ExactResultScreen({
             <button
               onClick={handleGarageButtonClick}
               disabled={saveSuccess ? false : shouldDisableAdd}
-              style={{
-                width: '100%',
-                padding: '18px',
-                background: saveSuccess
-                  ? 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)'
-                  : shouldDisableAdd
-                    ? 'rgba(255,255,255,0.08)'
-                    : 'linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%)',
-                border: 'none',
-                borderRadius: '16px',
-                color: shouldDisableAdd && !saveSuccess ? '#aaa' : '#000',
-                fontSize: '16px',
-                marginBottom: '12px',
-                fontWeight: '700',
-                cursor: addVehicleLoading
-                  ? 'wait'
-                  : saveSuccess
-                    ? 'pointer'
-                    : canAddVehicle
-                      ? 'pointer'
-                      : 'not-allowed',
-                fontFamily: 'inherit',
-                opacity: shouldDisableAdd && !saveSuccess ? 0.75 : 1,
-                transition: 'background 220ms ease, transform 180ms ease, opacity 180ms ease',
-              }}
+              className={`${styles.addVehicleButton} ${saveSuccess ? styles.success : ''}`}
             >
               {saveSuccess
                 ? 'View in My Garage'
@@ -332,84 +147,24 @@ export default function ExactResultScreen({
             </button>
 
             {garageLimitReached && !saveSuccess && (
-              <div
-                style={{
-                  background: 'rgba(255, 140, 0, 0.12)',
-                  border: '1px solid rgba(255, 140, 0, 0.25)',
-                  color: '#ffb74d',
-                  borderRadius: '10px',
-                  padding: '12px 14px',
-                  marginBottom: '16px',
-                  lineHeight: 1.5,
-                  fontSize: '13px',
-                }}
-              >
+              <div className={styles.garageLimitWarning}>
                 Your garage is full. Find an exact match first, then upgrade to Premium to save
                 unlimited vehicles.
               </div>
             )}
 
             {addVehicleError && !saveSuccess && (
-              <div
-                style={{
-                  background: 'rgba(244,67,54,0.12)',
-                  border: '1px solid rgba(244,67,54,0.25)',
-                  borderRadius: '12px',
-                  padding: '14px',
-                  marginBottom: '16px',
-                  color: '#ef9a9a',
-                  fontSize: '13px',
-                  lineHeight: '1.5',
-                }}
-              >
-                {addVehicleError}
-              </div>
+              <div className={styles.errorBox}>{addVehicleError}</div>
             )}
 
             {showUpgradePrompt && !saveSuccess && (
-              <div
-                style={{
-                  background: 'rgba(255,140,0,0.1)',
-                  border: '1px solid rgba(255,140,0,0.24)',
-                  borderRadius: '14px',
-                  padding: '18px',
-                  marginBottom: '20px',
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: '15px',
-                    fontWeight: '700',
-                    color: '#ffd180',
-                    marginBottom: '8px',
-                  }}
-                >
-                  Garage Full
-                </div>
-                <div
-                  style={{
-                    fontSize: '13px',
-                    color: '#ffcc80',
-                    lineHeight: '1.6',
-                    marginBottom: '14px',
-                  }}
-                >
+              <div className={styles.upgradePrompt}>
+                <div className={styles.upgradeTitle}>Garage Full</div>
+                <div className={styles.upgradeText}>
                   Upgrade to Premium to unlock unlimited saved vehicles, then try adding this VIN
                   again.
                 </div>
-                <button
-                  onClick={onDismissUpgradePrompt}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    borderRadius: '10px',
-                    color: '#fff',
-                    cursor: 'pointer',
-                    fontWeight: '600',
-                  }}
-                >
+                <button onClick={onDismissUpgradePrompt} className={styles.upgradeButton}>
                   Dismiss
                 </button>
               </div>
@@ -417,109 +172,28 @@ export default function ExactResultScreen({
           </>
         )}
 
-        <button
-          onClick={onNewSearch}
-          style={{
-            width: '100%',
-            padding: '18px',
-            background: 'linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%)',
-            border: 'none',
-            borderRadius: '16px',
-            color: '#000',
-            fontSize: '16px',
-            fontWeight: '700',
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-          }}
-        >
+        <button onClick={onNewSearch} className={styles.newSearchButton}>
           Check Another Vehicle
         </button>
 
         {showFreeAccountWarning && (
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(0, 0, 0, 0.7)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 1000,
-            }}
-            onClick={() => setShowFreeAccountWarning(false)}
-          >
-            <div
-              style={{
-                background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
-                borderRadius: '16px',
-                padding: '28px',
-                maxWidth: '360px',
-                border: '1px solid rgba(255, 152, 0, 0.3)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h3
-                style={{
-                  fontSize: '18px',
-                  fontWeight: '700',
-                  marginBottom: '12px',
-                  color: '#ffb74d',
-                  margin: '0 0 12px 0',
-                }}
-              >
-                Free Account Notice
-              </h3>
-              <p
-                style={{
-                  fontSize: '14px',
-                  color: '#ccc',
-                  lineHeight: '1.6',
-                  marginBottom: '24px',
-                  margin: '0 0 24px 0',
-                }}
-              >
+          <div className={styles.modalOverlay} onClick={() => setShowFreeAccountWarning(false)}>
+            <div className={styles.modalDialog} onClick={(e) => e.stopPropagation()}>
+              <h3 className={styles.modalTitle}>Free Account Notice</h3>
+              <p className={styles.modalText}>
                 Free accounts can save vehicles to their garage, but cannot remove them once added.
                 Upgrade to Premium to unlock full garage management and unlimited vehicles.
               </p>
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '12px',
-                }}
-              >
+              <div className={styles.modalButtonGroup}>
                 <button
                   onClick={() => setShowFreeAccountWarning(false)}
-                  style={{
-                    flex: 1,
-                    padding: '12px',
-                    background: 'rgba(255, 255, 255, 0.08)',
-                    border: '1px solid rgba(255, 255, 255, 0.12)',
-                    borderRadius: '8px',
-                    color: '#fff',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                  }}
+                  className={`${styles.modalButton} ${styles.secondary}`}
                 >
                   Back
                 </button>
                 <button
                   onClick={handleContinueAddVehicle}
-                  style={{
-                    flex: 1,
-                    padding: '12px',
-                    background: 'linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%)',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#000',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                  }}
+                  className={`${styles.modalButton} ${styles.primary}`}
                 >
                   Continue
                 </button>
