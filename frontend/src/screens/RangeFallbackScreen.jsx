@@ -106,7 +106,14 @@ export default function RangeFallback({
           Try new VIN
         </button>
 
-        <button onClick={() => navigate('/vin/full')} className={styles.secondaryButton}>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            navigate('/vin/full');
+          }}
+          className={styles.secondaryButton}
+        >
           View Full VIN Breakdown
         </button>
 

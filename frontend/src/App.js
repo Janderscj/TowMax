@@ -164,6 +164,44 @@ function QuestionsWrapper() {
   );
 }
 
+function VinBreakdownWrapper() {
+  const { decoded, vin, signOut, resetAll } = useLookup();
+  const { isGuest } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGlobalSignOut = async () => {
+    try {
+      await signOut();
+      resetAll();
+      navigate('/');
+    } catch (err) {
+      console.error('Global sign out error:', err);
+    }
+  };
+
+  if (!decoded) {
+    return <Navigate to="/" replace />;
+  }
+
+  return (
+    <VinBreakdownScreen
+      vehicle={{
+        year: decoded.year,
+        make: decoded.make,
+        model: decoded.model,
+        trim: decoded.series,
+        vin: vin,
+      }}
+      rawVinData={decoded.raw}
+      onBack={() => navigate(-1)}
+      onHome={() => navigate('/')}
+      onSignOut={handleGlobalSignOut}
+      isGuest={isGuest}
+      onLogin={() => navigate('/login')}
+    />
+  );
+}
+
 function AuthenticatedRoutes() {
   const { user, profile, profileError, signOut, refetchProfile, isDealer, isGuest } = useAuth();
 
@@ -485,30 +523,7 @@ function AuthenticatedRoutes() {
           />
         }
       />
-      <Route
-        path="/vin/full"
-        element={
-          decoded ? (
-            <VinBreakdownScreen
-              vehicle={{
-                year: decoded.year,
-                make: decoded.make,
-                model: decoded.model,
-                trim: decoded.series,
-                vin: vin,
-              }}
-              rawVinData={decoded.raw}
-              onBack={() => navigate(-1)}
-              onHome={() => navigate('/')}
-              onSignOut={handleGlobalSignOut}
-              isGuest={isGuest}
-              onLogin={() => navigate('/login')}
-            />
-          ) : (
-            <Navigate to="/" replace />
-          )
-        }
-      />
+      <Route path="/vin/full" element={<VinBreakdownWrapper />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
