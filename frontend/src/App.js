@@ -1,4 +1,11 @@
-import { Routes, Route, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import { useLookup } from './contexts/LookupContext';
 import WelcomeScreen from './screens/WelcomeScreen';
