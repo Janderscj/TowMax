@@ -11,8 +11,10 @@ export default function RangeResultScreen({
   maxTow,
   onRefine,
   onNewSearch,
+  onViewVinBreakdown,
   onBack,
   onHome,
+  onUpgrade,
   onSignOut,
   isGuest = false,
   onLogin,
@@ -28,6 +30,7 @@ export default function RangeResultScreen({
           showBackButton={true}
           onBack={onBack || (() => navigate('/vin'))}
           onHome={onHome}
+          onUpgrade={onUpgrade}
           onSignOut={onSignOut}
           isGuest={isGuest}
           onLogin={onLogin}
@@ -98,7 +101,7 @@ export default function RangeResultScreen({
 
         <button
           type="button"
-          onClick={() => navigate('/vin/full')}
+          onClick={onViewVinBreakdown || (() => navigate('/vin/full'))}
           className={styles.secondaryButton}
         >
           View Full VIN Breakdown

@@ -23,6 +23,7 @@ export default function VinBreakdownScreen({
   rawVinData,
   onBack,
   onHome,
+  onUpgrade,
   onSignOut,
   isGuest = false,
   onLogin,
@@ -56,6 +57,7 @@ export default function VinBreakdownScreen({
         showBackButton={true}
         onBack={onBack}
         onHome={onHome}
+        onUpgrade={onUpgrade}
         onSignOut={onSignOut}
         isGuest={isGuest}
         onLogin={onLogin}

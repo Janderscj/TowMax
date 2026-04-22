@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import { useLookup } from './contexts/LookupContext';
 import WelcomeScreen from './screens/WelcomeScreen';
@@ -167,7 +167,22 @@ function QuestionsWrapper() {
 function VinBreakdownWrapper() {
   const { decoded, vin, signOut, resetAll } = useLookup();
   const { isGuest } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+  const stateVehicle = location.state?.vehicle ?? null;
+  const stateRawVinData = location.state?.rawVinData;
+  const vehicle =
+    stateVehicle ??
+    (decoded
+      ? {
+          year: decoded.year,
+          make: decoded.make,
+          model: decoded.model,
+          trim: decoded.series,
+          vin,
+        }
+      : null);
+  const rawVinData = stateRawVinData ?? decoded?.raw;
 
   const handleGlobalSignOut = async () => {
     try {
@@ -181,20 +196,11 @@ function VinBreakdownWrapper() {
 
   return (
     <VinBreakdownScreen
-      vehicle={
-        decoded
-          ? {
-              year: decoded.year,
-              make: decoded.make,
-              model: decoded.model,
-              trim: decoded.series,
-              vin: vin,
-            }
-          : null
-      }
-      rawVinData={decoded?.raw}
+      vehicle={vehicle}
+      rawVinData={rawVinData}
       onBack={() => navigate(-1)}
       onHome={() => navigate('/')}
+      onUpgrade={() => navigate('/upgrade')}
       onSignOut={handleGlobalSignOut}
       isGuest={isGuest}
       onLogin={() => navigate('/login')}
@@ -402,9 +408,24 @@ function AuthenticatedRoutes() {
               onNewSearch={() => (lookupOrigin === 'garage' ? navigate('/garage') : navigate('/'))}
               onBack={() => navigate('/vin')}
               onHome={() => navigate('/')}
+              onUpgrade={() => navigate('/upgrade')}
               onSignOut={handleGlobalSignOut}
               isGuest={isGuest}
               onLogin={() => navigate('/login')}
+              onViewVinBreakdown={() =>
+                navigate('/vin/full', {
+                  state: {
+                    vehicle: {
+                      year: decoded.year,
+                      make: decoded.make,
+                      model: decoded.model,
+                      trim: decoded.series,
+                      vin,
+                    },
+                    rawVinData: decoded.raw,
+                  },
+                })
+              }
             />
           ) : (
             <Navigate to="/" replace />
@@ -452,9 +473,24 @@ function AuthenticatedRoutes() {
               onRecheck={() => navigate('/questions')}
               onNewSearch={lookupOrigin === 'garage' ? goToGarage : () => navigate('/')}
               onHome={() => navigate('/')}
+              onUpgrade={() => navigate('/upgrade')}
               onSignOut={handleGlobalSignOut}
               isGuest={isGuest}
               onLogin={() => navigate('/login')}
+              onViewVinBreakdown={() =>
+                navigate('/vin/full', {
+                  state: {
+                    vehicle: {
+                      year: decoded.year,
+                      make: decoded.make,
+                      model: decoded.model,
+                      trim: decoded.series,
+                      vin,
+                    },
+                    rawVinData: decoded.raw,
+                  },
+                })
+              }
             />
           ) : (
             <Navigate to="/" replace />

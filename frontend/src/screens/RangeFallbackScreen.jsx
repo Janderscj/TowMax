@@ -11,9 +11,11 @@ export default function RangeFallback({
   onRecheck,
   onNewSearch,
   onHome,
+  onUpgrade,
   onSignOut,
   isGuest,
   onLogin,
+  onViewVinBreakdown,
 }) {
   const navigate = useNavigate();
 
@@ -27,6 +29,7 @@ export default function RangeFallback({
           showBackButton={true}
           onBack={onRecheck || (() => navigate('/results/range'))}
           onHome={onHome}
+          onUpgrade={onUpgrade}
           onSignOut={onSignOut}
           isGuest={isGuest}
           onLogin={onLogin}
@@ -108,7 +111,7 @@ export default function RangeFallback({
 
         <button
           type="button"
-          onClick={() => navigate('/vin/full')}
+          onClick={onViewVinBreakdown || (() => navigate('/vin/full'))}
           className={styles.secondaryButton}
         >
           View Full VIN Breakdown

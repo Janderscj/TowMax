@@ -58,12 +58,12 @@ export default function AppHeader({
       <div className={styles.headerInner}>
         <div className={styles.sideNav}>
           {showBackButton && onBack && (
-            <button onClick={onBack} className={styles.navButton}>
+            <button type="button" onClick={onBack} className={styles.navButton}>
               <ArrowLeft size={18} />
             </button>
           )}
           {onUpgrade && (
-            <button onClick={onUpgrade} className={styles.navButton}>
+            <button type="button" onClick={onUpgrade} className={styles.navButton}>
               <Gem size={18} />
             </button>
           )}
@@ -73,16 +73,16 @@ export default function AppHeader({
         </div>
         <div className={`${styles.sideNav} ${styles.sideNavRight}`}>
           {onHome && (
-            <button onClick={onHome} className={styles.navButton}>
+            <button type="button" onClick={onHome} className={styles.navButton}>
               <Home size={18} />
             </button>
           )}
           {isGuest && onLogin ? (
-            <button onClick={onLogin} className={styles.navButton}>
+            <button type="button" onClick={onLogin} className={styles.navButton}>
               <LogIn size={18} />
             </button>
           ) : onSignOut ? (
-            <button onClick={onSignOut} className={styles.navButton}>
+            <button type="button" onClick={onSignOut} className={styles.navButton}>
               <LogOut size={18} />
             </button>
           ) : null}
