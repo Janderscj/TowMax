@@ -98,10 +98,7 @@ export default function RangeResultScreen({
 
         <button
           type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate('/vin/full');
-          }}
+          onClick={() => navigate('/vin/full')}
           className={styles.secondaryButton}
         >
           View Full VIN Breakdown

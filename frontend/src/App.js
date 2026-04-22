@@ -179,62 +179,21 @@ function VinBreakdownWrapper() {
     }
   };
 
-  if (!decoded) {
-    return <Navigate to="/" replace />;
-  }
-
   return (
     <VinBreakdownScreen
-      vehicle={{
-        year: decoded.year,
-        make: decoded.make,
-        model: decoded.model,
-        trim: decoded.series,
-        vin: vin,
-      }}
-      rawVinData={decoded.raw}
+      vehicle={
+        decoded
+          ? {
+              year: decoded.year,
+              make: decoded.make,
+              model: decoded.model,
+              trim: decoded.series,
+              vin: vin,
+            }
+          : null
+      }
+      rawVinData={decoded?.raw}
       onBack={() => navigate(-1)}
-      onHome={() => navigate('/')}
-      onSignOut={handleGlobalSignOut}
-      isGuest={isGuest}
-      onLogin={() => navigate('/login')}
-    />
-  );
-}
-
-function RangeResultWrapper() {
-  const { decoded, matches, signOut, resetAll } = useLookup();
-  const { isGuest } = useAuth();
-  const navigate = useNavigate();
-  const { lookupOrigin } = useLookup();
-
-  const handleGlobalSignOut = async () => {
-    try {
-      await signOut();
-      resetAll();
-      navigate('/');
-    } catch (err) {
-      console.error('Global sign out error:', err);
-    }
-  };
-
-  const goToGarage = () => {
-    // Simplified garage navigation
-    navigate('/garage');
-  };
-
-  if (!decoded || matches.length <= 1) {
-    return <Navigate to="/" replace />;
-  }
-
-  return (
-    <RangeResultScreen
-      decoded={decoded}
-      minTow={Math.min(...matches.map((m) => m.maxTow || 0))}
-      maxTow={Math.max(...matches.map((m) => m.maxTow || 0))}
-      onRefine={() => navigate('/questions')}
-      onNewSearch={lookupOrigin === 'garage' ? goToGarage : () => navigate('/')}
-      onBack={() => navigate('/vin')}
       onHome={() => navigate('/')}
       onSignOut={handleGlobalSignOut}
       isGuest={isGuest}
@@ -431,7 +390,27 @@ function AuthenticatedRoutes() {
           )
         }
       />
-      <Route path="/results/range" element={<RangeResultWrapper />} />
+      <Route
+        path="/results/range"
+        element={
+          matches.length > 1 && decoded ? (
+            <RangeResultScreen
+              decoded={decoded}
+              minTow={Math.min(...matches.map((m) => m.maxTow || 0))}
+              maxTow={Math.max(...matches.map((m) => m.maxTow || 0))}
+              onRefine={() => navigate('/questions')}
+              onNewSearch={() => (lookupOrigin === 'garage' ? navigate('/garage') : navigate('/'))}
+              onBack={() => navigate('/vin')}
+              onHome={() => navigate('/')}
+              onSignOut={handleGlobalSignOut}
+              isGuest={isGuest}
+              onLogin={() => navigate('/login')}
+            />
+          ) : (
+            <Navigate to="/" replace />
+          )
+        }
+      />
       <Route
         path="/results/exact"
         element={
