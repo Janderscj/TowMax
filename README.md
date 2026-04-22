@@ -1,4 +1,4 @@
-**_ TowMax Towing Capacity Estimator (Prototype) _**
+## **_ TowMax Towing Capacity Estimator (Prototype) _**
 
 <p align="left">
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
@@ -15,7 +15,8 @@
 TowMax is a vehicle‑lookup tool that decodes VINs, identifies key configuration details, and provides towing‑capacity estimates.
 This prototype demonstrates the full user flow, VIN decoding accuracy, and UI polish while using a limited towing dataset.
 
-** Demo/Prototype **
+## ** Demo/Prototype **
+---
 
 https://towmax.vercel.app/
 
