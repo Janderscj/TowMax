@@ -169,18 +169,21 @@ I normalized key fields (engine, drive, cab, bed) and built a clean VIN summary 
 
 ## Local Development
 
-bash
+```bash
 git clone <repo-url>
 cd towmax
 npm install
 npm run dev
+```
+---
 
 Backend:
 ```bash
 cd backend
 npm install
 npm run dev
-License
+```
+## License
 MIT License
 
 ---
