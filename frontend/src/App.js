@@ -15,6 +15,7 @@ import GarageVehicleDetailsScreen from './screens/GarageVehicleDetailsScreen';
 import UpgradeScreen from './screens/UpgradeScreen';
 import TermsOfService from './screens/TermsOfService';
 import PrivacyPolicy from './screens/PrivacyPolicy';
+import VinBreakdownScreen from './screens/VinBreakdownScreen';
 import PrototypeBanner from './components/PrototypeBanner';
 import AppShell from './components/AppShell';
 import ScrollToTop from './components/ScrollToTop';
@@ -482,6 +483,30 @@ function AuthenticatedRoutes() {
             isGuest={isGuest}
             onLogin={() => navigate('/login')}
           />
+        }
+      />
+      <Route
+        path="/vin/full"
+        element={
+          decoded ? (
+            <VinBreakdownScreen
+              vehicle={{
+                year: decoded.year,
+                make: decoded.make,
+                model: decoded.model,
+                trim: decoded.series,
+                vin: vin,
+              }}
+              rawVinData={decoded.raw}
+              onBack={() => navigate(-1)}
+              onHome={() => navigate('/')}
+              onSignOut={handleGlobalSignOut}
+              isGuest={isGuest}
+              onLogin={() => navigate('/login')}
+            />
+          ) : (
+            <Navigate to="/" replace />
+          )
         }
       />
       <Route path="*" element={<Navigate to="/" replace />} />
