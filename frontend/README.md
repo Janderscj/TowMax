@@ -1,70 +1,47 @@
-# Getting Started with Create React App
+# TowMax Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React client for the TowMax prototype.
 
-## Available Scripts
+## Scripts
 
-In the project directory, you can run:
+From the `frontend/` directory:
 
-### `npm start`
+```bash
+npm start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Starts the development server on `http://localhost:3000`.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+npm run build
+```
 
-### `npm test`
+Builds the production bundle into `build/`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm test
+```
 
-### `npm run build`
+Runs the test runner.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Environment Variables
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Create a local `.env` or `.env.local` file in `frontend/` with:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```env
+REACT_APP_API_URL=http://localhost:5000
+REACT_APP_SUPABASE_URL=your_supabase_project_url
+REACT_APP_SUPABASE_ANON_KEY=your_supabase_publishable_key
+```
 
-### `npm run eject`
+Notes:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- `REACT_APP_SUPABASE_ANON_KEY` is a public client key and is expected to be exposed to the browser.
+- Do not place `SUPABASE_SERVICE_ROLE_KEY` or any other server-only secret in the frontend.
+- Frontend env files are ignored by Git and should stay that way.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Deployment
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- The frontend is built as a static Create React App bundle.
+- Vercel should build this directory with `npm run build` and publish the `build/` output.
+- Production environment variables must be configured in the hosting provider, not committed to the repository.

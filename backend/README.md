@@ -1,357 +1,94 @@
-# Towing Project Backend
+# TowMax Backend
 
-Node.js/Express API for vehicle towing capacity lookup and estimation.
+Node.js/Express API for VIN decoding, towing lookup, refinement, garage management, and authenticated user/profile flows.
 
-## Quick Start
+## Prerequisites
 
-### Prerequisites
+- Node.js 22.x
+- npm 11.x
+- Supabase project with the required tables and auth configuration
 
-- Node.js (v14 or higher)
-- npm
-- Supabase account (for authentication)
-
-### Installation
+## Installation
 
 ```bash
 cd backend
 npm install
 ```
 
-### Environment Setup
+## Environment Variables
 
-Create a `.env` file in the backend directory with the following variables:
+Create `backend/.env` with:
 
-```
-# Supabase Configuration
+```env
 SUPABASE_URL=your_supabase_project_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# Server Configuration
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+FRONTEND_URL=http://localhost:3000
 NODE_ENV=development
 PORT=5000
-
-# CORS Configuration
-CORS_ORIGIN=http://localhost:3000
 ```
 
-### Running the Server
+Notes:
 
-Development mode:
+- `SUPABASE_SERVICE_ROLE_KEY` is server-only and must never be exposed to the frontend.
+- `FRONTEND_URL` controls the allowed browser origin for CORS.
+
+## Scripts
+
+```bash
+npm run dev
+```
+
+Starts the API with `nodemon`.
 
 ```bash
 npm start
 ```
 
-The server will start on `http://localhost:5000` by default.
-
-### Running Tests
-
-This project includes comprehensive unit tests for critical logic paths:
+Starts the API with Node.
 
 ```bash
-# Run all tests
 npm test
-
-# Run tests in watch mode (re-run on file changes)
 npm run test:watch
-
-# Generate coverage report
 npm run test:coverage
 ```
 
-**Test Coverage:**
+Runs the backend test suite.
 
-- VIN normalization and decoding logic
-- Vehicle matching algorithm
-- Data filtering and validation
-- Edge cases and error conditions
-
-See [TESTING.md](./TESTING.md) for detailed test documentation.
-
-## API Endpoints
-
-### VIN Lookup (No Authentication Required)
-
-#### `GET /api/towing/:vin`
-
-Decode a VIN and get initial towing estimates based on manufacturer data.
-
-**Parameters:**
-
-- `vin` (string, required) - Valid 17-character VIN
-
-**Response:**
-
-```json
-{
-  "decoded": {
-    "year": 2024,
-    "make": "FORD",
-    "model": "F-150",
-    "series": "1500",
-    "engine": "3.5L EcoBoost",
-    "driveType": "4WD",
-    "cabType": "Crew Cab"
-  },
-  "towingMatches": [
-    {
-      "year": 2024,
-      "make": "FORD",
-      "model": "F-150",
-      "towPackage": "maxTow",
-      "maxTow": 14000,
-      "gcwr": 14500,
-      "payload": 1560
-    }
-  ],
-  "missingInfo": ["towPackage"],
-  "options": {
-    "towPackage": {
-      "supportsMaxTow": true,
-      "options": [...]
-    }
-  }
-}
+```bash
+npm run validate:data
 ```
 
-**Error Response:**
+Runs the towing data validation script.
 
-```json
-{
-  "error": "Invalid VIN format"
-}
-```
+## Important Endpoints
 
----
+### Public endpoints
 
-### Refine Results (No Authentication Required)
+- `GET /api/towing/:vin`
+- `POST /api/towing/refine`
 
-#### `POST /api/towing/refine`
+### Authenticated endpoints
 
-Refine towing estimates based on user-provided additional information.
+- `GET /api/user/profile`
+- `GET /api/garage`
+- `POST /api/garage/add`
+- `POST /api/garage/remove`
 
-**Request Body:**
+Authenticated endpoints expect a Supabase JWT in the `Authorization` header:
 
-```json
-{
-  "vin": "1FTFW1ET5DFC12345",
-  "answers": {
-    "towPackage": "maxTow",
-    "axleRatio": "3.55",
-    "bedLength": "5.5 ft"
-  }
-}
-```
-
-**Response:**
-
-```json
-{
-  "towingMatches": [
-    {
-      "year": 2024,
-      "make": "FORD",
-      "model": "F-150",
-      "trim": "Lariat",
-      "towPackage": "maxTow",
-      "maxTow": 14000,
-      "gcwr": 14500,
-      "payload": 1560
-    }
-  ],
-  "exactMatch": true,
-  "missingInfo": []
-}
-```
-
----
-
-### User Endpoints (Authentication Required)
-
-All user endpoints require a valid Supabase JWT token in the `Authorization` header:
-
-```
+```text
 Authorization: Bearer <supabase_jwt_token>
 ```
 
-#### `GET /api/user/profile`
+## Security Notes
 
-Get current user's profile and role information.
+- `POST /api/user/role/update` is intentionally disabled for self-service clients and returns `403`.
+- Production logging is intentionally reduced to avoid exposing VINs and other sensitive request details.
+- This backend assumes server-side ownership of privileged Supabase operations.
 
-**Response:**
+## Testing
 
-```json
-{
-  "id": "uuid",
-  "role": "free|premium|dealer",
-  "garage_limit": 1,
-  "can_replace_free_vehicle": false,
-  "created_at": "2024-01-01T00:00:00Z",
-  "updated_at": "2024-01-01T00:00:00Z"
-}
-```
-
-#### `POST /api/user/role/update`
-
-Update user role (typically admin-only in production).
-
-**Request Body:**
-
-```json
-{
-  "role": "premium"
-}
-```
-
----
-
-### Garage Endpoints (Authentication Required)
-
-#### `GET /api/garage`
-
-Get all saved vehicles for the current user.
-
-**Response:**
-
-```json
-[
-  {
-    "id": "uuid",
-    "user_id": "uuid",
-    "vin": "1FTFW1ET5DFC12345",
-    "year": 2024,
-    "make": "FORD",
-    "model": "F-150",
-    "trim": "Lariat",
-    "created_at": "2024-01-01T00:00:00Z"
-  }
-]
-```
-
-#### `POST /api/garage/add`
-
-Add a vehicle to the user's garage.
-
-**Request Body:**
-
-```json
-{
-  "vin": "1FTFW1ET5DFC12345",
-  "year": 2024,
-  "make": "FORD",
-  "model": "F-150",
-  "trim": "Lariat"
-}
-```
-
-**Response:**
-
-```json
-{
-  "id": "uuid",
-  "user_id": "uuid",
-  "vin": "1FTFW1ET5DFC12345",
-  "year": 2024,
-  "make": "FORD",
-  "model": "F-150",
-  "trim": "Lariat",
-  "created_at": "2024-01-01T00:00:00Z"
-}
-```
-
-#### `POST /api/garage/remove`
-
-Remove a vehicle from the user's garage.
-
-**Request Body:**
-
-```json
-{
-  "id": "uuid"
-}
-```
-
-**Response:**
-
-```json
-{
-  "success": true
-}
-```
-
----
-
-## Data Files
-
-Vehicle data is stored in JSON files organized by brand:
-
-- `backend/data/chevrolet.json`
-- `backend/data/ford.json`
-- `backend/data/gmc.json`
-- `backend/data/honda.json`
-- `backend/data/jeep.json`
-- `backend/data/nissan.json`
-- `backend/data/ram.json`
-- `backend/data/toyota.json`
-
-### Data Schema
-
-Each vehicle entry contains:
-
-```json
-{
-  "year": 2024,
-  "make": "FORD",
-  "model": "F-150",
-  "series": "1500",
-  "trim": "Lariat",
-  "engine": "3.5L EcoBoost",
-  "driveType": "4WD",
-  "cabType": "Crew Cab",
-  "bed": "5.5 ft",
-  "axleRatio": "3.55",
-  "towPackage": "maxTow",
-  "gcwr": 14500,
-  "payload": 1560,
-  "maxTow": 14000
-}
-```
-
-**Field Definitions:**
-
-- `year` - Model year
-- `make` - Manufacturer (e.g., "FORD")
-- `model` - Model name (e.g., "F-150")
-- `series` - Model series (e.g., "1500")
-- `trim` - Trim level (e.g., "Lariat")
-- `engine` - Engine specification
-- `driveType` - "2WD" or "4WD"
-- `cabType` - Cabin type (e.g., "Crew Cab", "SuperCrew")
-- `bed` - Bed size/type
-- `axleRatio` - Rear axle ratio
-- `towPackage` - Package type: "maxTow", "standard", or "none"
-- `gcwr` - Gross Combined Weight Rating (lbs)
-- `payload` - Maximum payload capacity (lbs)
-- `maxTow` - Maximum towing capacity (lbs)
-
----
-
-## Authentication
-
-### Google OAuth Flow
-
-1. Frontend initiates Google OAuth via Supabase
-2. Supabase validates and creates/updates user record
-3. Database trigger automatically creates profile with "free" role
-4. JWT token returned to frontend and used in subsequent requests
-
-### User Roles
-
-- **free** - Limited to 1 saved vehicle, read-only lookups
-- **premium** - Up to 5 saved vehicles, priority support
-- **dealer** - Unlimited vehicles, API access, no UI limitations
-
----
+The current tests focus on core matching and VIN normalization behavior. See [TESTING.md](./TESTING.md) for more detail.
 
 ## Error Handling
 
@@ -371,15 +108,11 @@ Error responses include a message:
 }
 ```
 
----
-
 ## Middleware
 
 ### `authenticateUser`
 
 Attempts to extract and validate JWT from Authorization header. Sets `req.user` accordingly. **Note:** VIN endpoints allow unauthenticated access by design (sets `req.user = null`).
-
----
 
 ## Development
 
@@ -404,16 +137,12 @@ backend/
 - `src/utils/towPackageEngine.js` - Towing package option generator
 - `src/utils/loadBrandData.js` - Data file loader
 
----
-
 ## Notes on Data
 
 - All specifications sourced from official manufacturer documentation
 - Data accuracy is critical for user safety when towing
 - When updating data files, ensure consistency with existing schema
 - VIN matching is case-insensitive for brand/model/series names
-
----
 
 ## License
 
