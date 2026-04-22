@@ -96,8 +96,6 @@ As a software engineering student preparing for roles in healthcare data and dat
 ## Architecture Overview
 
 
-
-** Architecture Overview**
 ```
 /frontend
  /components
