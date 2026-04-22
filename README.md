@@ -10,6 +10,9 @@
   <img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white" />
   <img src="https://img.shields.io/badge/CSS%20Modules-000000?style=for-the-badge&logo=css3&logoColor=white" />
   <img src="https://img.shields.io/badge/Lucide-000000?style=for-the-badge&logo=lucide&logoColor=white" />
+  <img src="https://img.shields.io/github/actions/workflow/status/Janderscj/TowMax/validate-data.yml?style=for-the-badge&label=CI%20Validate%20Data" />
+  <img src="https://img.shields.io/github/deployments/Janderscj/TowMax/Production?label=Vercel%20Deploy&logo=vercel&style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Supabase-Operational-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
 </p>
 
 TowMax is a vehicle‑lookup tool that decodes VINs, identifies key configuration details, and provides towing‑capacity estimates.
