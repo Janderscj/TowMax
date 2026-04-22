@@ -21,67 +21,67 @@ https://towmax.vercel.app/
 
 ** Features **
 
-VIN Decoding (Fully Functional)
-Decodes year, make, model, engine, drive, body style, and more
+-VIN Decoding (Fully Functional)
+--Decodes year, make, model, engine, drive, body style, and more
 
 Displays a full VIN breakdown
 
 ** Towing Capacity Logic (Prototype Dataset) **
 
-Exact match when configuration is known
+-Exact match when configuration is known
 
-Range match when multiple configurations exist
+-Range match when multiple configurations exist
 
-Graceful fallback when no towing data is available
+-Graceful fallback when no towing data is available
 
-Always shows VIN results regardless of towing match
+-Always shows VIN results regardless of towing match
 
 ** Garage System **
 
-Save decoded vehicles
+-Save decoded vehicles
 
-Add and remove saved vehicles
+-Add and remove saved vehicles
 
-Premium logic scaffolded for future expansion
+-Premium logic scaffolded for future expansion
 
 ** Modern UI/UX **
 
-App‑shell layout
+-App‑shell layout
 
-Centered header
+-Centered header
 
-Clean result screens
+-Clean result screens
 
-Prototype banner
+-Prototype banner
 
-Mobile‑first design
+-Mobile‑first design
 
 ** Prototype Scope **
 
-This version of TowMax is a functional prototype.
-It includes:
+-This version of TowMax is a functional prototype.
+--It includes:
 
-Full VIN decoding
+--Full VIN decoding
 
-Limited towing‑capacity data
+--Limited towing‑capacity data
 
-Complete user flow
+--Complete user flow
 
-Working garage
+--Working garage
 
-Polished UI
+--Polished UI
 
-It does not yet include:
+--It does not yet include:
 
-Full towing‑guide dataset
+--Full towing‑guide dataset
 
-Multi‑manufacturer support
+--Multi‑manufacturer support
 
-Complete configuration coverage
+--Complete configuration coverage
 
-Light mode UI
+--Light mode UI
 
-These are planned for future releases.
+--These are planned for future releases.
 
 ** Why I Built This **
 TowMax is a simple idea: towing capacity should be easier to access. Every truck owner has a VIN, but it's rare for for someone to know their exact towing capacity, and the information is buried in PDFs, trim‑specific charts, and confusing manufacturer documentation.
@@ -104,6 +104,12 @@ CSS Modules
 
 Lucide Icons
 
+Render
+
+Vercel
+
+CI|CD github Actions
+
 ** Architecture Overview**
 
 /frontend
@@ -116,13 +122,13 @@ Lucide Icons
 /controllers
 /services
 
-AppShell wraps all authenticated routes
+-AppShell wraps all authenticated routes
 
-PrototypeBanner displays global prototype notice
+-PrototypeBanner displays global prototype notice
 
-VIN decoding → towing match → results screen
+-VIN decoding → towing match → results screen
 
-Garage stored in Supabase per user
+-Garage stored in Supabase per user
 
 ** Challenges & Solutions **
 
@@ -164,15 +170,15 @@ I normalized key fields (engine, drive, cab, bed) and built a clean VIN summary 
 
 ** Roadmap **
 
-Full towing‑guide pdf ingestion for all brands using python, Camelot, and Unstructured.io
+-Full towing‑guide pdf ingestion for all brands using python, Camelot, and Unstructured.io
 
-Trailer‑weight calculator
+-Trailer‑weight calculator
 
-Payload/tongue‑weight helper
+-Payload/tongue‑weight helper
 
-Premium subscription tier
+-Premium subscription tier
 
-Offline mode
+-Offline mode
 
 ** Local Development **
 
