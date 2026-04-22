@@ -166,22 +166,6 @@ router.post('/remove', authenticateUser, async (req, res) => {
       return res.status(404).json({ error: 'Vehicle not found' });
     }
 
-    // For free users, check if this is their only vehicle
-    if (profile.role === 'free') {
-      const { count: garageCount, error: garageError } = await supabase
-        .from('garage')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_id', req.user.id);
-
-      if (garageError) {
-        return res.status(500).json({ error: 'Failed to check garage' });
-      }
-
-      if ((garageCount || 0) <= 1) {
-        return res.status(403).json({ error: 'Free users cannot remove their only vehicle' });
-      }
-    }
-
     const { error } = await supabase
       .from('garage')
       .delete()
