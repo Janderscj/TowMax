@@ -98,17 +98,17 @@ As a software engineering student preparing for roles in healthcare data and dat
 
 
 ** Architecture Overview**
-
+```
 /frontend
-/components
-/screens
-/contexts
-/styles
+ /components
+ /screens
+ /contexts
+ /styles
 /backend
-/routes
-/controllers
-/services
-
+ /routes
+ /controllers
+ /services
+```
 -AppShell wraps all authenticated routes
 
 -PrototypeBanner displays global prototype notice
