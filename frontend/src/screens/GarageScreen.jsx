@@ -21,7 +21,7 @@ function GarageScreen({
   const [garage, setGarage] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showRemoveWarning, setShowRemoveWarning] = useState(false);
+  const [vehicleToRemove, setVehicleToRemove] = useState(null);
 
   useEffect(() => {
     if (!user || isDealer) {
@@ -59,11 +59,18 @@ function GarageScreen({
   }, [API_URL, user, isDealer]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleRemoveClick = (vehicleId) => {
-    //if (isFree) {
-    //setShowRemoveWarning(true);
-    // return;
-    //}
-    removeVehicle(vehicleId);
+    setVehicleToRemove(vehicleId);
+  };
+
+  const confirmRemove = async () => {
+    if (vehicleToRemove) {
+      await removeVehicle(vehicleToRemove);
+      setVehicleToRemove(null);
+    }
+  };
+
+  const cancelRemove = () => {
+    setVehicleToRemove(null);
   };
 
   const removeVehicle = async (vehicleId) => {
@@ -199,16 +206,22 @@ function GarageScreen({
         </button>
       </div>
 
-      {showRemoveWarning && (
-        <div className={styles.modalOverlay} onClick={() => setShowRemoveWarning(false)}>
+      {vehicleToRemove && (
+        <div className={styles.modalOverlay} onClick={cancelRemove}>
           <div className={styles.modalDialog} onClick={(e) => e.stopPropagation()}>
-            <h3 className={styles.modalTitle}>Free Account Restriction</h3>
+            <h3 className={styles.modalTitle}>Remove Vehicle?</h3>
             <p className={styles.modalText}>
-              Free accounts cannot remove vehicles. Please upgrade to Premium to manage your garage.
+              Are you sure you want to remove this vehicle from your garage? This action cannot be
+              undone.
             </p>
-            <button onClick={() => setShowRemoveWarning(false)} className={styles.modalButton}>
-              Got it
-            </button>
+            <div className={styles.modalActions}>
+              <button onClick={cancelRemove} className={styles.modalButtonSecondary}>
+                Cancel
+              </button>
+              <button onClick={confirmRemove} className={styles.modalButtonDanger}>
+                Remove
+              </button>
+            </div>
           </div>
         </div>
       )}

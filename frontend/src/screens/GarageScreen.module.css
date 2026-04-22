@@ -247,3 +247,49 @@
 .modalButton:hover {
   background: rgba(255, 107, 107, 0.3);
 }
+
+/* Modal actions container */
+.modalActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* Secondary modal button (Cancel) */
+.modalButtonSecondary {
+  flex: 1;
+  padding: 12px;
+  background: rgba(200, 200, 200, 0.1);
+  border: 1px solid rgba(200, 200, 200, 0.3);
+  border-radius: 8px;
+  color: #ccc;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.modalButtonSecondary:hover {
+  background: rgba(200, 200, 200, 0.2);
+}
+
+/* Danger modal button (Remove) */
+.modalButtonDanger {
+  flex: 1;
+  padding: 12px;
+  background: #ff6b6b;
+  border: 1px solid #ff6b6b;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.modalButtonDanger:hover {
+  background: #ff5252;
+  border-color: #ff5252;
+}
