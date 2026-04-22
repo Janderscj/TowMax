@@ -1,22 +1,10 @@
+import { Search, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { RotateCcw, Search } from 'lucide-react';
-import AppHeader from '../components/AppHeader';
 import LegalDisclaimer from '../components/LegalDisclaimer';
+import AppHeader from '../components/AppHeader';
 import styles from './RangeFallbackScreen.module.css';
 
-/**
- * RangeFallbackScreen
- *
- * Displayed when refine answers return zero exact-match configurations.
- * Instead of dead-ending the user, we preserve the prior valid configurations
- * and display the towing range they represent.
- *
- * Fallback condition (checked in App.js handleRefineAnswer):
- *   - refine returned towingMatches.length === 0
- *   - prior matches array is still non-empty (i.e. there ARE known configurations)
- *   - We did NOT overwrite matches with an empty array, so minTow/maxTow are still valid
- */
-export default function RangeFallbackScreen({
+export default function RangeFallback({
   decoded,
   minTow,
   maxTow,
@@ -24,10 +12,12 @@ export default function RangeFallbackScreen({
   onNewSearch,
   onHome,
   onSignOut,
-  isGuest = false,
+  isGuest,
   onLogin,
 }) {
   const navigate = useNavigate();
+
+  const hasRange = minTow && maxTow;
 
   return (
     <div className={styles.container}>
@@ -47,16 +37,27 @@ export default function RangeFallbackScreen({
             <Search size={40} color="#000" />
           </div>
 
-          <h2 className={styles.heading}>No Exact Match Found</h2>
+          <h2 className={styles.heading}>
+            {hasRange ? 'No Exact Match Found' : 'Towing Data Unavailable'}
+          </h2>
 
           <p className={styles.subtitle}>
-            Your answers didn&apos;t match a single configuration,
-            <br />
-            but a towing range is still available.
+            {hasRange ? (
+              <>
+                Your answers didn&apos;t match a single configuration,
+                <br />
+                but a towing range is still available.
+              </>
+            ) : (
+              <>
+                Your VIN was decoded successfully,
+                <br />
+                but towing data is not available in this prototype.
+              </>
+            )}
           </p>
         </div>
 
-        {/* ─── Vehicle card ─── */}
         {decoded && (
           <div className={styles.vehicleCard}>
             <div className={styles.vehicleLabel}>YOUR VEHICLE</div>
@@ -67,33 +68,46 @@ export default function RangeFallbackScreen({
           </div>
         )}
 
-        {/* ─── Range display ─── */}
         <div className={styles.capacityBox}>
-          <div className={styles.capacityLabel}>Closest Towing Range</div>
-          <div className={styles.capacityValue}>
-            {minTow.toLocaleString()} – {maxTow.toLocaleString()}
+          <div className={styles.capacityLabel}>
+            {hasRange ? 'Closest Towing Range' : 'Towing Capacity'}
           </div>
-          <div className={styles.capacityUnit}>pounds</div>
+
+          <div className={styles.capacityValue}>
+            {hasRange ? `${minTow.toLocaleString()} – ${maxTow.toLocaleString()}` : '—'}
+          </div>
+
+          <div className={styles.capacityUnit}>{hasRange ? 'pounds' : 'No prototype data'}</div>
         </div>
 
-        {/* ─── Explanatory note ─── */}
         <div className={styles.explanationBox}>
-          <strong>No exact configuration matched your selections.</strong> The range above
-          represents all remaining possible towing ratings for your vehicle. Verify final capacity
-          in your owner&apos;s manual or window sticker.
+          {hasRange ? (
+            <>
+              <strong>No exact configuration matched your selections.</strong> The range above
+              represents all remaining possible towing ratings for your vehicle. Verify final
+              capacity in your owner&apos;s manual or window sticker.
+            </>
+          ) : (
+            <>
+              <strong>Towing data not available in prototype dataset.</strong> You can still view
+              the full VIN breakdown for complete vehicle details.
+            </>
+          )}
         </div>
 
-        {/* ─── Action buttons ─── */}
+        {hasRange && (
+          <button onClick={onRecheck} className={styles.primaryButton}>
+            <RotateCcw size={18} />
+            Recheck options?
+          </button>
+        )}
 
-        {/* Recheck options → back to questions screen */}
-        <button onClick={onRecheck} className={styles.primaryButton}>
-          <RotateCcw size={18} />
-          Recheck options?
-        </button>
-
-        {/* Try new VIN → back to VIN entry */}
         <button onClick={onNewSearch} className={styles.secondaryButton}>
           Try new VIN
+        </button>
+
+        <button onClick={() => navigate('/vin/full')} className={styles.secondaryButton}>
+          View Full VIN Breakdown
         </button>
 
         <LegalDisclaimer />

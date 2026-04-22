@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+//import { useAuth } from '../contexts/AuthContext';
 import AppHeader from '../components/AppHeader';
 import PageTitle from '../components/PageTitle';
 import LegalDisclaimer from '../components/LegalDisclaimer';
@@ -27,18 +28,19 @@ export default function ExactResultScreen({
   isGuest = false,
   onLogin,
 }) {
-  const { isFree } = useAuth();
+  const navigate = useNavigate();
+  //freeze isFree
+  //const { isFree } = useAuth();
+
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [showFreeAccountWarning, setShowFreeAccountWarning] = useState(false);
 
   useEffect(() => {
-    // Reset local success UI when a new exact-result vehicle is shown.
     setSaveSuccess(false);
   }, [vin, match?.maxTow]);
 
-  const gcwr = match.gcwr ?? 14000;
-  const payload = match.payload ?? 1940;
-  const shouldDisableAdd = addVehicleLoading || !canAddVehicle;
+  const gcwr = match.gcwr ?? null;
+  const payload = match.payload ?? null;
+  const hasTowData = match?.maxTow != null;
 
   const handleGarageButtonClick = async () => {
     if (saveSuccess) {
@@ -46,23 +48,9 @@ export default function ExactResultScreen({
       return;
     }
 
-    if (isFree) {
-      setShowFreeAccountWarning(true);
-      return;
-    }
-
+    // Free users are now allowed to save normally
     const wasSaved = await onAddVehicle();
-    if (wasSaved) {
-      setSaveSuccess(true);
-    }
-  };
-
-  const handleContinueAddVehicle = async () => {
-    setShowFreeAccountWarning(false);
-    const wasSaved = await onAddVehicle();
-    if (wasSaved) {
-      setSaveSuccess(true);
-    }
+    if (wasSaved) setSaveSuccess(true);
   };
 
   return (
@@ -77,17 +65,26 @@ export default function ExactResultScreen({
           isGuest={isGuest}
           onLogin={onLogin}
         />
+
         <PageTitle>Vehicle Details</PageTitle>
+
         <div className={styles.centerSection}>
           <div className={styles.iconBox}>
             <CheckCircle2 size={48} color="#fff" />
           </div>
 
-          <h2 className={styles.heading}>Exact Match Found</h2>
+          <h2 className={styles.heading}>
+            {hasTowData ? 'Exact Match Found' : 'Towing Data Unavailable'}
+          </h2>
 
-          <p className={styles.subtitle}>Here&apos;s your precise towing capacity</p>
+          <p className={styles.subtitle}>
+            {hasTowData
+              ? 'Here’s your precise towing capacity'
+              : 'Your VIN was decoded successfully, but towing data is not available in this prototype.'}
+          </p>
         </div>
 
+        {/* Vehicle Card */}
         <div className={styles.vehicleCard}>
           <div className={styles.vehicleCardHeader}>
             <div>
@@ -100,30 +97,42 @@ export default function ExactResultScreen({
           </div>
         </div>
 
+        {/* Towing Capacity */}
         <div className={styles.capacityBox}>
           <div className={styles.capacityLabel}>Maximum Towing Capacity</div>
-          <div className={styles.capacityValue}>{match.maxTow.toLocaleString()}</div>
-          <div className={styles.capacityUnit}>pounds</div>
+          <div className={styles.capacityValue}>
+            {hasTowData ? match.maxTow.toLocaleString() : '—'}
+          </div>
+          <div className={styles.capacityUnit}>{hasTowData ? 'pounds' : 'No prototype data'}</div>
         </div>
 
-        <div className={styles.specsBox}>
-          <div className={styles.specsGrid}>
-            <div className={styles.specItem}>
-              <div className={styles.specLabel}>GCWR</div>
-              <div className={styles.specValue}>{gcwr.toLocaleString()} lbs</div>
-            </div>
-            <div className={styles.specItem}>
-              <div className={styles.specLabel}>Payload</div>
-              <div className={styles.specValue}>{payload.toLocaleString()} lbs</div>
+        {/* Specs */}
+        {hasTowData && (
+          <div className={styles.specsBox}>
+            <div className={styles.specsGrid}>
+              <div className={styles.specItem}>
+                <div className={styles.specLabel}>GCWR</div>
+                <div className={styles.specValue}>
+                  {gcwr ? `${gcwr.toLocaleString()} lbs` : '—'}
+                </div>
+              </div>
+              <div className={styles.specItem}>
+                <div className={styles.specLabel}>Payload</div>
+                <div className={styles.specValue}>
+                  {payload ? `${payload.toLocaleString()} lbs` : '—'}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
+        {/* Warning */}
         <div className={styles.warningBox}>
           <strong>⚠️ Important:</strong> Always verify with your owner&apos;s manual and consider
           payload, tongue weight, and trailer specifications.
         </div>
 
+        {/* Save to Garage */}
         {showAddVehicle && !isGuest && (
           <>
             <div
@@ -136,7 +145,7 @@ export default function ExactResultScreen({
 
             <button
               onClick={handleGarageButtonClick}
-              disabled={saveSuccess ? false : shouldDisableAdd}
+              disabled={!saveSuccess && (addVehicleLoading || !canAddVehicle)}
               className={`${styles.addVehicleButton} ${saveSuccess ? styles.success : ''}`}
             >
               {saveSuccess
@@ -148,8 +157,7 @@ export default function ExactResultScreen({
 
             {garageLimitReached && !saveSuccess && (
               <div className={styles.garageLimitWarning}>
-                Your garage is full. Find an exact match first, then upgrade to Premium to save
-                unlimited vehicles.
+                Your garage is full. Upgrade to Premium to save unlimited vehicles.
               </div>
             )}
 
@@ -161,8 +169,7 @@ export default function ExactResultScreen({
               <div className={styles.upgradePrompt}>
                 <div className={styles.upgradeTitle}>Garage Full</div>
                 <div className={styles.upgradeText}>
-                  Upgrade to Premium to unlock unlimited saved vehicles, then try adding this VIN
-                  again.
+                  Upgrade to Premium to unlock unlimited saved vehicles.
                 </div>
                 <button onClick={onDismissUpgradePrompt} className={styles.upgradeButton}>
                   Dismiss
@@ -172,35 +179,14 @@ export default function ExactResultScreen({
           </>
         )}
 
+        {/* Always show VIN breakdown */}
+        <button onClick={() => navigate('/vin/full')} className={styles.newSearchButton}>
+          View Full VIN Breakdown
+        </button>
+
         <button onClick={onNewSearch} className={styles.newSearchButton}>
           Check Another Vehicle
         </button>
-
-        {showFreeAccountWarning && (
-          <div className={styles.modalOverlay} onClick={() => setShowFreeAccountWarning(false)}>
-            <div className={styles.modalDialog} onClick={(e) => e.stopPropagation()}>
-              <h3 className={styles.modalTitle}>Free Account Notice</h3>
-              <p className={styles.modalText}>
-                Free accounts can save vehicles to their garage, but cannot remove them once added.
-                Upgrade to Premium to unlock full garage management and unlimited vehicles.
-              </p>
-              <div className={styles.modalButtonGroup}>
-                <button
-                  onClick={() => setShowFreeAccountWarning(false)}
-                  className={`${styles.modalButton} ${styles.secondary}`}
-                >
-                  Back
-                </button>
-                <button
-                  onClick={handleContinueAddVehicle}
-                  className={`${styles.modalButton} ${styles.primary}`}
-                >
-                  Continue
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         <LegalDisclaimer />
       </div>

@@ -19,6 +19,8 @@ export default function RangeResultScreen({
 }) {
   const navigate = useNavigate();
 
+  const hasRange = minTow && maxTow;
+
   return (
     <div className={styles.container}>
       <div className={styles.contentWrapper}>
@@ -27,6 +29,8 @@ export default function RangeResultScreen({
           onBack={onBack || (() => navigate('/vin'))}
           onHome={onHome}
           onSignOut={onSignOut}
+          isGuest={isGuest}
+          onLogin={onLogin}
         />
 
         <PageTitle>Towing Range Found</PageTitle>
@@ -36,9 +40,15 @@ export default function RangeResultScreen({
             <Target size={48} color="#000" />
           </div>
 
-          <h2 className={styles.heading}>Towing Range Found</h2>
+          <h2 className={styles.heading}>
+            {hasRange ? 'Towing Range Found' : 'Towing Data Unavailable'}
+          </h2>
 
-          <p className={styles.subtitle}>Based on your vehicle configuration</p>
+          <p className={styles.subtitle}>
+            {hasRange
+              ? 'Based on your vehicle configuration'
+              : 'Your VIN was decoded successfully, but towing data is not available in this prototype.'}
+          </p>
         </div>
 
         <div className={styles.vehicleCard}>
@@ -50,24 +60,44 @@ export default function RangeResultScreen({
         </div>
 
         <div className={styles.capacityBox}>
-          <div className={styles.capacityLabel}>Towing Capacity Range</div>
-          <div className={styles.capacityValue}>
-            {minTow.toLocaleString()} - {maxTow.toLocaleString()}
+          <div className={styles.capacityLabel}>
+            {hasRange ? 'Towing Capacity Range' : 'Towing Capacity'}
           </div>
-          <div className={styles.capacityUnit}>pounds</div>
+
+          <div className={styles.capacityValue}>
+            {hasRange ? `${minTow.toLocaleString()} – ${maxTow.toLocaleString()}` : '—'}
+          </div>
+
+          <div className={styles.capacityUnit}>{hasRange ? 'pounds' : 'No prototype data'}</div>
         </div>
 
         <div className={styles.infoBox}>
-          <strong>Multiple configurations detected.</strong> Your exact capacity depends on final
-          equipment and options. Consult your owner&apos;s manual for precise specifications.
+          {hasRange ? (
+            <>
+              <strong>Multiple configurations detected.</strong> Your exact capacity depends on
+              final equipment and options. Consult your owner&apos;s manual for precise
+              specifications.
+            </>
+          ) : (
+            <>
+              <strong>Towing data not available in prototype dataset.</strong> You can still view
+              the full VIN breakdown for complete vehicle details.
+            </>
+          )}
         </div>
 
-        <button onClick={onRefine} className={styles.primaryButton}>
-          Refine Results
-        </button>
+        {hasRange && (
+          <button onClick={onRefine} className={styles.primaryButton}>
+            Refine Results
+          </button>
+        )}
 
         <button onClick={onNewSearch} className={styles.secondaryButton}>
           Start New Search
+        </button>
+
+        <button onClick={() => navigate('/vin/full')} className={styles.secondaryButton}>
+          View Full VIN Breakdown
         </button>
 
         <LegalDisclaimer />

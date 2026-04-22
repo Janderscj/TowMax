@@ -59,10 +59,10 @@ function GarageScreen({
   }, [API_URL, user, isDealer]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleRemoveClick = (vehicleId) => {
-    if (isFree) {
-      setShowRemoveWarning(true);
-      return;
-    }
+    //if (isFree) {
+    //setShowRemoveWarning(true);
+    // return;
+    //}
     removeVehicle(vehicleId);
   };
 

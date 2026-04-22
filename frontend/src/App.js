@@ -15,6 +15,7 @@ import GarageVehicleDetailsScreen from './screens/GarageVehicleDetailsScreen';
 import UpgradeScreen from './screens/UpgradeScreen';
 import TermsOfService from './screens/TermsOfService';
 import PrivacyPolicy from './screens/PrivacyPolicy';
+import PrototypeBanner from './components/PrototypeBanner';
 import AppShell from './components/AppShell';
 import ScrollToTop from './components/ScrollToTop';
 import { supabase } from './utils/supabase';
@@ -497,6 +498,7 @@ function AppContent() {
         element={
           <ProtectedRoute>
             <AppShell>
+              <PrototypeBanner />
               <ScrollToTop />
               <AuthenticatedRoutes />
             </AppShell>
