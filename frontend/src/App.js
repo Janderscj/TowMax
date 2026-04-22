@@ -248,6 +248,7 @@ function AuthenticatedRoutes() {
   } = useLookup();
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
 
   // Get VIN from URL params if present
@@ -336,10 +337,19 @@ function AuthenticatedRoutes() {
 
   // Call handleVinDecoded when result changes
   useEffect(() => {
-    if (result && !error) {
-      handleVinDecoded();
+    if (!result || error) {
+      return;
     }
-  }, [result, error, handleVinDecoded]);
+
+    // Only auto-route immediately after the VIN flow resolves.
+    // Without this guard, later button clicks from result screens can be
+    // overridden by the stale lookup state still living in context.
+    if (location.pathname !== '/vin') {
+      return;
+    }
+
+    handleVinDecoded();
+  }, [result, error, handleVinDecoded, location.pathname]);
 
   if (!profile && !isGuest) {
     return (
