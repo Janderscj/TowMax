@@ -114,7 +114,6 @@ As a software engineering student preparing for roles in healthcare data and dat
 -VIN decoding -> towing match -> results screen
 
 -Garage stored in Supabase per user
----
 
 ## Challenges & Solutions
 
