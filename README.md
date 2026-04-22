@@ -81,6 +81,13 @@ Light mode UI
 
 These are planned for future releases.
 
+** Why I Built This **
+TowMax is a simple idea: towing capacity should be easier to access. Every truck owner has a VIN, but it's rare for for someone to know their exact towing capacity, and the information is buried in PDFs, trim‑specific charts, and confusing manufacturer documentation.
+
+I built TowMax to solve that problem in a modern, intuitive way. This prototype demonstrates the full user flow: VIN decoding, configuration interpretation, towing‑capacity logic, and a clean mobile‑first UI. Even with a limited dataset, the app shows the complete experience and lays the foundation for a fully automated towing‑guide ingestion pipeline.
+
+As a software engineering student preparing for roles in healthcare data and data engineering, this project let me combine real‑world data modeling, API design, UI polish, and system architecture into a single application. TowMax is both a practical tool and a showcase of how I approach building scalable, user‑centered applications.
+
 ** Tech Stack **
 
 React (frontend)
