@@ -47,49 +47,9 @@ router.get('/profile', authenticateUser, async (req, res) => {
 
 // POST /api/user/role/update
 router.post('/role/update', authenticateUser, async (req, res) => {
-  const { role } = req.body;
-
-  if (!['free', 'premium', 'dealer'].includes(role)) {
-    return res.status(400).json({ error: 'Invalid role' });
-  }
-
-  try {
-    let garageLimit = null;
-    let canReplaceFreeVehicle = false;
-
-    if (role === 'free') {
-      garageLimit = 1;
-      canReplaceFreeVehicle = false;
-    } else if (role === 'premium') {
-      garageLimit = null;
-      canReplaceFreeVehicle = true;
-    } else if (role === 'dealer') {
-      garageLimit = null;
-      canReplaceFreeVehicle = true;
-    }
-
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .update({
-        role,
-        garage_limit: garageLimit,
-        can_replace_free_vehicle: canReplaceFreeVehicle,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', req.user.id)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error updating role:', error);
-      return res.status(500).json({ error: 'Failed to update role' });
-    }
-
-    res.json(profile);
-  } catch (err) {
-    console.error('Role update error:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+  return res.status(403).json({
+    error: 'Role updates are managed server-side only',
+  });
 });
 
 export default router;

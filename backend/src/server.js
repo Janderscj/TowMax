@@ -9,10 +9,11 @@ import { validateAllData } from '../scripts/validateData.js';
 
 const app = express();
 app.set('trust proxy', 1); // Trust first proxy (if behind a proxy like Heroku or Vercel)
+const isDevelopment = process.env.NODE_ENV !== 'production';
+const allowedOrigin = process.env.FRONTEND_URL || (isDevelopment ? 'http://localhost:3000' : null);
 
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : 'https://towmax.vercel.app',
+  origin: allowedOrigin || false,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -26,7 +27,9 @@ app.use(express.json({ limit: '1mb' })); //  Add request size limit
 
 // Request logging middleware
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} ${req.method} ${req.path}`);
+  if (isDevelopment) {
+    console.log(`${new Date().toISOString()} ${req.method} ${req.path}`);
+  }
   next();
 });
 

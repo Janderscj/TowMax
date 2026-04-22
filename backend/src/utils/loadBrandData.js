@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 // Define __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // In-memory cache to avoid repeated file reads
 const dataCache = new Map();
@@ -16,7 +17,9 @@ async function loadBrandData(brand) {
 
   // Return cached data if available
   if (dataCache.has(brand)) {
-    console.log(` Using cached data for: ${brand}`);
+    if (isDevelopment) {
+      console.log(`Using cached data for: ${brand}`);
+    }
     return dataCache.get(brand);
   }
 
@@ -32,7 +35,9 @@ async function loadBrandData(brand) {
 
     // Cache the data
     dataCache.set(brand, data);
-    console.log(` Loaded and cached data for: ${brand}`);
+    if (isDevelopment) {
+      console.log(`Loaded and cached data for: ${brand}`);
+    }
 
     return data;
   } catch (err) {

@@ -9,6 +9,7 @@ import loadBrandData from '../utils/loadBrandData.js';
 import getBrandFromVin from '../utils/getBrandFromVin.js';
 
 const router = express.Router();
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Middleware to verify JWT token
 // NOTE: VIN lookup endpoint is intentionally accessible without authentication
@@ -57,7 +58,9 @@ router.get('/:vin', authenticateUser, async (req, res) => {
   const vin = req.params.vin?.toUpperCase();
   const requestId = Math.random().toString(36).substring(7);
 
-  console.log(`[${requestId}] VIN decode request:`, vin);
+  if (isDevelopment) {
+    console.log(`[${requestId}] VIN decode request received`);
+  }
 
   // Validate VIN format
   if (!isValidVin(vin)) {
@@ -69,7 +72,6 @@ router.get('/:vin', authenticateUser, async (req, res) => {
 
   try {
     const decoded = await decodeVin(vin);
-    console.log(`[${requestId}] Decoded:`, decoded);
 
     if (!decoded) {
       return res.status(400).json({ error: 'Unable to decode VIN' });
@@ -110,7 +112,9 @@ router.get('/:vin', authenticateUser, async (req, res) => {
       });
     }
 
-    console.log(`[${requestId}] Found ${matches.length} matches`);
+    if (isDevelopment) {
+      console.log(`[${requestId}] Found ${matches.length} matches`);
+    }
 
     // Multiple matches → refine flow
     if (matches.length > 1) {
@@ -148,7 +152,9 @@ router.post('/refine', authenticateUser, async (req, res) => {
   const { vin, answers } = req.body;
   const requestId = Math.random().toString(36).substring(7);
 
-  console.log(`[${requestId}] Refine request:`, { vin, answers });
+  if (isDevelopment) {
+    console.log(`[${requestId}] Refine request received`);
+  }
 
   // Validate inputs
   if (!vin || !answers) {
@@ -187,7 +193,9 @@ router.post('/refine', authenticateUser, async (req, res) => {
       });
     }
 
-    console.log(`[${requestId}] Initial matches: ${matches.length}`);
+    if (isDevelopment) {
+      console.log(`[${requestId}] Initial matches: ${matches.length}`);
+    }
 
     // Apply refine filters
     const narrowed = matches.filter((entry) => {
@@ -207,7 +215,9 @@ router.post('/refine', authenticateUser, async (req, res) => {
       });
     });
 
-    console.log(`[${requestId}] Narrowed to ${narrowed.length} matches`);
+    if (isDevelopment) {
+      console.log(`[${requestId}] Narrowed to ${narrowed.length} matches`);
+    }
 
     if (!narrowed || narrowed.length === 0) {
       return res.json({

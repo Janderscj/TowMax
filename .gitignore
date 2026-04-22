@@ -9,6 +9,8 @@ node_modules/
 /dist
 /build
 /coverage
+frontend/build/
+backend/coverage/
 
 # IDE & Editor
 .vscode/

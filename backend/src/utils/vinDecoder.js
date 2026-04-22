@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
 // ✅ NHTSA field constants (avoid magic strings)
 const NHTSA_FIELDS = {
   YEAR: 'Model Year',
@@ -93,7 +95,9 @@ function normalizeDecodedFields(decoded) {
 // -----------------------------------------------------
 async function decodeVin(vin) {
   try {
-    console.log(' VIN DECODE START:', vin);
+    if (isDevelopment) {
+      console.log('VIN decode started');
+    }
 
     const url = `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/${vin}?format=json`;
 
@@ -109,7 +113,9 @@ async function decodeVin(vin) {
       return null;
     }
 
-    console.log(' RAW NHTSA RESULTS COUNT:', results.length);
+    if (isDevelopment) {
+      console.log('NHTSA result count:', results.length);
+    }
 
     // Extract fields safely using constants
     const get = (variable) => {
@@ -152,8 +158,6 @@ async function decodeVin(vin) {
 
     // Apply normalization
     decoded = normalizeDecodedFields(decoded);
-
-    console.log('🔧 FINAL DECODED:', decoded);
 
     return decoded;
   } catch (error) {
