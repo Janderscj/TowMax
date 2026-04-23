@@ -99,6 +99,51 @@ As a software engineering student preparing for roles in healthcare data and dat
 
 ---
 
+## Challenges & Solutions
+
+### Challenge
+
+The refine system needed to update available options after every answer, but without aggressively eliminating choices or forcing the user into a dead end. Early versions waited until all questions were answered, which allowed impossible combinations and created a frustrating UX.
+
+### Solution
+
+I redesigned the refine flow into a real‑time narrowing engine. After each answer, the frontend sends the current partial state to the backend, which returns:
+
+- remaining valid configurations
+- updated missing fields
+- updated valid options per field
+
+The UI re-renders dynamically, hiding invalid options while keeping the flow smooth and non‑disruptive. This created an intelligent, user‑friendly refinement system that feels modern and responsive.
+
+---
+
+### Challenge
+
+Manufacturers publish towing data in multi‑column PDFs, footnotes, trim‑specific tables, and inconsistent formats. There is no unified dataset.
+
+### Solution
+
+I designed a flexible towing‑match engine that works even with partial data. The prototype gracefully handles:
+
+- exact matches
+- range matches
+- no‑data scenarios
+- VIN‑only fallback
+
+This allowed me to ship a complete user experience while planning for future ingestion using Unstructured.io.
+
+---
+
+### Challenge
+
+VIN decoding returns raw, technical data that varies by manufacturer and isn’t user‑friendly.
+
+### Solution
+
+I normalized key fields (engine, drive, cab, bed) and built a clean VIN summary and full breakdown screen. The UI always shows meaningful results, even when towing data is missing.
+
+---
+
 ## Local Development
 
 ### 1. Clone and install
