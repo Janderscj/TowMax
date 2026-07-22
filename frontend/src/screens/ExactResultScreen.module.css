@@ -312,6 +312,7 @@
 .newSearchButton {
   width: 100%;
   padding: 18px;
+  margin-bottom: 12px;
   background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
   border: none;
   border-radius: 16px;
