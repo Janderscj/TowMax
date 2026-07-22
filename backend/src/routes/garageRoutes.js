@@ -131,6 +131,7 @@ router.post('/add', authenticateUser, async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 // POST /api/garage/remove
 router.post('/remove', authenticateUser, async (req, res) => {
   const { vehicleId } = req.body;
