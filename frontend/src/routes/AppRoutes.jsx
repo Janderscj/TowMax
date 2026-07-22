@@ -291,6 +291,11 @@ export function AuthenticatedRoutes() {
     navigate(`/vin${preVin ? `?vin=${preVin}` : ''}`);
   };
 
+  const startFreshLookupFromHome = () => {
+    resetAll();
+    navigate('/');
+  };
+
   const saveVehicleToGarageFromExact = async () => performGarageSave({ navigateOnSuccess: false });
 
   const handleVinDecoded = useCallback(() => {
@@ -387,7 +392,7 @@ export function AuthenticatedRoutes() {
               minTow={Math.min(...matches.map((m) => m.maxTow || 0))}
               maxTow={Math.max(...matches.map((m) => m.maxTow || 0))}
               onRefine={() => navigate('/questions')}
-              onNewSearch={() => (lookupOrigin === 'garage' ? navigate('/garage') : navigate('/'))}
+              onNewSearch={lookupOrigin === 'garage' ? goToGarage : startFreshLookupFromHome}
               onBack={() => navigate('/vin')}
               onHome={() => navigate('/')}
               onUpgrade={() => navigate('/upgrade')}
@@ -432,7 +437,7 @@ export function AuthenticatedRoutes() {
               addVehicleError={garageSaveError}
               showUpgradePrompt={showUpgradePrompt}
               onDismissUpgradePrompt={() => setShowUpgradePrompt(false)}
-              onNewSearch={lookupOrigin === 'garage' ? goToGarage : () => navigate('/')}
+              onNewSearch={lookupOrigin === 'garage' ? goToGarage : startFreshLookupFromHome}
               onHome={() => navigate('/')}
               onSignOut={handleGlobalSignOut}
               isGuest={isGuest}
@@ -453,7 +458,7 @@ export function AuthenticatedRoutes() {
               minTow={Math.min(...matches.map((m) => m.maxTow || 0))}
               maxTow={Math.max(...matches.map((m) => m.maxTow || 0))}
               onRecheck={() => navigate('/questions')}
-              onNewSearch={lookupOrigin === 'garage' ? goToGarage : () => navigate('/')}
+              onNewSearch={lookupOrigin === 'garage' ? goToGarage : startFreshLookupFromHome}
               onHome={() => navigate('/')}
               onUpgrade={() => navigate('/upgrade')}
               onSignOut={handleGlobalSignOut}
