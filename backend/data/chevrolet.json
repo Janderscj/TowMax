@@ -103,5 +103,82 @@
     "towPackage": "none",
     "gcwr": 22000,
     "maxTow": 13000
+  },
+  {
+    "year": 2017,
+    "make": "CHEVROLET",
+    "model": "Silverado",
+    "series": "1500",
+    "engine": "4.3L V6",
+    "cabType": "Regular Cab",
+    "towPackage": "standard",
+    "maxTow": 7600,
+    "notes": "2017 max standard towing capacity for 4.3L V6 Regular Cab."
+  },
+  {
+    "year": 2017,
+    "make": "CHEVROLET",
+    "model": "Silverado",
+    "series": "1500",
+    "engine": "4.3L V6",
+    "cabType": "Double Cab",
+    "towPackage": "standard",
+    "maxTow": 7100,
+    "notes": "2017 max standard towing capacity for 4.3L V6 Double Cab."
+  },
+  {
+    "year": 2017,
+    "make": "CHEVROLET",
+    "model": "Silverado",
+    "series": "1500",
+    "engine": "4.3L V6",
+    "cabType": "Crew Cab",
+    "towPackage": "standard",
+    "maxTow": 7000,
+    "notes": "2017 max standard towing capacity for 4.3L V6 Crew Cab."
+  },
+  {
+    "year": 2017,
+    "make": "CHEVROLET",
+    "model": "Silverado",
+    "series": "1500",
+    "engine": "5.3L V8",
+    "cabType": "Regular Cab",
+    "towPackage": "standard",
+    "maxTow": 9800,
+    "notes": "2017 max standard towing capacity for 5.3L V8 Regular Cab."
+  },
+  {
+    "year": 2017,
+    "make": "CHEVROLET",
+    "model": "Silverado",
+    "series": "1500",
+    "engine": "5.3L V8",
+    "cabType": "Double Cab",
+    "towPackage": "maxTow",
+    "maxTow": 11100,
+    "notes": "2017 max towing with Max Trailering Package for 5.3L V8 Double Cab."
+  },
+  {
+    "year": 2017,
+    "make": "CHEVROLET",
+    "model": "Silverado",
+    "series": "1500",
+    "engine": "5.3L V8",
+    "cabType": "Crew Cab",
+    "towPackage": "maxTow",
+    "maxTow": 11000,
+    "notes": "2017 max towing with Max Trailering Package for 5.3L V8 Crew Cab."
+  },
+  {
+    "year": 2017,
+    "make": "CHEVROLET",
+    "model": "Silverado",
+    "series": "1500",
+    "engine": "6.2L V8",
+    "cabType": "Crew Cab",
+    "towPackage": "maxTow",
+    "maxTow": 12500,
+    "notes": "2017 max towing with Max Trailering Package for 6.2L V8 Crew Cab."
   }
 ]

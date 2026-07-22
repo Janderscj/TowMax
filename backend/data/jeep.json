@@ -174,5 +174,89 @@
     "gcwr": 11500,
     "payload": 1160,
     "maxTow": 6500
+  },
+  {
+    "year": 2017,
+    "make": "JEEP",
+    "model": "Grand Cherokee",
+    "series": "WK2",
+    "trim": "Laredo",
+    "engine": "3.6L V6",
+    "driveType": "2WD",
+    "towPackage": "standard",
+    "maxTow": 6200,
+    "notes": "2017 Grand Cherokee 3.6L V6 towing capacity."
+  },
+  {
+    "year": 2017,
+    "make": "JEEP",
+    "model": "Grand Cherokee",
+    "series": "WK2",
+    "trim": "Limited",
+    "engine": "3.6L V6",
+    "driveType": "4WD",
+    "towPackage": "standard",
+    "maxTow": 6200,
+    "notes": "2017 Grand Cherokee 3.6L V6 towing capacity."
+  },
+  {
+    "year": 2017,
+    "make": "JEEP",
+    "model": "Grand Cherokee",
+    "series": "WK2",
+    "trim": "Trailhawk",
+    "engine": "3.0L EcoDiesel V6",
+    "driveType": "4WD",
+    "towPackage": "towGroup",
+    "maxTow": 7400,
+    "notes": "2017 Grand Cherokee EcoDiesel towing capacity."
+  },
+  {
+    "year": 2017,
+    "make": "JEEP",
+    "model": "Grand Cherokee",
+    "series": "WK2",
+    "trim": "Overland",
+    "engine": "5.7L V8",
+    "driveType": "4WD",
+    "towPackage": "towGroup",
+    "maxTow": 7200,
+    "notes": "2017 Grand Cherokee 5.7L HEMI towing capacity."
+  },
+  {
+    "year": 2017,
+    "make": "JEEP",
+    "model": "Grand Cherokee",
+    "series": "WK2",
+    "trim": "Summit",
+    "engine": "5.7L V8",
+    "driveType": "4WD",
+    "towPackage": "towGroup",
+    "maxTow": 7200,
+    "notes": "2017 Grand Cherokee 5.7L HEMI towing capacity."
+  },
+  {
+    "year": 2017,
+    "make": "JEEP",
+    "model": "Grand Cherokee",
+    "series": "WK2",
+    "trim": "SRT",
+    "engine": "6.4L V8",
+    "driveType": "4WD",
+    "towPackage": "standard",
+    "maxTow": 7200,
+    "notes": "2017 Grand Cherokee SRT towing capacity."
+  },
+  {
+    "year": 2017,
+    "make": "JEEP",
+    "model": "Wrangler Unlimited",
+    "series": "JK",
+    "trim": "Sport",
+    "engine": "3.6L V6",
+    "driveType": "4WD",
+    "towPackage": "standard",
+    "maxTow": 3500,
+    "notes": "2017 Wrangler Unlimited towing capacity."
   }
 ]
