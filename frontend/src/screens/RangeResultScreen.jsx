@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Target } from 'lucide-react';
 import AppHeader from '../components/AppHeader';
-import PageTitle from '../components/PageTitle';
 import LegalDisclaimer from '../components/LegalDisclaimer';
 import styles from './RangeResultScreen.module.css';
 
