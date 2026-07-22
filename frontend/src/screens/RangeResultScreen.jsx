@@ -36,8 +36,6 @@ export default function RangeResultScreen({
           onLogin={onLogin}
         />
 
-        <PageTitle>Towing Range Found</PageTitle>
-
         <div className={styles.centerSection}>
           <div className={styles.iconBox}>
             <Target size={48} color="#000" />

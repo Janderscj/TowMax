@@ -174,10 +174,6 @@
   transition: all 0.2s;
 }
 
-.secondaryButton + .secondaryButton {
-  margin-top: 12px;
-}
-
 .secondaryButton:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.2);
