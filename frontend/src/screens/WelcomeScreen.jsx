@@ -36,23 +36,23 @@ export default function WelcomeScreen({
           </p>
 
           {error && <p className={styles.errorMessage}>{error}</p>}
-        </div>
 
-        <div className={styles.buttonGroup}>
-          {showGarage && (
-            <>
-              <button onClick={onGarage} className={styles.secondaryButton}>
-                <Car size={20} />
-                My Garage
-              </button>
-              <div style={{ height: '16px' }} />
-            </>
-          )}
+          <div className={styles.buttonGroup}>
+            {showGarage && (
+              <>
+                <button onClick={onGarage} className={styles.secondaryButton}>
+                  <Car size={20} />
+                  My Garage
+                </button>
+                <div style={{ height: '16px' }} />
+              </>
+            )}
 
-          <button onClick={onGetStarted} className={styles.primaryButton}>
-            Lookup VIN
-            <ArrowRight size={20} />
-          </button>
+            <button onClick={onGetStarted} className={styles.primaryButton}>
+              Lookup VIN
+              <ArrowRight size={20} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
