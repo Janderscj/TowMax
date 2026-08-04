@@ -3,7 +3,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Profiles table
-CREATE TABLE profiles (
+CREATE TABLE IF NOT EXISTS profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   role TEXT NOT NULL CHECK (role IN ('free', 'premium', 'dealer')) DEFAULT 'free',
   garage_limit INTEGER,
@@ -13,7 +13,7 @@ CREATE TABLE profiles (
 );
 
 -- Garage table
-CREATE TABLE garage (
+CREATE TABLE IF NOT EXISTS garage (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
   vin TEXT NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE garage (
 );
 
 -- Towing configuration dataset table
-CREATE TABLE towing_configs (
+CREATE TABLE IF NOT EXISTS towing_configs (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   source_brand TEXT NOT NULL,
   source_file TEXT,
@@ -63,10 +63,10 @@ CREATE TABLE towing_configs (
   UNIQUE(config_key)
 );
 
-CREATE INDEX idx_towing_configs_brand_year_make_model
+CREATE INDEX IF NOT EXISTS idx_towing_configs_brand_year_make_model
   ON towing_configs(source_brand, year, make, model);
 
-CREATE INDEX idx_towing_configs_refine_fields
+CREATE INDEX IF NOT EXISTS idx_towing_configs_refine_fields
   ON towing_configs(source_brand, bed, axle_ratio, tow_package);
 
 -- Enable RLS
@@ -75,23 +75,29 @@ ALTER TABLE garage ENABLE ROW LEVEL SECURITY;
 ALTER TABLE towing_configs ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for profiles
+DROP POLICY IF EXISTS "Users can view their own profile" ON profiles;
 CREATE POLICY "Users can view their own profile" ON profiles
   FOR SELECT USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update their own profile" ON profiles;
 CREATE POLICY "Users can update their own profile" ON profiles
   FOR UPDATE USING (auth.uid() = id);
 
 -- RLS Policies for garage
+DROP POLICY IF EXISTS "Users can view their own garage" ON garage;
 CREATE POLICY "Users can view their own garage" ON garage
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert into their own garage" ON garage;
 CREATE POLICY "Users can insert into their own garage" ON garage
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete from their own garage" ON garage;
 CREATE POLICY "Users can delete from their own garage" ON garage
   FOR DELETE USING (auth.uid() = user_id);
 
 -- Allow authenticated users to read towing data if needed by future clients.
+DROP POLICY IF EXISTS "Authenticated users can read towing configs" ON towing_configs;
 CREATE POLICY "Authenticated users can read towing configs" ON towing_configs
   FOR SELECT USING (auth.role() = 'authenticated');
 
@@ -106,6 +112,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Trigger to create profile on user signup
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
@@ -120,11 +127,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Trigger for profiles updated_at
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON profiles;
 CREATE TRIGGER update_profiles_updated_at
   BEFORE UPDATE ON profiles
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Trigger for towing_configs updated_at
+DROP TRIGGER IF EXISTS update_towing_configs_updated_at ON towing_configs;
 CREATE TRIGGER update_towing_configs_updated_at
   BEFORE UPDATE ON towing_configs
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
