@@ -35,20 +35,6 @@ export default function WelcomeScreen({
             Enter your VIN to discover your vehicle&apos;s estimated towing capacity in seconds.
           </p>
 
-          <div className={styles.featureBox}>
-            <div className={styles.featureRow}>
-              <div className={styles.iconBox}>
-                <Car size={24} color="#000" />
-              </div>
-              <div className={styles.featureContent}>
-                <div className={styles.featureTitle}>Find Your VIN</div>
-                <div className={styles.featureDescription}>
-                  Check driver-side door jamb or windshield base
-                </div>
-              </div>
-            </div>
-          </div>
-
           {error && <p className={styles.errorMessage}>{error}</p>}
         </div>
 
@@ -64,7 +50,7 @@ export default function WelcomeScreen({
           )}
 
           <button onClick={onGetStarted} className={styles.primaryButton}>
-            Get Started
+            Lookup My VIN
             <ArrowRight size={20} />
           </button>
         </div>
