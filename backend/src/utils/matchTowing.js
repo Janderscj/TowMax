@@ -9,7 +9,7 @@ function matchTowing(decoded, towingData) {
     if (!decoded.model || !entry.model || entry.model.toLowerCase() !== decoded.model.toLowerCase())
       return;
 
-    // Series must match exactly (after normalization)
+    // Series must match exactly if both are present
     if (
       decoded.series &&
       entry.series &&
@@ -18,7 +18,7 @@ function matchTowing(decoded, towingData) {
       return;
     }
 
-    // ENGINE — safe partial match
+    // ENGINE — partial match
     if (
       decoded.engine &&
       entry.engine &&
@@ -45,7 +45,7 @@ function matchTowing(decoded, towingData) {
       return;
     }
 
-    // If we reach here, this entry is a valid VIN match
+    // valid VIN match
     matches.push(entry);
   });
 
