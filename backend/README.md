@@ -25,12 +25,16 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 FRONTEND_URL=http://localhost:3000
 NODE_ENV=development
 PORT=5000
+USE_SUPABASE_TOWING_DATA=false
+SUPABASE_TOWING_FALLBACK_TO_JSON=true
 ```
 
 Notes:
 
 - `SUPABASE_SERVICE_ROLE_KEY` is server-only and must never be exposed to the frontend.
 - `FRONTEND_URL` controls the allowed browser origin for CORS.
+- `USE_SUPABASE_TOWING_DATA=true` switches towing dataset reads to Supabase.
+- `SUPABASE_TOWING_FALLBACK_TO_JSON=true` keeps JSON fallback enabled during migration.
 
 ## Scripts
 
@@ -59,6 +63,12 @@ npm run validate:data
 ```
 
 Runs the towing data validation script.
+
+```bash
+npm run import:towing-data
+```
+
+Validates and imports all JSON towing datasets into Supabase table `towing_configs` using upsert.
 
 ## Important Endpoints
 
@@ -136,6 +146,7 @@ backend/
 - `src/utils/matchTowing.js` - Vehicle matching algorithm
 - `src/utils/towPackageEngine.js` - Towing package option generator
 - `src/utils/loadBrandData.js` - Data file loader
+- `scripts/importTowingDataToSupabase.js` - JSON to Supabase dataset import script
 
 ## Notes on Data
 
