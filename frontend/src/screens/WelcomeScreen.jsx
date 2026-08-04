@@ -50,7 +50,7 @@ export default function WelcomeScreen({
           )}
 
           <button onClick={onGetStarted} className={styles.primaryButton}>
-            Lookup My VIN
+            Lookup VIN
             <ArrowRight size={20} />
           </button>
         </div>
