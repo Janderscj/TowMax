@@ -4,9 +4,9 @@
   padding: 20px;
   padding-top: clamp(60px, 12vw, 72px);
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-  color: white;
-  font-family: 'Space Mono', monospace;
+  background: var(--bg-gradient-screen);
+  color: var(--text-primary);
+  font-family: var(--font-body);
 }
 
 /* Role information section */
@@ -17,17 +17,18 @@
 
 .roleText {
   font-size: 1.1rem;
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 5px;
+  font-family: var(--font-display);
 }
 
 .limitText {
-  color: #ccc;
+  color: var(--text-muted);
 }
 
 /* Error message styling */
 .error {
-  color: #ff6b6b;
+  color: #9e1d1d;
   text-align: center;
   margin-bottom: 20px;
   font-size: 14px;
@@ -35,9 +36,9 @@
 
 /* Notice box for garage full message */
 .notice {
-  background: rgba(255, 140, 0, 0.12);
-  border: 1px solid rgba(255, 140, 0, 0.25);
-  color: #ffb74d;
+  background: #fff1e5;
+  border: 1px solid rgba(239, 106, 27, 0.3);
+  color: var(--brand-700);
   border-radius: 10px;
   padding: 12px 14px;
   margin-bottom: 20px;
@@ -54,19 +55,20 @@
 
 /* Individual vehicle card */
 .vehicleCard {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  background: var(--surface-1);
+  border-radius: 10px;
   padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-soft);
   transition: all 0.2s;
+  box-shadow: var(--shadow-soft);
 }
 
 .vehicleCard:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--surface-2);
   transform: translateY(-2px);
 }
 
@@ -80,7 +82,7 @@
 
 /* Car icon styling */
 .carIcon {
-  color: #4ecdc4;
+  color: #1456c0;
 }
 
 /* Vehicle title */
@@ -91,7 +93,7 @@
 
 /* VIN text */
 .vinText {
-  color: #ccc;
+  color: var(--text-muted);
   margin: 0;
   font-size: 0.9rem;
 }
@@ -104,7 +106,7 @@
 
 /* Remove vehicle button */
 .removeButton {
-  background: #ff6b6b;
+  background: #d93b3b;
   color: white;
   border: none;
   padding: 8px;
@@ -117,13 +119,14 @@
 }
 
 .removeButton:hover {
-  background: #ff5252;
+  background: #be2f2f;
   transform: scale(1.1);
 }
 
 /* Add vehicle button */
 .addButton {
-  background: #4ecdc4;
+  min-height: 52px;
+  background: linear-gradient(180deg, var(--brand-500) 0%, var(--brand-600) 100%);
   color: white;
   border: none;
   padding: 15px;
@@ -141,7 +144,7 @@
 }
 
 .addButton:hover:not(:disabled) {
-  background: #3db8b0;
+  background: linear-gradient(180deg, var(--brand-600) 0%, var(--brand-700) 100%);
   transform: translateY(-2px);
 }
 
@@ -154,7 +157,7 @@
 .loading {
   text-align: center;
   padding: 50px;
-  color: #ccc;
+  color: var(--text-muted);
 }
 
 /* Dealer message section */
@@ -203,12 +206,12 @@
 
 /* Modal dialog */
 .modalDialog {
-  background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+  background: var(--surface-1);
   border-radius: 16px;
   padding: 28px;
   max-width: 320px;
-  border: 1px solid rgba(255, 107, 107, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
 }
 
 /* Modal title */
@@ -216,14 +219,14 @@
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 12px;
-  color: #ff6b6b;
+  color: #9e1d1d;
   margin: 0 0 12px 0;
 }
 
 /* Modal text */
 .modalText {
   font-size: 14px;
-  color: #ccc;
+  color: var(--text-secondary);
   line-height: 1.5;
   margin-bottom: 20px;
   margin: 0 0 20px 0;
@@ -232,11 +235,12 @@
 /* Modal button */
 .modalButton {
   width: 100%;
+  min-height: 46px;
   padding: 12px;
-  background: rgba(255, 107, 107, 0.2);
-  border: 1px solid rgba(255, 107, 107, 0.4);
+  background: #fde9e9;
+  border: 1px solid #ef9b9b;
   border-radius: 8px;
-  color: #ff6b6b;
+  color: #9e1d1d;
   font-weight: 600;
   cursor: pointer;
   font-size: 14px;
@@ -245,7 +249,7 @@
 }
 
 .modalButton:hover {
-  background: rgba(255, 107, 107, 0.3);
+  background: #f9dcdc;
 }
 
 /* Modal actions container */
@@ -258,11 +262,12 @@
 /* Secondary modal button (Cancel) */
 .modalButtonSecondary {
   flex: 1;
+  min-height: 46px;
   padding: 12px;
-  background: rgba(200, 200, 200, 0.1);
-  border: 1px solid rgba(200, 200, 200, 0.3);
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
   border-radius: 8px;
-  color: #ccc;
+  color: var(--text-secondary);
   font-weight: 600;
   cursor: pointer;
   font-size: 14px;
@@ -271,15 +276,16 @@
 }
 
 .modalButtonSecondary:hover {
-  background: rgba(200, 200, 200, 0.2);
+  background: #e8eef6;
 }
 
 /* Danger modal button (Remove) */
 .modalButtonDanger {
   flex: 1;
+  min-height: 46px;
   padding: 12px;
-  background: #ff6b6b;
-  border: 1px solid #ff6b6b;
+  background: #d93b3b;
+  border: 1px solid #d93b3b;
   border-radius: 8px;
   color: white;
   font-weight: 600;
@@ -290,6 +296,6 @@
 }
 
 .modalButtonDanger:hover {
-  background: #ff5252;
-  border-color: #ff5252;
+  background: #be2f2f;
+  border-color: #be2f2f;
 }

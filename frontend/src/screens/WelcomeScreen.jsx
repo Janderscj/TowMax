@@ -44,7 +44,6 @@ export default function WelcomeScreen({
                   <Car size={20} />
                   My Garage
                 </button>
-                <div style={{ height: '16px' }} />
               </>
             )}
 

@@ -1,14 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --font-body: 'Public Sans', 'Segoe UI', sans-serif;
+  --font-display: 'Barlow Semi Condensed', 'Segoe UI', sans-serif;
+
+  --bg-canvas: #eceff3;
+  --bg-shell: #f8fafc;
+  --bg-gradient-shell: linear-gradient(180deg, #f9fbff 0%, #eef3f8 100%);
+  --bg-gradient-screen:
+    radial-gradient(circle at 88% -20%, rgba(255, 120, 27, 0.18) 0%, transparent 45%),
+    linear-gradient(180deg, #f9fbff 0%, #edf3f8 100%);
+
+  --surface-1: #ffffff;
+  --surface-2: #f4f7fb;
+  --surface-accent: #fff1e5;
+
+  --text-primary: #18212e;
+  --text-secondary: #3e4b5f;
+  --text-muted: #667388;
+
+  --brand-500: #ef6a1b;
+  --brand-600: #d95813;
+  --brand-700: #bb4a0a;
+
+  --border-soft: rgba(24, 33, 46, 0.12);
+  --border-strong: rgba(24, 33, 46, 0.2);
+  --shadow-soft: 0 14px 34px rgba(22, 33, 48, 0.12);
+}
+
 html,
 body {
   margin: 0;
-  /* Dark background fills the area outside the centered app column on desktop */
-  background: #0f0f0f;
+  background: var(--bg-canvas);
 }
 
 body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
-    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -30,18 +58,20 @@ code {
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
-  /* Inherit the app gradient so the shell itself is never bare */
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  background: var(--bg-gradient-shell);
   display: flex;
   flex-direction: column;
+  border-left: 1px solid var(--border-soft);
+  border-right: 1px solid var(--border-soft);
 }
 
 @media (min-width: 600px) {
   .app-shell {
-    /* Soft glow + hairline border gives a phone-frame feel on desktop */
     box-shadow:
-      0 0 80px rgba(0, 0, 0, 0.7),
-      0 0 0 1px rgba(255, 255, 255, 0.06);
+      0 20px 48px rgba(22, 33, 48, 0.16),
+      0 0 0 1px var(--border-soft);
+    border-radius: 16px;
+    overflow: hidden;
   }
 }
 

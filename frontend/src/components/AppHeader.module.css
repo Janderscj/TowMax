@@ -9,9 +9,9 @@
   transform: translateX(-50%);
   z-index: 1000;
   overflow: hidden;
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  background: rgba(248, 250, 252, 0.94);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-soft);
   transition: transform 0.3s ease-out;
 }
 
@@ -50,11 +50,12 @@
 
 .title {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0;
-  color: #fff;
+  color: var(--text-primary);
   text-align: center;
   white-space: nowrap;
+  font-family: var(--font-display);
 }
 
 .navButton {
@@ -63,18 +64,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
   border-radius: 8px;
-  color: #e0e0e0;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
   padding: 0;
 }
 
 .navButton:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.35);
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
 }
 
 .sideNavRight {

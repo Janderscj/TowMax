@@ -1,10 +1,10 @@
 /* QuestionsScreen.module.css */
 /* Main container with dark gradient background */
 .container {
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  background: var(--bg-gradient-screen);
   min-height: 100vh;
-  font-family: 'Space Mono', monospace;
-  color: #e0e0e0;
+  font-family: var(--font-body);
+  color: var(--text-primary);
   position: relative;
   overflow: hidden;
   padding-bottom: 24px;
@@ -23,9 +23,9 @@
 
 /* Progress bar background container */
 .progressBarContainer {
-  height: 4px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 2px;
+  height: 8px;
+  background: rgba(24, 33, 46, 0.1);
+  border-radius: 999px;
   margin-bottom: 24px;
   overflow: hidden;
 }
@@ -33,33 +33,34 @@
 /* Progress bar fill with animation */
 .progressBarFill {
   height: 100%;
-  background: linear-gradient(90deg, #ff8c00 0%, #ff6b00 100%);
+  background: linear-gradient(90deg, var(--brand-500) 0%, var(--brand-600) 100%);
   width: 0%;
   transition: width 0.3s ease;
 }
 
 /* Vehicle info card */
 .vehicleCard {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
   padding: 16px;
   margin-bottom: 24px;
   display: flex;
   align-items: center;
   gap: 12px;
+  box-shadow: var(--shadow-soft);
 }
 
 /* Vehicle icon emoji box */
 .vehicleIconBox {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(255, 140, 0, 0.2) 0%, rgba(255, 107, 0, 0.2) 100%);
+  background: linear-gradient(135deg, rgba(239, 106, 27, 0.2) 0%, rgba(217, 88, 19, 0.14) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 26px;
 }
 
 /* Vehicle info text container */
@@ -69,36 +70,40 @@
 
 /* Vehicle name and model text */
 .vehicleTitle {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 700;
   margin-bottom: 2px;
+  font-family: var(--font-display);
 }
 
 .vehicleSubtitle {
-  font-size: 13px;
-  color: #888;
+  font-size: 14px;
+  color: var(--text-muted);
 }
 
 /* Step counter label */
 .stepCounter {
   font-size: 12px;
-  color: #888;
+  color: var(--text-muted);
   margin-bottom: 8px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
+  font-weight: 700;
 }
 
 /* Main heading text */
 .heading {
-  font-size: 24px;
+  font-size: clamp(24px, 5vw, 30px);
   font-weight: 700;
   margin-bottom: 8px;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+  font-family: var(--font-display);
 }
 
 /* Description text */
 .description {
-  font-size: 14px;
-  color: #888;
+  font-size: 15px;
+  color: var(--text-secondary);
   margin-bottom: 24px;
 }

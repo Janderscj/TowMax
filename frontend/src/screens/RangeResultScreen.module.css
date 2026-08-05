@@ -1,10 +1,10 @@
 /* RangeResultScreen.module.css */
 /* Main container with dark gradient background */
 .container {
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  background: var(--bg-gradient-screen);
   min-height: 100vh;
-  font-family: 'Space Mono', monospace;
-  color: #e0e0e0;
+  font-family: var(--font-body);
+  color: var(--text-primary);
   position: relative;
   overflow: hidden;
   padding-bottom: 24px;
@@ -33,7 +33,7 @@
   width: 80px;
   height: 80px;
   border-radius: 20px;
-  background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+  background: linear-gradient(180deg, var(--brand-500) 0%, var(--brand-600) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,28 +46,30 @@
   font-weight: 700;
   margin-bottom: 12px;
   letter-spacing: -0.5px;
+  font-family: var(--font-display);
 }
 
 /* Subtitle text */
 .subtitle {
-  font-size: 14px;
-  color: #888;
+  font-size: 15px;
+  color: var(--text-secondary);
   margin-bottom: 32px;
 }
 
 /* Vehicle information card */
 .vehicleCard {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 24px;
+  box-shadow: var(--shadow-soft);
 }
 
 /* Vehicle card label */
 .vehicleLabel {
   font-size: 13px;
-  color: #888;
+  color: var(--text-muted);
   margin-bottom: 12px;
 }
 
@@ -81,13 +83,13 @@
 /* Vehicle series/variant */
 .vehicleSeries {
   font-size: 14px;
-  color: #aaa;
+  color: var(--text-muted);
 }
 
 /* Towing capacity display box with gradient background */
 .capacityBox {
-  background: linear-gradient(135deg, rgba(255, 140, 0, 0.15) 0%, rgba(255, 107, 0, 0.1) 100%);
-  border: 2px solid rgba(255, 140, 0, 0.3);
+  background: linear-gradient(180deg, #fff3e8 0%, #ffe8d7 100%);
+  border: 2px solid rgba(239, 106, 27, 0.35);
   border-radius: 16px;
   padding: 28px 24px;
   margin-bottom: 24px;
@@ -97,7 +99,7 @@
 /* Capacity box label */
 .capacityLabel {
   font-size: 13px;
-  color: #ff8c00;
+  color: var(--brand-700);
   margin-bottom: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -110,38 +112,40 @@
   font-weight: 700;
   margin-bottom: 8px;
   letter-spacing: -1px;
-  background: linear-gradient(135deg, #ffffff 0%, #ff8c00 100%);
+  background: linear-gradient(130deg, #181f29 0%, var(--brand-600) 90%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-family: var(--font-display);
 }
 
 /* Unit text below capacity */
 .capacityUnit {
   font-size: 16px;
-  color: #aaa;
+  color: var(--text-muted);
 }
 
 /* Info/disclaimer box */
 .infoBox {
-  background: rgba(33, 150, 243, 0.08);
-  border: 1px solid rgba(33, 150, 243, 0.2);
+  background: #eaf2ff;
+  border: 1px solid #8fb6ff;
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 24px;
   font-size: 13px;
-  color: #64b5f6;
+  color: #1456c0;
   line-height: 1.6;
 }
 
 /* Primary action button */
 .primaryButton {
   width: 100%;
+  min-height: 52px;
   padding: 18px;
-  background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
+  background: linear-gradient(180deg, var(--brand-500) 0%, var(--brand-600) 100%);
   border: none;
   border-radius: 16px;
-  color: #000;
+  color: #fff;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
@@ -161,12 +165,13 @@
 /* Secondary action button */
 .secondaryButton {
   width: 100%;
+  min-height: 52px;
   padding: 18px;
   margin-bottom: 12px;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
   border-radius: 16px;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -175,6 +180,6 @@
 }
 
 .secondaryButton:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--surface-2);
+  border-color: var(--border-strong);
 }
