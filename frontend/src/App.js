@@ -1,6 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
 import LoginScreen from './screens/LoginScreen';
-import PrototypeBanner from './components/PrototypeBanner';
 import AppShell from './components/AppShell';
 import ScrollToTop from './components/ScrollToTop';
 import { ProtectedRoute, AuthenticatedRoutes } from './routes/AppRoutes';
@@ -14,7 +13,6 @@ function AppContent() {
         element={
           <ProtectedRoute>
             <AppShell>
-              <PrototypeBanner />
               <ScrollToTop />
               <AuthenticatedRoutes />
             </AppShell>
